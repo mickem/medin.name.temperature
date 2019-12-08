@@ -24,4 +24,3 @@ If you like the app, consider buying me a beer!
 
 [pp-donate-link]: https://www.paypal.me/michaelmedin
 [pp-donate-image]: https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_donate_92x26.png
-[storebackdrop]: https://raw.githubusercontent.com/daneedk/com.uc.heimdall/beta/assets/images/storebackdrop.png
