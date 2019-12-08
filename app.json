@@ -1,0 +1,213 @@
+{
+  "id": "name.medin.temperatures",
+  "sdk": 2,
+  "permissions": [
+    "homey:manager:api"
+  ],
+  "name": {
+    "en": "Temperature manager"
+  },
+  "description": {
+    "en": "Temperature manager"
+  },
+  "category": [
+    "climate",
+    "tools"
+  ],
+  "images": {
+    "large": "assets/images/large.png",
+    "small": "assets/images/small.png"
+  },
+  "version": "1.0.0",
+  "compatibility": ">=2.0.5",
+  "author": {
+    "name": "Michael Medin",
+    "email": "michael@medin.name"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "mickem"
+      }
+    }
+  },
+  "tags": {
+    "en": [
+      "Home",
+      "Temperature",
+      "Alert",
+      "System",
+      "Tools"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/mickem/name.medin.temperature/issues"
+  },
+  "source": "https://github.com/mickem/name.medin.temperature",
+  "flow": {
+    "triggers": [
+      {
+        "id": "TemperatureChanged",
+        "title": {
+          "en": "A temperature changed."
+        },
+        "tokens": [
+          {
+            "name": "zone",
+            "type": "string",
+            "title": {
+              "en": "zone"
+            },
+            "example": "Kitchen"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "average temperature"
+            },
+            "example": 12.4
+          }
+        ]
+      },
+      {
+        "id": "TooCold",
+        "title": {
+          "en": "The temperature is too cold."
+        },
+        "tokens": [
+          {
+            "name": "zone",
+            "type": "string",
+            "title": {
+              "en": "zone"
+            },
+            "example": "Kitchen"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "temperature"
+            },
+            "example": 12.4
+          }
+        ]
+      },
+      {
+        "id": "TooWarm",
+        "title": {
+          "en": "The temperature is too warm."
+        },
+        "tokens": [
+          {
+            "name": "zone",
+            "type": "string",
+            "title": {
+              "en": "zone"
+            },
+            "example": "Kitchen"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "temperature"
+            },
+            "example": 12.4
+          }
+        ]
+      },
+      {
+        "id": "MinTemperatureChanged",
+        "title": {
+          "en": "The minimum temperature changed for a zone."
+        },
+        "tokens": [
+          {
+            "name": "zone",
+            "type": "string",
+            "title": {
+              "en": "zone"
+            },
+            "example": "Kitchen"
+          },
+          {
+            "name": "sensor",
+            "type": "string",
+            "title": {
+              "en": "sensor"
+            },
+            "example": "Thermometer"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "temperature"
+            },
+            "example": 12.4
+          }
+        ]
+      },
+      {
+        "id": "MaxTemperatureChanged",
+        "title": {
+          "en": "The maximum temperature for a zone changed."
+        },
+        "tokens": [
+          {
+            "name": "zone",
+            "type": "string",
+            "title": {
+              "en": "zone"
+            },
+            "example": "Kitchen"
+          },
+          {
+            "name": "sensor",
+            "type": "string",
+            "title": {
+              "en": "sensor"
+            },
+            "example": "Thermometer"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "title": {
+              "en": "temperature"
+            },
+            "example": 12.4
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "SetMinTemperature",
+        "title": {
+          "en": "Set the minimum temperature"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "SetMaxTemperature",
+        "title": {
+          "en": "Set the maximum temperature"
+        },
+        "args": [
+          {
+            "name": "temperature",
+            "type": "number"
+          }
+        ]
+      }
+    ]
+  }
+}
