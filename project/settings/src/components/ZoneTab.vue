@@ -40,10 +40,7 @@ export default {
   },
   methods: {
     disableHints : async function() {
-      this.zoneHints = false;
-      const settings = this.$root.$data.getSettings();
-      settings.zoneHints = false;
-      await this.$root.$data.saveSettings(settings);
+      await this.$root.$data.saveSettings({ zoneHints: false });
     }
   }
 }

@@ -38,10 +38,7 @@ export default {
   },
   methods: {
     disableHints : async function() {
-      this.deviceHints = false;
-      const settings = this.$root.$data.getSettings();
-      settings.deviceHints = false;
-      await this.$root.$data.saveSettings(settings);
+      await this.$root.$data.saveSettings({ deviceHints: false });
     }
   }
 }

@@ -12,13 +12,16 @@ const delay = time => new Promise(res => setTimeout(res, time));
 interface ISettings {
   minTemperature: number;
   maxTemperature: number;
+  dailyReset: string;
 }
 const defaultSettings: ISettings = {
+  dailyReset: '02:00',
   maxTemperature: 22,
   minTemperature: 18,
 };
 const devicesNotReadyAtStart = [];
 let settings = {
+  dailyReset: defaultSettings.dailyReset,
   maxTemperature: defaultSettings.maxTemperature,
   minTemperature: defaultSettings.minTemperature,
 };
@@ -31,6 +34,7 @@ class TempManager extends Homey.App implements IManager {
   private zonesIgnored: string[];
   private zonesNotMonitored: string[];
   private devicesIgnored: string[];
+  private task: any;
 
   constructor(path: string) {
     super(path);
@@ -48,6 +52,7 @@ class TempManager extends Homey.App implements IManager {
     const s = Homey.ManagerSettings.get('settings') || (defaultSettings as ISettings);
     settings.minTemperature = s.minTemperature || defaultSettings.minTemperature;
     settings.maxTemperature = s.maxTemperature || defaultSettings.maxTemperature;
+    settings.dailyReset = s.dailyReset || defaultSettings.dailyReset;
     console.log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
     this.zonesIgnored = Homey.ManagerSettings.get('zonesIgnored') || [];
     this.zonesNotMonitored = Homey.ManagerSettings.get('zonesNotMonitored') || [];
@@ -55,10 +60,15 @@ class TempManager extends Homey.App implements IManager {
     await this.zones.updateDevices(this.zonesIgnored, this.zonesNotMonitored, this.devicesIgnored);
     console.log(`Config: ${this.zonesIgnored}, ${this.zonesNotMonitored}, ${this.devicesIgnored}`);
 
+    
+    await this.installTasks();
+
     (Homey.ManagerSettings as any).on('set', async (variable: string) => {
       if (variable === 'settings') {
         settings = Homey.ManagerSettings.get('settings') as ISettings;
         console.log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
+        console.log(`Reset max/min running at: ${settings.dailyReset}`);
+        await this.installTasks();
       } else if (variable === 'zonesIgnored') {
         this.zonesIgnored = Homey.ManagerSettings.get('zonesIgnored') as string[];
         console.log(`Ignored zones: ${this.zonesIgnored}`);
@@ -100,6 +110,25 @@ class TempManager extends Homey.App implements IManager {
   public async getDevices(): Promise<IDeviceList> {
     const api = await this.getApi();
     return api.devices.getDevices() as any as Promise<IDeviceList>;
+  }
+
+  private async installTasks() {
+    if (this.task) {
+      await (Homey.ManagerCron as any).unregisterTask('dailyReset');
+    }
+    const cron = this.getDailyRestCron();
+    console.log(`Updated time to: ${cron}`)
+    this.task = await (Homey.ManagerCron as any).registerTask('dailyReset', cron);
+    this.task.on('run', (data) => {
+      console.log('Reseting all zones max/min temperatures: ' + new Date(), data);
+      this.zones.resetMaxMin();
+    });
+  }
+  private getDailyRestCron() {
+    const parts = settings.dailyReset.split(":");
+    const hour = parts.length > 0 ? parts[0] : '2';
+    const minute =  parts.length > 1 ? parts[1] : '00';
+    return `0 ${minute} ${hour} * * *`;
   }
 
   private async updateDeviceConfig() {

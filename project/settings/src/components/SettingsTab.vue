@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" v-if="settings.settingsHints">
+    <div class="card" v-if="settingsHints">
       <div class="card-body">
         <h5 class="card-title">Hints: Settings</h5>
         <p
@@ -10,7 +10,7 @@
         <p class="btn btn-primary" @click="disableHints()">Got it</p>
       </div>
     </div>
-    <form>
+    <div class="form">
       <div class="form-group">
         <label for="minTemp">Minimum Temperature</label>
         <input type="text" class="form-control" id="minTemp" v-model="minTemperature" />
@@ -18,6 +18,10 @@
       <div class="form-group">
         <label for="minTemp">Maximum Temperature</label>
         <input type="text" class="form-control" id="minTemp" v-model="maxTemperature" />
+      </div>
+      <div class="form-group">
+        <label for="dailyReset">Time to reset daily averages</label>
+        <input type="text" @blur="updateDailyReset()" class="form-control" id="dailyReset" v-model="dailyReset" />
       </div>
 
       <div class="form-group">
@@ -29,7 +33,7 @@
         <label for="resetAll">Reset all configuration and restoe defaults</label>
         <button id="resetAll" class="btn btn-danger" @click="reset()">Reset defaults</button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -38,25 +42,44 @@ export default {
   name: 'SettingsTab',
   data () {
     return {
-      settings: this.$root.$data.getSettings(),
-      minTemperature: this.$root.$data.getSettings().minTemperature,
-      maxTemperature: this.$root.$data.getSettings().maxTemperature,
+      dailyReset: this.$root.$data.getDailyReset(),
     }
   },
-  methods: {
-    disableHints : async function() {
-      this.settings.settingsHints = false;
-      await this.$root.$data.saveSettings(this.settings);
+  computed: {
+    settingsHints: function() {
+      return this.$root.$data.getSettings().settingsHints;
     },
-    reset : async function() {
+    minTemperature: {
+      get: function () {
+        return this.$root.$data.getSettings().minTemperature;
+      },
+      set: async function (newValue) {
+        await this.$root.$data.saveSettings({ minTemperature: newValue });
+      }
+    },
+    maxTemperature: {
+      get: function () {
+        return this.$root.$data.getSettings().maxTemperature;
+      },
+      set: async function (newValue) {
+        await this.$root.$data.saveSettings({ maxTemperature: newValue });
+      }
+    },
+  },
+  methods: {
+    updateDailyReset: async function() {
+      const value = this.$root.$data.setDailyReset(this.dailyReset);
+      await this.$root.$data.saveSettings({ dailyReset: value });
+    },
+    disableHints: async function() {
+      await this.$root.$data.saveSettings({ settingsHints: false });
+    },
+    reset: async function() {
       await this.$root.$data.resetSettings();
       this.settings = this.$root.$data.getSettings();
     },
-    showHints : async function() {
-      this.settings.zoneHints = true;
-      this.settings.deviceHints = true;
-      this.settings.settingsHints = true;
-      await this.$root.$data.saveSettings(this.settings);
+    showHints: async function() {
+      await this.$root.$data.saveSettings({ zoneHints: true, deviceHints: true, settingsHints: true });
     }
   }
 };

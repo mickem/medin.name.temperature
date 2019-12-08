@@ -20,6 +20,12 @@ export class Zones {
         this.devicesIgnored = [];
     }
 
+    public resetMaxMin() {
+        for (const key in this.zones) {
+            this.zones[key].resetMaxMin();
+        }
+    }
+
     public addZone(id: string, name: string): Zone {
         if (id in this.zones) {
             return this.zones[id];

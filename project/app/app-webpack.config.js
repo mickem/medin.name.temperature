@@ -9,7 +9,6 @@ module.exports = {
             'athom-api': "athom-api",
             homey: "homey",
         },
-        nodeExternals(),
     ],
     target: 'node',
     plugins: [
