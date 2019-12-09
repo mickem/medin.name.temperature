@@ -1,6 +1,12 @@
 import { IManager } from './interfaces/IManager';
 import { Thermometer } from './Thermometer';
 
+export interface IZoneState {
+  minTemp: number;
+  minSensor: string;
+  maxTemp: number;
+  maxSensor: string;
+}
 export class Zone {
   private manager: IManager;
   private name: string;
@@ -38,8 +44,11 @@ export class Zone {
     return this.id;
   }
 
-  public getName() {
+  public getName(): string {
     return this.name;
+  }
+  public setName(name: string) {
+    this.name = name;
   }
 
   public getTemperature() {
@@ -51,16 +60,30 @@ export class Zone {
   public getMax(): number {
     return this.maxTemp;
   }
+  public getDeviceById(id: string): Thermometer | undefined {
+    for (const device of this.devices) {
+      if (device.id === id) {
+        return device;
+      }
+    }
+    return undefined;
+  }
+  public hasDevice(): boolean {
+    return this.devices.length > 0;
+  }
 
 
   public async addDevice(device: any) {
-    const t = new Thermometer(device, this.devicesIgnored.includes(device.id));
-    this.devices.push(t);
+    this.addThermometer(new Thermometer(device, this.devicesIgnored.includes(device.id)));
+  }
+  public async addThermometer(thermometer: Thermometer) {
+    this.devices.push(thermometer);
     await this.calculateZoneTemp();
-    if (t.hasTemp()) {
-      this.updateTemp(t.id, t.temp);
+    if (thermometer.hasTemp()) {
+      this.updateTemp(thermometer.id, thermometer.temp);
     }
   }
+
 
   public async removeDevice(id: string) {
     for (let i = 0; i < this.devices.length; i++) {
@@ -121,7 +144,25 @@ export class Zone {
         this.onMaxUpdated(device.name, temperature);
       }
     }
+    this.manager.onZoneUpdated();
   }
+
+  public getState(): IZoneState {
+    return {
+      maxSensor: this.maxSensor,
+      maxTemp: this.maxTemp,
+      minSensor: this.minSensor,
+      minTemp: this.minTemp,
+    }
+  }
+  public setState(state: IZoneState) {
+    this.maxSensor = state.maxSensor;
+    this.maxTemp = state.maxTemp;
+    this.minSensor = state.minSensor;
+    this.minTemp = state.minTemp;
+  }
+
+
 
   private findDevice(id: string): Thermometer | undefined {
     for (const d of this.devices) {

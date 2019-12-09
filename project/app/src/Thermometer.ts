@@ -3,6 +3,7 @@ export class Thermometer {
   public name: string;
   public temp: number | undefined;
   private device: any;
+  private zoneId: string;
   private zone: string;
   private ignored: boolean;
 
@@ -10,7 +11,8 @@ export class Thermometer {
     this.device = device;
     this.id = device.id;
     this.name = device.name;
-    this.zone = device.ZoneName;
+    this.zoneId = device.zone;
+    this.zone = device.zoneName;
     this.temp = device.capabilitiesObj.measure_temperature.value;
     this.ignored = ignored;
   }
@@ -18,8 +20,18 @@ export class Thermometer {
   public getName(): string {
     return this.name;
   }
+  public setName(name: string) {
+    this.name = name;
+  }
   public getZone(): string {
     return this.zone;
+  }
+  public getZoneId(): string {
+    return this.zoneId;
+  }
+  public setZone(zoneId: string, zoneName: string) {
+    this.zoneId = zoneId;
+    this.zone = zoneName;
   }
 
   public update(temp: number): boolean {

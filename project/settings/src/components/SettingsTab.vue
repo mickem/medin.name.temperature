@@ -28,6 +28,10 @@
         <label for="showHints">Show all hint dialogs in the settings app</label>
         <button id="showHints" class="btn btn-info" @click="showHints()">Show all hints</button>
       </div>
+      <div class="form-group">
+        <label for="showHints">Refresh the settings view</label>
+        <button id="showHints" class="btn btn-info" @click="refresh()">Refresh</button>
+      </div>
 
       <div class="form-group">
         <label for="resetAll">Reset all configuration and restoe defaults</label>
@@ -77,6 +81,9 @@ export default {
     reset: async function() {
       await this.$root.$data.resetSettings();
       this.settings = this.$root.$data.getSettings();
+    },
+    refresh: async function() {
+      await this.$root.$data.reload();
     },
     showHints: async function() {
       await this.$root.$data.saveSettings({ zoneHints: true, deviceHints: true, settingsHints: true });

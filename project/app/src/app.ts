@@ -4,7 +4,8 @@ import { Actions } from './Actions';
 import { IDeviceList, IDeviceType } from './interfaces/IDeviceType';
 import { IManager } from './interfaces/IManager';
 import { Triggers } from './Triggers';
-import { IZoneList, Zones } from './Zones';
+import { IZoneList, IZonesState, Zones } from './Zones';
+import { IZoneTypeList } from './interfaces/IZoneType';
 
 const delay = time => new Promise(res => setTimeout(res, time));
 
@@ -25,6 +26,10 @@ let settings = {
   maxTemperature: defaultSettings.maxTemperature,
   minTemperature: defaultSettings.minTemperature,
 };
+
+interface IAppState {
+  zones: IZonesState;
+}
 
 class TempManager extends Homey.App implements IManager {
   private api: HomeyAPI | undefined;
@@ -47,6 +52,7 @@ class TempManager extends Homey.App implements IManager {
     });
   }
 
+
   public async onInit() {
     this.getApi();
     const s = Homey.ManagerSettings.get('settings') || (defaultSettings as ISettings);
@@ -62,6 +68,11 @@ class TempManager extends Homey.App implements IManager {
 
 
     await this.installTasks();
+
+    const state = Homey.ManagerSettings.get('state') as IAppState;
+    if (state && state.zones) {
+      this.zones.setState(state.zones);
+    }
 
     (Homey.ManagerSettings as any).on('set', async (variable: string) => {
       if (variable === 'settings') {
@@ -112,10 +123,17 @@ class TempManager extends Homey.App implements IManager {
     return api.devices.getDevices() as any as Promise<IDeviceList>;
   }
 
+  public onZoneUpdated() {
+    const state: IAppState = {
+      zones: this.zones.getState(),
+    };
+    Homey.ManagerSettings.set('state', state);
+  }
+
   private async installTasks() {
     try {
       await (Homey.ManagerCron as any).unregisterTask('dailyreset');
-    } catch (error) { 
+    } catch (error) {
       console.log("Failed to remove non existing job", error);
     }
     const cron = this.getDailyRestCron();
@@ -147,6 +165,7 @@ class TempManager extends Homey.App implements IManager {
   private async enumerateDevices() {
     const api = await this.getApi();
     (api.devices as any).on('device.create', async id => {
+      console.log("device created", id);
       const device = await this.waitForDevice(id, 12);
       if (device) {
         await this.addDevice(device as IDeviceType);
@@ -154,8 +173,34 @@ class TempManager extends Homey.App implements IManager {
     });
 
     (api.devices as any).on('device.delete', async id => {
+      console.log("device deleted", id);
       await this.zones.removeDeviceById(id);
     });
+
+    (api.devices as any).on('device.update', async (device) => {
+      const d = this.zones.getDeviceById(device.id);
+      if (d && d.getZoneId() !== device.zone) {
+        await this.zones.moveDevice(d, d.getZoneId(), device.zone, device.zoneName);
+      }
+      if (d.name !== device.name) {
+        d.setName(device.name);
+      }
+    });
+
+    (api.zones as any).on('zone.update', async (zone) => {
+      const z = this.zones.getZoneById(zone.id);
+      if (z && z.getName() !== zone.name) {
+        z.setName(zone.name);
+      }
+    });
+    (api.zones as any).on('zone.create', async (zone) => {
+      this.zones.addZone(zone.id, zone.name);
+    });
+
+    const allZones = await (api.zones.getZones() as any as Promise<IZoneTypeList>);
+    for (const id in allZones) {
+      this.zones.addZone(id, allZones[id].name);
+    }
 
     const allDevices = await (api.devices.getDevices() as any as Promise<IDeviceList>);
     for (const id in allDevices) {

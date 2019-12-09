@@ -137,7 +137,6 @@ export default class SettingsManager {
         return this.devices;
     }
     public getSettings() {
-        console.log("Getting settings: ", this.settings);
         return this.settings;
     }
     public async saveSettings(settings) {
@@ -145,7 +144,6 @@ export default class SettingsManager {
             ...this.settings,
             ...settings
         };
-        console.log("Saving: ", newSettings, this.settings);
         await Homey.set('settings', newSettings);
         this.settings = newSettings;
     }

@@ -36,6 +36,7 @@ module.exports = [
     fn: (args, callback) => {
       const res = Object.values((Homey.app as IManager)
         .getZones())
+        .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({
           id: zone.getId(),
           max: zone.getMax(),
