@@ -1,4 +1,7 @@
 {
+  "1.0.1": {
+    "en": "Fixed reseting daily averages"
+  },
   "1.0.0": {
     "en": "First release"
   }
