@@ -1,3 +1,4 @@
+import { IDeviceType } from './interfaces/IDeviceType';
 import { IManager } from './interfaces/IManager';
 import { Thermometer } from './Thermometer';
 
@@ -73,15 +74,16 @@ export class Zone {
   }
 
 
-  public async addDevice(device: any) {
-    this.addThermometer(new Thermometer(device, this.devicesIgnored.includes(device.id)));
+  public async addDevice(device: IDeviceType): Promise<Thermometer> {
+    return await this.addThermometer(new Thermometer(device, this.devicesIgnored.includes(device.id)));
   }
-  public async addThermometer(thermometer: Thermometer) {
+  public async addThermometer(thermometer: Thermometer): Promise<Thermometer> {
     this.devices.push(thermometer);
     await this.calculateZoneTemp();
     if (thermometer.hasTemp()) {
       this.updateTemp(thermometer.id, thermometer.temp);
     }
+    return thermometer;
   }
 
 
