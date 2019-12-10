@@ -15,6 +15,18 @@ There is also cards for when the termperature in a zone changes as well as when 
 
 ## Need Help, Have questions or remarks?
 
+## Roadmap
+This is an early beta version, so currently the features are limited but basic functionality is there and the app is usable.
+Some things which are planne din the near future are:
+
+* Configure indivdual temperature bounds for zones
+* notification for when temperature gos out of bounds
+* Create a virtual thermometers:
+  * Allows insights
+  * Individual bounds
+  * Individual trigger cards
+* ...
+
 ## Donate
 If you like the app, consider buying me a beer!  
 [![Paypal donate][pp-donate-image]][pp-donate-link]
