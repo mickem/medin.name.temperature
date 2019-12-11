@@ -1,5 +1,5 @@
 
-interface IZoneType {
+export interface IZoneType {
     id: string;
     name: string;
     order: number;

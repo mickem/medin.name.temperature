@@ -30,8 +30,8 @@
         <button id="showHints" class="btn btn-info" @click="showHints()">Show all hints</button>
       </div>
       <div class="form-group">
-        <label for="showHints">Refresh the settings view</label>
-        <button id="showHints" class="btn btn-info" @click="refresh()">Refresh</button>
+        <label for="refresh">Refresh the settings view</label>
+        <button id="refresh" class="btn btn-info" @click="refresh()">Refresh</button>
       </div>
 
       <div class="form-group">
@@ -48,12 +48,10 @@ export default {
   data () {
     return {
       dailyReset: this.$root.$data.getDailyReset(),
+      settingsHints: this.$root.$data.getSettings().settingsHints,
     }
   },
   computed: {
-    settingsHints: function() {
-      return this.$root.$data.getSettings().settingsHints;
-    },
     minTemperature: {
       get: function () {
         return this.$root.$data.getSettings().minTemperature;
@@ -77,6 +75,7 @@ export default {
       await this.$root.$data.saveSettings({ dailyReset: value });
     },
     disableHints: async function() {
+      this.settingsHints = false;
       await this.$root.$data.saveSettings({ settingsHints: false });
     },
     reset: async function() {
@@ -87,6 +86,7 @@ export default {
       await this.$root.$data.reload();
     },
     showHints: async function() {
+      this.settingsHints = true;
       await this.$root.$data.saveSettings({ zoneHints: true, deviceHints: true, settingsHints: true });
     }
   }

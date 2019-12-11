@@ -17,7 +17,7 @@ export class Actions {
     }
 
     public register() {
-
+        console.log("Registering actions");
         (this.SetMaxTemperature.register() as any).on('run', (args, state, callback) => {
             console.log('TemperatureManager:setMaxTemp' + args);
             this.handler.setMaxTemperature(0);

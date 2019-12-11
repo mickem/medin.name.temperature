@@ -8,6 +8,7 @@ export interface IDeviceCapabilityTypeList {
 export interface IDeviceType {
   id: string;
   name: string;
+  ready: boolean;
   zone: string,
   zoneName: string,
   iconObj: {
@@ -17,6 +18,7 @@ export interface IDeviceType {
 
   capabilitiesObj: IDeviceCapabilityTypeList,
 
+  makeCapabilityInstance(capabilityId: string, listener: any),
 
   /*
    * @property { string } driverUri
@@ -66,7 +68,6 @@ export interface IDeviceType {
    * @property { object } capabilitiesOptions
    * @property { string[] } flags
    * */
-  ready: boolean;
 }
 
 export interface IDeviceList {

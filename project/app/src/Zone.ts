@@ -1,5 +1,6 @@
 import { IDeviceType } from './interfaces/IDeviceType';
 import { IManager } from './interfaces/IManager';
+import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 
 export interface IZoneState {
@@ -34,8 +35,6 @@ export class Zone {
     this.maxTemp = undefined;
     this.maxSensor = undefined;
     this.current = undefined;
-    this.minAllowed = manager.getMinTemp();
-    this.maxAllowed = manager.getMaxTemp();
     this.ignored = ignored;
     this.notMonitored = notMonitored;
     this.devicesIgnored = devicesIgnored;
@@ -65,6 +64,10 @@ export class Zone {
     return this.devices.length > 0;
   }
 
+  public onUpdateSettings(settings: ISettings) {
+    this.minAllowed = settings.minTemperature;
+    this.maxAllowed = settings.maxTemperature;
+  }
 
   public async addDevice(device: IDeviceType): Promise<Thermometer> {
     return await this.addThermometer(new Thermometer(device, this.devicesIgnored.includes(device.id)));
@@ -115,17 +118,13 @@ export class Zone {
   }
 
   public async updateTemp(deviceId: string, temperature: number) {
-    if (this.ignored) {
-      const device = this.findDevice(deviceId);
-      if (!device) {
-        console.error('Failed to find device: ' + deviceId);
-        return;
-      }
-      device.update(temperature);
-    }
     const device = this.findDevice(deviceId);
     if (!device) {
       console.error('Failed to find device: ' + deviceId);
+      return;
+    }
+    if (this.ignored) {
+      device.update(temperature);
       return;
     }
     if (device.update(temperature)) {

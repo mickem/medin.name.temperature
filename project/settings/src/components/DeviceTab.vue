@@ -33,15 +33,12 @@ export default {
   data () {
     return {
       devices: this.$root.$data.getDevices(),
+      deviceHints: this.$root.$data.getSettings().deviceHints,
     }
-  },
-  computed: {
-    deviceHints: function() {
-      return this.$root.$data.getSettings().deviceHints;
-    },
   },
   methods: {
     disableHints : async function() {
+      this.deviceHints = false;
       await this.$root.$data.saveSettings({ deviceHints: false });
     }
   }

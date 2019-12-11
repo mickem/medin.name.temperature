@@ -18,6 +18,7 @@ export function makeDevice(id = "1234", name = "demo device", zoneId = "2345", z
         ready: true,
         zone: zoneId,
         zoneName,
+        makeCapabilityInstance(capabilityId: string, listener: any) {}
     }
 }
 
@@ -38,6 +39,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
         ready: true,
         zone: zoneId,
         zoneName,
+        makeCapabilityInstance(capabilityId: string, listener: any) {}
     }
 }
 

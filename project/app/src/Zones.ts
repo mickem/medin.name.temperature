@@ -1,6 +1,7 @@
 import { IManager } from "./interfaces/IManager";
-import { Zone } from "./Zone";
+import { ISettings } from "./SettingsManager";
 import { Thermometer } from "./Thermometer";
+import { Zone } from "./Zone";
 
 export interface IZoneList {
     [key: string]: Zone;
@@ -17,7 +18,8 @@ export class Zones {
     private zonesNotMonitored: string[];
     private devicesIgnored: string[];
     private state: any;
-
+    private settings: ISettings;
+    
     constructor(manager: IManager) {
         this.manager = manager;
         this.zones = {}
@@ -36,7 +38,10 @@ export class Zones {
         if (id in this.zones) {
             return this.zones[id];
         }
-        const zone = new Zone(this.manager, id, name, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
+        const zone = new Zone(this.manager, id, name, /* TODO: add settings here */this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
+        if (this.settings) {
+            zone.onUpdateSettings(this.settings);
+        }
         if (this.state && zone.getId() in this.state) {
             zone.setState(this.state[zone.getId()]);
             delete this.state[zone.getId()];
@@ -49,6 +54,13 @@ export class Zones {
             return this.zones[id];
         }
     }
+    public removeZone(id: string) {
+        const zone = this.getZoneById(id);
+        if (zone) {
+            delete this.zones[id];
+        }
+    }
+
 
     public async removeDeviceById(id: string) {
         for (const key in this.zones) {
@@ -88,6 +100,12 @@ export class Zones {
         this.state = state;
     }
 
+    public onUpdateSettings(settings: ISettings) {
+        this.settings = settings;
+        for (const key in this.zones) {
+            this.zones[key].onUpdateSettings(settings);
+        }
+    }
 
     public async updateDevices(zonesIgnored: string[], zonesNotMonitored: string[], devicesIgnored: string[]) {
         if (this.zonesIgnored !== zonesIgnored) {

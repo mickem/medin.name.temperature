@@ -1,19 +1,22 @@
-import { IManager } from '../interfaces/IManager';
-import { makeDevice, makeDeviceEx, FakeManager } from "../TestHelpers";
-import { Triggers } from '../Triggers';
+import { ISettings } from '../SettingsManager';
+import { FakeManager, makeDevice, makeDeviceEx } from "../TestHelpers";
 import { Zone } from '../Zone';
 
 test('create zone', () => {
-  const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []) as any;
+  const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []);
+  z.onUpdateSettings({
+    maxTemperature: 12,
+    minTemperature: 7,
+  } as ISettings);
   expect(z.getName()).toEqual('Hello');
   expect(z.hasDevice()).toBeFalsy();
-  expect(z.devices).toHaveLength(0);
+  expect((z as any).devices).toHaveLength(0);
   expect(z.getMin()).toBeUndefined();
   expect(z.getMax()).toBeUndefined();
-  expect(z.minSensor).toBeUndefined();
-  expect(z.maxSensor).toBeUndefined();
-  expect(z.minAllowed).toEqual(7);
-  expect(z.maxAllowed).toEqual(12);
+  expect((z as any).minSensor).toBeUndefined();
+  expect((z as any).maxSensor).toBeUndefined();
+  expect((z as any).minAllowed).toEqual(7);
+  expect((z as any).maxAllowed).toEqual(12);
 });
 describe('adding devices', () => {
   test('add a device', async () => {
@@ -74,7 +77,9 @@ describe('update temperature', () => {
     expect((z as any).maxSensor).toEqual('Device 2');
     expect(z.getTemperature()).toEqual(8);
     await z.updateTemp('3', 22);
-    expect(z.getMax()).toEqual(22);
+    expect(z.getMax()).toEqual(22
+
+    );
     expect((z as any).maxSensor).toEqual('Device 3');
     expect(z.getTemperature()).toEqual(13);
   })

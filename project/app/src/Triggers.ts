@@ -18,6 +18,7 @@ export class Triggers {
     }
 
     public register() {
+        console.log("Registering triggers");
         this.TemperatureChanged.register();
         this.MaxTemperatureChanged.register();
         this.MinTemperatureChanged.register();
