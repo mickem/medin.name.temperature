@@ -192,9 +192,17 @@ class TempManager extends Homey.App implements IManager {
     });
 
     (api.zones as any).on('zone.update', async (zone) => {
-      const z = this.zones.getZoneById(zone.id);
-      if (z && z.getName() !== zone.name) {
-        z.setName(zone.name);
+      try {
+        if (!zone) {
+          console.log("Why is the zone empty: ", zone);
+          return;
+        }
+        const z = this.zones.getZoneById(zone.id);
+        if (z && z.getName() !== zone.name) {
+          z.setName(zone.name);
+        }
+      } catch (err) {
+        console.error("Failed to handle zone update: ", err, zone);
       }
     });
     (api.zones as any).on('zone.create', async (zone) => {
