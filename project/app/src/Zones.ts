@@ -55,9 +55,9 @@ export class Zones {
             await this.zones[key].removeDevice(id);
         }
     }
-    public getDeviceById(id: string): Thermometer | undefined {
+    public findDevice(id: string): Thermometer | undefined {
         for (const key in this.zones) {
-            const d = this.zones[key].getDeviceById(id);
+            const d = this.zones[key].findDevice(id);
             if (d) {
                 return d;
             }

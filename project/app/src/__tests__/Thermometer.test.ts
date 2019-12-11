@@ -27,3 +27,19 @@ test('update with same temperature should not change', () => {
     expect(z.update(23.4)).toBeFalsy();
     expect((z as any).temp).toEqual(23.4);
 });
+
+
+test('update name', () => {
+    const z = new Thermometer(makeDevice(), false);
+    expect(z.getName()).toEqual("demo device");
+    z.setName('new name');
+    expect(z.getName()).toEqual("new name");
+});
+test('update zone', () => {
+    const z = new Thermometer(makeDevice(), false);
+    expect(z.getZoneId()).toEqual("2345");
+    expect(z.getZone()).toEqual("the zone");
+    z.setZone('4', 'new name');
+    expect(z.getZoneId()).toEqual("4");
+    expect(z.getZone()).toEqual("new name");
+});

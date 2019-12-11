@@ -61,14 +61,6 @@ export class Zone {
   public getMax(): number {
     return this.maxTemp;
   }
-  public getDeviceById(id: string): Thermometer | undefined {
-    for (const device of this.devices) {
-      if (device.id === id) {
-        return device;
-      }
-    }
-    return undefined;
-  }
   public hasDevice(): boolean {
     return this.devices.length > 0;
   }
@@ -81,7 +73,7 @@ export class Zone {
     this.devices.push(thermometer);
     await this.calculateZoneTemp();
     if (thermometer.hasTemp()) {
-      this.updateTemp(thermometer.id, thermometer.temp);
+      await this.updateTemp(thermometer.id, thermometer.temp);
     }
     return thermometer;
   }
@@ -175,7 +167,7 @@ export class Zone {
 
 
 
-  private findDevice(id: string): Thermometer | undefined {
+  public findDevice(id: string): Thermometer | undefined {
     for (const d of this.devices) {
       if (d.id === id) {
         return d;

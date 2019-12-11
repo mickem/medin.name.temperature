@@ -20,11 +20,22 @@ describe('adding devices', () => {
     const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []);
     await z.addDevice(makeDevice("123456", "Device", "zone1", "zone one", "8"));
     expect((z as any).devices).toHaveLength(1);
+    expect(z.getId()).toEqual('1');
+    expect(z.getName()).toEqual('Hello');
     expect(z.getTemperature()).toEqual(8);
     expect(z.getMin()).toEqual(8);
     expect(z.getMax()).toEqual(8);
     expect((z as any).minSensor).toEqual('Device');
     expect((z as any).maxSensor).toEqual('Device');
+  });
+
+  test('change name', async () => {
+    const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []);
+    expect(z.getId()).toEqual('1');
+    expect(z.getName()).toEqual('Hello');
+    z.setName("New name");
+    expect(z.getId()).toEqual('1');
+    expect(z.getName()).toEqual('New name');
   });
 
   test('add a device without temperature', async () => {
@@ -51,19 +62,30 @@ describe('adding devices', () => {
     expect((z as any).maxSensor).toEqual('Device 2');
   });
 })
-test('update temperature', async () => {
+describe('update temperature', () => {
   const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []);
-  await z.addDevice(makeDevice("1", "Device 1", "zone1", "zone one", "8"));
-  await z.addDevice(makeDevice("2", "Device 2", "zone1", "zone one", "9"));
-  await z.addDevice(makeDevice("3", "Device 3", "zone1", "zone one", "7"));
-  expect(z.getMax()).toEqual(9);
-  expect((z as any).maxSensor).toEqual('Device 2');
-  expect(z.getTemperature()).toEqual(8);
-  await z.updateTemp('3', 22);
-  expect(z.getMax()).toEqual(22);
-  expect((z as any).maxSensor).toEqual('Device 3');
-  expect(z.getTemperature()).toEqual(13);
-});
+  beforeAll(async () => {
+    await z.addDevice(makeDevice("1", "Device 1", "zone1", "zone one", "8"));
+    await z.addDevice(makeDevice("2", "Device 2", "zone1", "zone one", "9"));
+    await z.addDevice(makeDevice("3", "Device 3", "zone1", "zone one", "7"));
+  });
+  test('update should work', async () => {
+    expect(z.getMax()).toEqual(9);
+    expect((z as any).maxSensor).toEqual('Device 2');
+    expect(z.getTemperature()).toEqual(8);
+    await z.updateTemp('3', 22);
+    expect(z.getMax()).toEqual(22);
+    expect((z as any).maxSensor).toEqual('Device 3');
+    expect(z.getTemperature()).toEqual(13);
+  })
+  test('missing device should be ignored', async () => {
+    await z.updateTemp('99', 22);
+
+    await z.setIgnored(true)
+    await z.updateTemp('99', 22);
+  })
+
+})
 
 
 describe('device by id', () => {
@@ -73,16 +95,16 @@ describe('device by id', () => {
     await z.addDevice(makeDevice("1", "Device 1", "zone1", "zone one", "8"));
     await z.addDevice(makeDevice("2", "Device 2", "zone1", "zone one", "9"));
     await z.addDevice(makeDevice("3", "Device 3", "zone1", "zone one", "7"));
-    });
+  });
 
   test('can get a device by id', async () => {
     expect((z as any).devices).toHaveLength(3);
-    expect(z.getDeviceById("1").id).toEqual('1');
-    expect(z.getDeviceById("3").id).toEqual('3');
+    expect(z.findDevice("1").id).toEqual('1');
+    expect(z.findDevice("3").id).toEqual('3');
   });
   test('missing item is undefined', async () => {
     expect((z as any).devices).toHaveLength(3);
-    expect(z.getDeviceById("4")).toBeUndefined();
+    expect(z.findDevice("4")).toBeUndefined();
   });
   test('ignored devices are ignored', async () => {
     expect((z as any).devices).toHaveLength(3);

@@ -178,7 +178,7 @@ class TempManager extends Homey.App implements IManager {
     });
 
     (api.devices as any).on('device.update', async (device) => {
-      const d = this.zones.getDeviceById(device.id);
+      const d = this.zones.findDevice(device.id);
       if (d && d.getZoneId() !== device.zone) {
         await this.zones.moveDevice(d, d.getZoneId(), device.zone, device.zoneName);
       }
