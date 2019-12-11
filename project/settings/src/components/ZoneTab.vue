@@ -34,9 +34,13 @@ export default {
   },
   data () {
     return {
-      zoneHints: this.$root.$data.getSettings().zoneHints,
       zones: this.$root.$data.getZones(),
     }
+  },
+  computed: {
+    zoneHints: function() {
+      return this.$root.$data.getSettings().zoneHints;
+    },
   },
   methods: {
     disableHints : async function() {
