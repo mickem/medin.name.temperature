@@ -1,4 +1,7 @@
 {
+  "1.0.3": {
+    "en": "Fixed load issue on new installs as well as various other bugs"
+  },
   "1.0.2": {
     "en": "Fixed moving devices and storing state across restarts"
   },
