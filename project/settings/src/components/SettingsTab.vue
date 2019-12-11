@@ -6,6 +6,7 @@
         <p
           class="card-text"
         >Minimum and maximum temperature will be used by the tooWarm and TooCold cards to trigger your flows.</p>
+        <p class="card-text">If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for istance you want weekly min/max.</p>
         <p class="card-text">You can enable these hints in the settings section.</p>
         <p class="btn btn-primary" @click="disableHints()">Got it</p>
       </div>
@@ -20,7 +21,7 @@
         <input type="text" class="form-control" id="minTemp" v-model="maxTemperature" />
       </div>
       <div class="form-group">
-        <label for="dailyReset">Time to reset daily averages</label>
+        <label for="dailyReset">Time to reset daily averages (set to never to disable)</label>
         <input type="text" @blur="updateDailyReset()" class="form-control" id="dailyReset" v-model="dailyReset" />
       </div>
 

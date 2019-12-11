@@ -136,16 +136,20 @@ class TempManager extends Homey.App implements IManager {
     } catch (error) {
       console.log("Failed to remove non existing job", error);
     }
-    const cron = this.getDailyRestCron();
-    console.log(`Updated time to: ${cron}`)
-    this.task = await (Homey.ManagerCron as any).registerTask('dailyreset', cron);
-    this.task.on('run', (data) => {
-      console.log('Reseting all zones max/min temperatures: ' + new Date(), data);
-      this.zones.resetMaxMin();
-    });
+    if (this.settings.dailyReset !== "never") {
+      const cron = this.getDailyRestCron();
+      console.log(`Updated time to: ${cron}`)
+      this.task = await (Homey.ManagerCron as any).registerTask('dailyreset', cron);
+      this.task.on('run', () => {
+        console.log('Reseting all zones max/min temperatures: ' + new Date());
+        this.zones.resetMaxMin();
+      });
+    } else {
+      console.log('Reseting of max/min temperatures is disabled');
+    }
   }
   private getDailyRestCron() {
-    const parts = settings.dailyReset.split(":");
+    const parts = this.settings.dailyReset.split(":");
     const hour = parts.length > 0 ? parts[0] : '2';
     const minute = parts.length > 1 ? parts[1] : '00';
     return `0 ${minute} ${hour} * * *`;
