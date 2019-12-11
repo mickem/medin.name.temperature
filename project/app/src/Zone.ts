@@ -106,11 +106,15 @@ export class Zone {
   public setNotMonitored(notMonitored: boolean) {
     this.notMonitored = notMonitored;
   }
-  public setDevicesIgnored(devicesIgnored: string[]) {
+  public async setDevicesIgnored(devicesIgnored: string[]) {
     this.devicesIgnored = devicesIgnored;
+    let hasChanged = false;
     for (const device of this.devices) {
-      device.setIgnored(this.devicesIgnored.includes(device.id));
+      if (device.setIgnored(this.devicesIgnored.includes(device.id))) {
+        hasChanged = true;
+      }
     }
+    await this.calculateZoneTemp();
   }
 
   public resetMaxMin() {
@@ -120,7 +124,12 @@ export class Zone {
 
   public async updateTemp(deviceId: string, temperature: number) {
     if (this.ignored) {
-      return;
+      const device = this.findDevice(deviceId);
+      if (!device) {
+        console.error('Failed to find device: ' + deviceId);
+        return;
+      }
+      device.update(temperature);
     }
     const device = this.findDevice(deviceId);
     if (!device) {
@@ -177,6 +186,7 @@ export class Zone {
 
   private async calculateZoneTemp() {
     if (this.ignored) {
+      this.current = undefined;
       return;
     }
     let avgTemp = 0;

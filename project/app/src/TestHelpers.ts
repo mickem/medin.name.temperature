@@ -21,6 +21,27 @@ export function makeDevice(id = "1234", name = "demo device", zoneId = "2345", z
     }
 }
 
+export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
+    return {
+        capabilitiesObj: {
+            measure_temperature: {
+                id: "n/a",
+                value: temp,
+            }
+        },
+        iconObj: {
+            id: "n/a",
+            url: "n/a",
+        },
+        id,
+        name,
+        ready: true,
+        zone: zoneId,
+        zoneName,
+    }
+}
+
+
 
 
 export class FakeManager implements IManager {

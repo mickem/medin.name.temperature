@@ -44,8 +44,10 @@ export class Thermometer {
     return true;
   }
 
-  public setIgnored(ignored: boolean) {
+  public setIgnored(ignored: boolean): boolean {
+    const ret = this.ignored !== ignored;
     this.ignored = ignored;
+    return true;
   }
 
   public hasTemp() {
