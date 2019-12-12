@@ -1,6 +1,13 @@
 import Homey from 'homey';
 
-export class Triggers {
+export interface ITriggers {
+    onTempUpdated(zone: string, temperature: number): Promise<void>;
+    onMaxUpdated(zone: string, device: string, temperature: number): Promise<void>;
+    onMinUpdated(zone: string, device: string, temperature: number): Promise<void>;
+    onTooWarm(zone: string, temperature: number): Promise<void>;
+    onTooCold(zone: string, temperature: number): Promise<void>;
+}
+export class Triggers implements ITriggers {
     private MaxTemperatureChanged: Homey.FlowCardTrigger;
     private MinTemperatureChanged: Homey.FlowCardTrigger;
     private TemperatureChanged: Homey.FlowCardTrigger;

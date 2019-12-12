@@ -1,20 +1,17 @@
 import { IDeviceType } from "./interfaces/IDeviceType";
+import { Zone } from "./Zone";
 
 export class Thermometer {
   public id: string;
   public name: string;
   public temp: number | undefined;
-  private device: any;
-  private zoneId: string;
-  private zone: string;
+  private zone: Zone;
   private ignored: boolean;
 
-  constructor(device: IDeviceType, ignored: boolean) {
-    this.device = device;
+  constructor(zone: Zone, device: IDeviceType, ignored: boolean) {
+    this.zone = zone;
     this.id = device.id;
     this.name = device.name;
-    this.zoneId = device.zone;
-    this.zone = device.zoneName;
     this.temp = device.capabilitiesObj && device.capabilitiesObj.measure_temperature && device.capabilitiesObj.measure_temperature.value ? +device.capabilitiesObj.measure_temperature.value : undefined;
     this.ignored = ignored;
   }
@@ -26,21 +23,21 @@ export class Thermometer {
     this.name = name;
   }
   public getZone(): string {
-    return this.zone;
+    return this.zone.getName();
   }
   public getZoneId(): string {
-    return this.zoneId;
+    return this.zone.getId();
   }
-  public setZone(zoneId: string, zoneName: string) {
-    this.zoneId = zoneId;
-    this.zone = zoneName;
+  public setZone(zone: Zone) {
+    this.zone = zone;
   }
 
-  public update(temp: number): boolean {
+  public async update(temp: number): Promise<boolean> {
     if (this.temp === temp) {
       return false;
     }
     this.temp = temp;
+    await this.zone.onDeviceUpdated(this);
     return true;
   }
 

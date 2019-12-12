@@ -1,5 +1,7 @@
 import { IManager } from './interfaces/IManager';
 import { Triggers } from "./Triggers";
+import { Zone } from './Zone';
+import { Zones } from './Zones';
 
 export function makeDevice(id = "1234", name = "demo device", zoneId = "2345", zoneName = "the zone", temp = "23.4") {
     return {
@@ -18,8 +20,30 @@ export function makeDevice(id = "1234", name = "demo device", zoneId = "2345", z
         ready: true,
         zone: zoneId,
         zoneName,
-        makeCapabilityInstance(capabilityId: string, listener: any) {}
+        makeCapabilityInstance(capabilityId: string, listener: any) { }
     }
+}
+export function makeZone(id = "1234", name = "demo device", ignored = false, notMonitored = false, devicesIgnored = []) {
+    return new Zone({
+        onMaxUpdated(): Promise<void> { return; },
+        onMinUpdated(): Promise<void> { return; },
+        onTempUpdated(): Promise<void> { return; },
+        onTooCold(): Promise<void> { return; },
+        onTooWarm(): Promise<void> { return; },
+    }, {
+        onZoneUpdated() { }
+    }, id, name, ignored, notMonitored, devicesIgnored);
+}
+export function makeZones() {
+    return new Zones({
+        onMaxUpdated(): Promise<void> { return; },
+        onMinUpdated(): Promise<void> { return; },
+        onTempUpdated(): Promise<void> { return; },
+        onTooCold(): Promise<void> { return; },
+        onTooWarm(): Promise<void> { return; },
+    }, {
+        onZoneUpdated() { }
+    });
 }
 
 export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
@@ -39,12 +63,9 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
         ready: true,
         zone: zoneId,
         zoneName,
-        makeCapabilityInstance(capabilityId: string, listener: any) {}
+        makeCapabilityInstance(capabilityId: string, listener: any) { }
     }
 }
-
-
-
 
 export class FakeManager implements IManager {
     public getMinTemp() {
@@ -73,7 +94,5 @@ export class FakeManager implements IManager {
     }
     public async getDevices() {
         return {}
-    }
-    public onZoneUpdated() {
     }
 };

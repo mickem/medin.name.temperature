@@ -1,7 +1,7 @@
 import { IDeviceType } from './interfaces/IDeviceType';
-import { IManager } from './interfaces/IManager';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
+import { ITriggers } from './Triggers';
 
 export interface IZoneState {
   minTemp: number;
@@ -9,8 +9,12 @@ export interface IZoneState {
   maxTemp: number;
   maxSensor: string;
 }
+export interface IZoneListener {
+  onZoneUpdated();
+}
 export class Zone {
-  private manager: IManager;
+  private triggers: ITriggers;
+  private listener: IZoneListener;
   private name: string;
   private id: string;
   private devices: Thermometer[];
@@ -25,8 +29,9 @@ export class Zone {
   private notMonitored: boolean;
   private devicesIgnored: string[];
 
-  constructor(manager: IManager, id: string, name: string, ignored: boolean, notMonitored: boolean, devicesIgnored: string[]) {
-    this.manager = manager;
+  constructor(triggers: ITriggers, listener: IZoneListener, id: string, name: string, ignored: boolean, notMonitored: boolean, devicesIgnored: string[]) {
+    this.triggers = triggers;
+    this.listener = listener;
     this.id = id;
     this.name = name;
     this.devices = [];
@@ -70,13 +75,13 @@ export class Zone {
   }
 
   public async addDevice(device: IDeviceType): Promise<Thermometer> {
-    return await this.addThermometer(new Thermometer(device, this.devicesIgnored.includes(device.id)));
+    return await this.addThermometer(new Thermometer(this, device, this.devicesIgnored.includes(device.id)));
   }
   public async addThermometer(thermometer: Thermometer): Promise<Thermometer> {
+    thermometer.setZone(this);
     this.devices.push(thermometer);
-    await this.calculateZoneTemp();
     if (thermometer.hasTemp()) {
-      await this.updateTemp(thermometer.id, thermometer.temp);
+      await this.onDeviceUpdated(thermometer);
     }
     return thermometer;
   }
@@ -86,6 +91,7 @@ export class Zone {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].id === id) {
         this.devices.splice(i, 1);
+        console.log(`Removing ${id} from ${this.name} yielded: `, this.devices.map(t => t.id))
         await this.calculateZoneTemp();
         return;
       }
@@ -117,36 +123,30 @@ export class Zone {
     this.maxTemp = undefined;
   }
 
-  public async updateTemp(deviceId: string, temperature: number) {
-    const device = this.findDevice(deviceId);
-    if (!device) {
-      console.error('Failed to find device: ' + deviceId);
-      return;
-    }
+  public async onDeviceUpdated(thermometer: Thermometer) {
     if (this.ignored) {
-      device.update(temperature);
       return;
     }
-    if (device.update(temperature)) {
-      await this.calculateZoneTemp();
+    if (!await this.calculateZoneTemp()) {
+      return;
     }
     if (this.minTemp === undefined) {
-      this.onMinUpdated(device.name, temperature);
+      this.onMinUpdated(thermometer.name, thermometer.temp);
     } else {
-      const minTemp = Math.min(this.minTemp, temperature);
+      const minTemp = Math.min(this.minTemp, thermometer.temp);
       if (this.minTemp !== minTemp) {
-        this.onMinUpdated(device.name, temperature);
+        this.onMinUpdated(thermometer.name, thermometer.temp);
       }
     }
     if (this.maxTemp === undefined) {
-      this.onMaxUpdated(device.name, temperature);
+      this.onMaxUpdated(thermometer.name, thermometer.temp);
     } else {
-      const maxTemp = Math.max(this.maxTemp, temperature);
+      const maxTemp = Math.max(this.maxTemp, thermometer.temp);
       if (this.maxTemp !== maxTemp) {
-        this.onMaxUpdated(device.name, temperature);
+        this.onMaxUpdated(thermometer.name, thermometer.temp);
       }
     }
-    this.manager.onZoneUpdated();
+    this.listener.onZoneUpdated();
   }
 
   public getState(): IZoneState {
@@ -175,10 +175,10 @@ export class Zone {
     return undefined;
   }
 
-  private async calculateZoneTemp() {
+  private async calculateZoneTemp(): Promise<boolean> {
     if (this.ignored) {
       this.current = undefined;
-      return;
+      return false;
     }
     let avgTemp = 0;
     let count = 0;
@@ -193,33 +193,37 @@ export class Zone {
       if (newCurrent !== this.current) {
         this.current = newCurrent;
         await this.onTempUpdated();
+        return true;
       }
     } else {
-      this.current = undefined;
+      if (this.current) {
+        this.current = undefined;
+        return true;
+      }
     }
+    return false;
   }
 
   private onMaxUpdated(name: string, temperature: number) {
     this.maxTemp = temperature;
     this.maxSensor = name;
-    this.manager.getTriggers().onMaxUpdated(this.name, name, this.maxTemp);
+    this.triggers.onMaxUpdated(this.name, name, this.maxTemp);
   }
   private onMinUpdated(name: string, temperature: number) {
     this.minTemp = temperature;
     this.minSensor = name;
-    this.manager.getTriggers().onMinUpdated(this.name, name, this.minTemp);
+    this.triggers.onMinUpdated(this.name, name, this.minTemp);
   }
   private async onTempUpdated() {
-    if (this.notMonitored) {
-      await this.manager.getTriggers().onTempUpdated(this.name, this.current);
-      return;
+    if (!this.notMonitored) {
+      await this.triggers.onTempUpdated(this.name, this.current);
     }
     if (this.current > this.maxAllowed) {
-      this.manager.getTriggers().onTooWarm(this.name, this.current);
+      this.triggers.onTooWarm(this.name, this.current);
     } else if (this.current < this.minAllowed) {
-      this.manager.getTriggers().onTooCold(this.name, this.current);
+      this.triggers.onTooCold(this.name, this.current);
     } else {
-      await this.manager.getTriggers().onTempUpdated(this.name, this.current);
+      await this.triggers.onTempUpdated(this.name, this.current);
     }
   }
 }

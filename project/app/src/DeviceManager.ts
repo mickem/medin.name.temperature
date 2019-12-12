@@ -152,11 +152,10 @@ export class DeviceManager {
   }
 
   private async addDevice(device: IDeviceType) {
-    const zone = this.zones.addZone(device.zone, device.zoneName);
-    await zone.addDevice(device);
+    const t = await this.zones.addDevice(device);
     device.makeCapabilityInstance('measure_temperature',
       async (temperature: any) => {
-        await zone.updateTemp(device.id, temperature);
+        await t.update(temperature);
       }
     );
   }

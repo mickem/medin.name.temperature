@@ -1,7 +1,9 @@
+import { IDeviceType } from "./interfaces/IDeviceType";
 import { IManager } from "./interfaces/IManager";
 import { ISettings } from "./SettingsManager";
+import { ITriggers } from "./Triggers";
 import { Thermometer } from "./Thermometer";
-import { Zone } from "./Zone";
+import { Zone, IZoneListener } from "./Zone";
 
 export interface IZoneList {
     [key: string]: Zone;
@@ -11,17 +13,18 @@ export interface IZonesState {
 }
 
 export class Zones {
-
     private zones: IZoneList;
-    private manager: IManager;
+    private triggerManager: ITriggers;
+    private listener: IZoneListener;
     private zonesIgnored: string[];
     private zonesNotMonitored: string[];
     private devicesIgnored: string[];
     private state: any;
     private settings: ISettings;
-    
-    constructor(manager: IManager) {
-        this.manager = manager;
+
+    constructor(triggerManager: ITriggers, listener: IZoneListener) {
+        this.triggerManager = triggerManager;
+        this.listener = listener;
         this.zones = {}
         this.zonesIgnored = [];
         this.zonesNotMonitored = [];
@@ -38,7 +41,7 @@ export class Zones {
         if (id in this.zones) {
             return this.zones[id];
         }
-        const zone = new Zone(this.manager, id, name, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
+        const zone = new Zone(this.triggerManager, this.listener, id, name, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
         if (this.settings) {
             zone.onUpdateSettings(this.settings);
         }
@@ -61,6 +64,10 @@ export class Zones {
         }
     }
 
+    public async addDevice(device: IDeviceType): Promise<Thermometer> {
+        const zone = this.addZone(device.zone, device.zoneName);
+        return await zone.addDevice(device);
+    }
 
     public async removeDeviceById(id: string) {
         for (const key in this.zones) {
@@ -82,7 +89,7 @@ export class Zones {
         console.log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
         await newZone.addThermometer(thermometer);
         await oldZone.removeDevice(thermometer.id);
-        thermometer.setZone(newZone.getId(), newZone.getName());
+        thermometer.setZone(newZone);
     }
 
     public getAll(): IZoneList {

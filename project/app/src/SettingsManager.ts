@@ -28,7 +28,7 @@ export interface IAppState {
 }
 
 interface ISettingsListener {
-    onSettingsUpdated(settings: ISettings, old: ISettings): Promise<void>;
+    onSettingsUpdated(settings: ISettings): Promise<void>;
     onDeviceConfigUpdated(config: IDeviceConfig): Promise<void>;
     onAppState(state: IAppState);
 }
@@ -55,7 +55,7 @@ export class SettingsManager {
             ...defaultSettings,
             ...Homey.ManagerSettings.get('settings') || (defaultSettings as ISettings)
         };
-        await this.listener.onSettingsUpdated(this.settings, defaultSettings);
+        await this.listener.onSettingsUpdated(this.settings);
         this.deviceConfig.zonesIgnored = Homey.ManagerSettings.get('zonesIgnored') || [];
         this.deviceConfig.zonesNotMonitored = Homey.ManagerSettings.get('zonesNotMonitored') || [];
         this.deviceConfig.devicesIgnored = Homey.ManagerSettings.get('devicesIgnored') || [];
@@ -84,9 +84,8 @@ export class SettingsManager {
                     const settings = Homey.ManagerSettings.get('settings') as ISettings;
                     console.log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
                     console.log(`Reset max/min running at: ${settings.dailyReset}`);
-                    const old = this.settings;
                     this.settings = { ...settings };
-                    await this.listener.onSettingsUpdated(this.settings, old);
+                    await this.listener.onSettingsUpdated(this.settings);
                 } else if (variable === 'zonesIgnored') {
                     this.deviceConfig.zonesIgnored = Homey.ManagerSettings.get('zonesIgnored') || [] as string[];
                     await this.listener.onDeviceConfigUpdated(this.deviceConfig);
