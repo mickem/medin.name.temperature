@@ -179,3 +179,16 @@ test('ignored zones', async () => {
   await z.setIgnored(false);
   expect(z.getTemperature()).toEqual(3);
 });
+
+
+test('update settings should work', async () => {
+  const z = new Zone(new FakeManager(), '1', 'Hello', false, true, []);
+  expect((z as any).minAllowed).toBeUndefined();
+  expect((z as any).maxAllowed).toBeUndefined();
+  z.onUpdateSettings({minTemperature: 4, maxTemperature: 8} as ISettings);
+  expect((z as any).minAllowed).toEqual(4);
+  expect((z as any).maxAllowed).toEqual(8);
+  z.onUpdateSettings({minTemperature: 12, maxTemperature: 17} as ISettings);
+  expect((z as any).minAllowed).toEqual(12);
+  expect((z as any).maxAllowed).toEqual(17);
+});

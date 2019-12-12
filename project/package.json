@@ -16,7 +16,7 @@
     "prebuild": "cpx fake-homey/index.js node_modules/homey",
     "build": "npm run build-settings && npm run build-app && npm run build-api && npm run install-dist",
     "quick-build": "tsc",
-    "test": "jest",
+    "test": "jest --collect-coverage",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "install-dist": "cpx package.json ..  && cd .. && npm install --no-package-lock --production"

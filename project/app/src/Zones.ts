@@ -38,7 +38,7 @@ export class Zones {
         if (id in this.zones) {
             return this.zones[id];
         }
-        const zone = new Zone(this.manager, id, name, /* TODO: add settings here */this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
+        const zone = new Zone(this.manager, id, name, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
         if (this.settings) {
             zone.onUpdateSettings(this.settings);
         }
