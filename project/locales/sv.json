@@ -125,6 +125,25 @@
                 "temperature": {
                     "title": "temperatur"
                 }
+            },
+            "SetTemperatureBounds": {
+                "title": "Set gränser för temperatur",
+                "type": {
+                    "title": "typ av gräns att sätta"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "SetZoneMode": {
+                "title": "set läge för angiven zon",
+                "zone": {
+                    "title": "zon",
+                    "example": ""
+                },
+                "mode": {
+                    "title": "läge"
+                }
             }
         }
     }
