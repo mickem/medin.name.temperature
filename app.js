@@ -120,7 +120,7 @@ function Catch() {
                 if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
                     // return promise
                     return result.catch((error) => {
-                        console.log(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, "\n| ")}`);
+                        console.log(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, '\n| ')}`);
                         console.log(error);
                         throw error;
                     });
@@ -207,22 +207,22 @@ class TempManager {
     constructor() {
         this.api = undefined;
         this.triggers = new Triggers_1.Triggers();
-        console.log("creating zoned");
+        console.log('creating zoned');
         this.zones = new Zones_1.Zones(this.triggers, {
             onZoneUpdated: () => {
                 this.settingsManager.setState({
                     zones: this.zones.getState(),
                 });
-            }
+            },
         });
         this.actions = new ActionManager_1.ActionManager({
-            SetTemperatureBounds: (args) => {
-                if (args.type === "min") {
-                    console.log("---> set min temperature bound: ", args.temperature);
+            SetTemperatureBounds: args => {
+                if (args.type === 'min') {
+                    console.log('---> set min temperature bound: ', args.temperature);
                     this.settingsManager.setSettings({ minTemperature: args.temperature });
                 }
-                else if (args.type === "max") {
-                    console.log("---> set max temperature bound: ", args.temperature);
+                else if (args.type === 'max') {
+                    console.log('---> set max temperature bound: ', args.temperature);
                     this.settingsManager.setSettings({ maxTemperature: args.temperature });
                 }
                 else {
@@ -231,31 +231,31 @@ class TempManager {
                 }
                 return true;
             },
-            SetZoneMode: (args) => {
+            SetZoneMode: args => {
                 const zone = this.zones.findZoneByName(args.zone);
                 if (!zone) {
                     console.error(`Failed to find zone for ${args.zone}`);
                     return false;
                 }
-                if (args.mode === "enabled") {
-                    console.log("---> SetZoneMode enabling: ", zone.getId());
+                if (args.mode === 'enabled') {
+                    console.log('---> SetZoneMode enabling: ', zone.getId());
                     this.settingsManager.addZoneEnabled(zone.getId());
                 }
-                else if (args.mode === "disabled") {
-                    console.log("---> SetZoneMode disabling: ", zone.getId());
+                else if (args.mode === 'disabled') {
+                    console.log('---> SetZoneMode disabling: ', zone.getId());
                     this.settingsManager.addZoneDisabled(zone.getId());
                 }
-                else if (args.mode === "monitored") {
-                    console.log("---> SetZoneMode monitored: ", zone.getId());
+                else if (args.mode === 'monitored') {
+                    console.log('---> SetZoneMode monitored: ', zone.getId());
                     this.settingsManager.addZoneMonitored(zone.getId());
                 }
                 else {
                     return false;
                 }
                 return true;
-            }
+            },
         });
-        console.log("creating settings manager", this.settingsManager);
+        console.log('creating settings manager', this.settingsManager);
         this.settingsManager = new SettingsManager_1.SettingsManager({
             onAppState: (state) => {
                 if (state.zones) {
@@ -263,27 +263,27 @@ class TempManager {
                 }
             },
             onDeviceConfigUpdated: (config) => __awaiter(this, void 0, void 0, function* () {
-                console.log("Device configuration updated: ", config);
+                console.log('Device configuration updated: ', config);
                 yield this.zones.updateDevices(config.zonesIgnored || [], config.zonesNotMonitored || [], config.devicesIgnored || []);
             }),
             onSettingsUpdated: (settings) => __awaiter(this, void 0, void 0, function* () {
-                console.log("Settings updated: ", settings);
+                console.log('Settings updated: ', settings);
                 this.zones.onUpdateSettings(settings);
                 yield this.jobManager.onSettinsUpdated(settings.dailyReset);
             }),
         });
-        console.log("created settings manager", this.settingsManager);
-        console.log("job manager");
+        console.log('created settings manager', this.settingsManager);
+        console.log('job manager');
         this.jobManager = new JobManager_1.JobManager({
             onResetMaxMin() {
                 console.log('Reseting all zones max/min temperatures: ' + new Date());
                 this.zones.resetMaxMin();
-            }
+            },
         });
     }
     onInit() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(HomeyWrappers_1.__("title"));
+            console.log(HomeyWrappers_1.__('title'));
             this.api = yield athom_api_1.HomeyAPI.forCurrentHomey();
             this.deviceManager = new DeviceManager_1.DeviceManager(this.api, this.zones);
             yield this.settingsManager.start();
@@ -293,7 +293,7 @@ class TempManager {
             this.triggers.disable();
             yield this.deviceManager.start();
             this.triggers.enable();
-            console.log("Application loaded");
+            console.log('Application loaded');
         });
     }
     getTriggers() {
@@ -338,7 +338,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __importDefault(__webpack_require__(0));
 const utils_1 = __webpack_require__(1);
-;
 class ActionManager {
     constructor(handler) {
         this.handler = handler;
@@ -354,11 +353,9 @@ class ActionManager {
         }
     }
     register() {
-        console.log("Registering all actions");
+        console.log('Registering all actions');
         for (const id in this.cards) {
-            this.cards[id]
-                .register()
-                .registerRunListener((args, state) => {
+            this.cards[id].register().registerRunListener((args, state) => {
                 console.log(this.handler[id](args));
                 return Promise.resolve(this.handler[id](args));
             });
@@ -369,7 +366,6 @@ __decorate([
     utils_1.Catch()
 ], ActionManager.prototype, "register", null);
 exports.ActionManager = ActionManager;
-;
 
 
 /***/ }),
@@ -399,13 +395,10 @@ class DeviceManager {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Starting device manager");
+            console.log('Starting device manager');
             this.setupDeviceSubscription();
             this.setupZoneSubscriptions();
-            yield Promise.all([
-                this.scanZones(),
-                yield this.scanDevices(),
-            ]);
+            yield Promise.all([this.scanZones(), yield this.scanDevices()]);
         });
     }
     setupDeviceSubscription() {
@@ -480,7 +473,7 @@ class DeviceManager {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!zone) {
-                    console.log("Why is the zone empty: ", zone);
+                    console.log('Why is the zone empty: ', zone);
                     return;
                 }
                 const z = this.zones.getZoneById(zone.id);
@@ -489,7 +482,7 @@ class DeviceManager {
                 }
             }
             catch (err) {
-                console.error("Failed to handle zone.update: ", err, zone);
+                console.error('Failed to handle zone.update: ', err, zone);
             }
         });
     }
@@ -517,7 +510,7 @@ class DeviceManager {
             for (const id in allDevices) {
                 if (!isThermometer(allDevices[id])) {
                     if (!allDevices[id].ready) {
-                        console.log("Skipping: ", allDevices[id]);
+                        console.log('Skipping: ', allDevices[id]);
                     }
                     continue;
                 }
@@ -597,7 +590,7 @@ const homey_1 = __importDefault(__webpack_require__(0));
 const taskname = 'dailyreset';
 class JobManager {
     constructor(listener) {
-        this.dailyReset = "never";
+        this.dailyReset = 'never';
         this.task = undefined;
         this.listener = listener;
     }
@@ -612,18 +605,18 @@ class JobManager {
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("installing scheduled tasks");
+                console.log('installing scheduled tasks');
                 try {
-                    const tasks = yield homey_1.default.ManagerCron.getTasks(taskname);
+                    const tasks = (yield homey_1.default.ManagerCron.getTasks(taskname));
                     for (const task of tasks) {
                         console.log(`Uninstalling task: ${task.id}`);
                         yield homey_1.default.ManagerCron.unregisterTask(task.id);
                     }
                 }
                 catch (error) {
-                    console.log("Failed to remove existing job", error);
+                    console.log('Failed to remove existing job', error);
                 }
-                if (this.dailyReset !== "never") {
+                if (this.dailyReset !== 'never') {
                     const cron = this.getDailyRestCron();
                     console.log(`Updated time to: ${cron}`);
                     this.task = yield homey_1.default.ManagerCron.registerTask(taskname, cron);
@@ -634,12 +627,12 @@ class JobManager {
                 }
             }
             catch (error) {
-                console.log("Failed to reset task", error);
+                console.log('Failed to reset task', error);
             }
         });
     }
     getDailyRestCron() {
-        const parts = this.dailyReset.split(":");
+        const parts = this.dailyReset.split(':');
         const hour = parts.length > 0 ? parts[0] : '2';
         const minute = parts.length > 1 ? parts[1] : '00';
         return `0 ${minute} ${hour} * * *`;
@@ -686,7 +679,7 @@ class SettingsManager {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.settings = Object.assign(Object.assign({}, exports.defaultSettings), homey_1.default.ManagerSettings.get('settings') || exports.defaultSettings);
+            this.settings = Object.assign(Object.assign({}, exports.defaultSettings), (homey_1.default.ManagerSettings.get('settings') || exports.defaultSettings));
             yield this.listener.onSettingsUpdated(this.settings);
             this.deviceConfig.zonesIgnored = homey_1.default.ManagerSettings.get('zonesIgnored') || [];
             this.deviceConfig.zonesNotMonitored = homey_1.default.ManagerSettings.get('zonesNotMonitored') || [];
@@ -809,10 +802,9 @@ class Triggers {
             console.error(`Failed to register trigger cards: `, error);
         }
     }
-    start() {
-    }
+    start() { }
     register() {
-        console.log("Registering triggers");
+        console.log('Registering triggers');
         this.TemperatureChanged.register();
         this.MaxTemperatureChanged.register();
         this.MinTemperatureChanged.register();
@@ -820,11 +812,11 @@ class Triggers {
         this.TooWarm.register();
     }
     enable() {
-        console.log("Enabling all triggers");
+        console.log('Enabling all triggers');
         this.enabled = true;
     }
     disable() {
-        console.log("Disabling all triggers");
+        console.log('Disabling all triggers');
         this.enabled = false;
     }
     /**
@@ -1007,8 +999,8 @@ class Zones {
     }
     moveDevice(thermometer, oldZoneId, newZoneId, zoneName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newZone = this.addZone(newZoneId, zoneName || "unknown");
-            const oldZone = this.addZone(oldZoneId, "unknown");
+            const newZone = this.addZone(newZoneId, zoneName || 'unknown');
+            const oldZone = this.addZone(oldZoneId, 'unknown');
             console.log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
             yield newZone.addThermometer(thermometer);
             yield oldZone.removeDevice(thermometer.id);
@@ -1245,7 +1237,7 @@ class Zone {
                 }
             }
             if (count > 0) {
-                const newCurrent = Math.round(avgTemp / count * 10) / 10;
+                const newCurrent = Math.round((avgTemp / count) * 10) / 10;
                 if (newCurrent !== this.current) {
                     this.current = newCurrent;
                     yield this.onTempUpdated();
@@ -1319,7 +1311,12 @@ class Thermometer {
         this.zone = zone;
         this.id = device.id;
         this.name = device.name;
-        this.temp = device.capabilitiesObj && device.capabilitiesObj.measure_temperature && device.capabilitiesObj.measure_temperature.value ? +device.capabilitiesObj.measure_temperature.value : undefined;
+        this.temp =
+            device.capabilitiesObj &&
+                device.capabilitiesObj.measure_temperature &&
+                device.capabilitiesObj.measure_temperature.value
+                ? +device.capabilitiesObj.measure_temperature.value
+                : undefined;
         this.ignored = ignored;
     }
     getName() {
