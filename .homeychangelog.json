@@ -1,4 +1,7 @@
 {
+  "1.0.4": {
+    "en": "Added translations English, Swedish, Dutch and Danish as well as new actioncard for setting tgemperature bound and zone mode"
+  },
   "1.0.3": {
     "en": "Fixed load issue on new installs as well as various other bugs"
   },
