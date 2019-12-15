@@ -125,6 +125,25 @@
                 "temperature": {
                     "title": "temperatuur"
                 }
+            },
+            "SetTemperatureBounds": {
+                "title": "Stel de maximale of minimale temperatuurgrenzen in",
+                "type": {
+                    "title": "het type gebonden dat moet worden ingesteld"
+                },
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Stel de modus in voor een bepaalde zone",
+                "zone": {
+                    "title": "zone",
+                    "example": "TODO: Voorbeeld toevoegen"
+                },
+                "mode": {
+                    "title": "mode"
+                }
             }
         }
     }
