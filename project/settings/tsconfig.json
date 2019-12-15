@@ -1,21 +1,19 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
     "moduleResolution": "node",
-    "target": "es5",
     "sourceMap": false,
     "outDir": "dist",
+    "experimentalDecorators": true,
     "baseUrl": ".",
-    "paths": {
-      "homey": ["node_modules/homey-lib"]
-    }
   },
   "lib": [
     "es2015"
   ],
   "exclude": [
     "**/__tests__",
-    "node_modules/**",
-    "**/app.ts"
+    "node_modules/**"
   ]
 }

@@ -1,11 +1,10 @@
-
 export interface IZoneType {
-    id: string;
-    name: string;
-    order: number;
-    parent: string;
-    active: boolean;
-    icon:
+  id: string;
+  name: string;
+  order: number;
+  parent: string;
+  active: boolean;
+  icon:
     | 'default'
     | 'bed'
     | 'books'
@@ -18,7 +17,7 @@ export interface IZoneType {
     | 'stairs-down'
     | 'stairs-up'
     | 'toilet';
-  }
+}
 export interface IZoneTypeList {
-    [key: string]: IZoneType;
-  }
+  [key: string]: IZoneType;
+}

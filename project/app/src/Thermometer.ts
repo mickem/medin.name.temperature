@@ -1,5 +1,5 @@
-import { IDeviceType } from "./interfaces/IDeviceType";
-import { Zone } from "./Zone";
+import { IDeviceType } from './interfaces/IDeviceType';
+import { Zone } from './Zone';
 
 export class Thermometer {
   public id: string;
@@ -12,7 +12,12 @@ export class Thermometer {
     this.zone = zone;
     this.id = device.id;
     this.name = device.name;
-    this.temp = device.capabilitiesObj && device.capabilitiesObj.measure_temperature && device.capabilitiesObj.measure_temperature.value ? +device.capabilitiesObj.measure_temperature.value : undefined;
+    this.temp =
+      device.capabilitiesObj &&
+      device.capabilitiesObj.measure_temperature &&
+      device.capabilitiesObj.measure_temperature.value
+        ? +device.capabilitiesObj.measure_temperature.value
+        : undefined;
     this.ignored = ignored;
   }
 

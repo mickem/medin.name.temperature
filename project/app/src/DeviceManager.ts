@@ -6,13 +6,11 @@ import { Zones } from './Zones';
 
 const delay = time => new Promise(res => setTimeout(res, time));
 
-
 const isThermometer = (device: IDeviceType) => {
   return 'measure_temperature' in device.capabilitiesObj;
-}
+};
 
 export class DeviceManager {
-
   private api: HomeyAPI;
   private zones: Zones;
   private devicesNotReadyAtStart: string[];
@@ -23,15 +21,11 @@ export class DeviceManager {
   }
 
   public async start() {
-    console.log("Starting device manager");
+    console.log('Starting device manager');
     this.setupDeviceSubscription();
     this.setupZoneSubscriptions();
-    await Promise.all([
-      this.scanZones(),
-      await this.scanDevices(),
-    ])
+    await Promise.all([this.scanZones(), await this.scanDevices()]);
   }
-
 
   private setupDeviceSubscription() {
     (this.api.devices as any).on('device.create', async (device: IDeviceType) => await this.onDeviceCreate(device));
@@ -95,7 +89,7 @@ export class DeviceManager {
   private async onZoneUpdate(zone: IZoneType) {
     try {
       if (!zone) {
-        console.log("Why is the zone empty: ", zone);
+        console.log('Why is the zone empty: ', zone);
         return;
       }
       const z = this.zones.getZoneById(zone.id);
@@ -103,7 +97,7 @@ export class DeviceManager {
         z.setName(zone.name);
       }
     } catch (err) {
-      console.error("Failed to handle zone.update: ", err, zone);
+      console.error('Failed to handle zone.update: ', err, zone);
     }
   }
   private async onZoneDelete(zone: IZoneType) {
@@ -115,17 +109,17 @@ export class DeviceManager {
   }
 
   private async scanZones() {
-    const allZones = await (this.api.zones.getZones() as any as Promise<IZoneTypeList>);
+    const allZones = await ((this.api.zones.getZones() as any) as Promise<IZoneTypeList>);
     for (const id in allZones) {
       this.zones.addZone(id, allZones[id].name);
     }
   }
   private async scanDevices() {
-    const allDevices = await (this.api.devices.getDevices() as any as Promise<IDeviceList>);
+    const allDevices = await ((this.api.devices.getDevices() as any) as Promise<IDeviceList>);
     for (const id in allDevices) {
       if (!isThermometer(allDevices[id])) {
         if (!allDevices[id].ready) {
-          console.log("Skipping: ", allDevices[id]);
+          console.log('Skipping: ', allDevices[id]);
         }
         continue;
       }
@@ -137,7 +131,7 @@ export class DeviceManager {
   }
 
   private async waitForDevice(device: IDeviceType, timeToWait: number): Promise<IDeviceType | boolean> {
-    const resultDevice = await (this.api.devices.getDevice({ id: device.id }) as any as Promise<IDeviceType>);
+    const resultDevice = await ((this.api.devices.getDevice({ id: device.id }) as any) as Promise<IDeviceType>);
     if (resultDevice.ready) {
       return resultDevice;
     }
@@ -153,11 +147,8 @@ export class DeviceManager {
 
   private async addDevice(device: IDeviceType) {
     const t = await this.zones.addDevice(device);
-    device.makeCapabilityInstance('measure_temperature',
-      async (temperature: any) => {
-        await t.update(temperature);
-      }
-    );
+    device.makeCapabilityInstance('measure_temperature', async (temperature: any) => {
+      await t.update(temperature);
+    });
   }
-
 }

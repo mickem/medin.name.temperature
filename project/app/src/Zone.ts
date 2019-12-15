@@ -30,7 +30,15 @@ export class Zone {
   private notMonitored: boolean;
   private devicesIgnored: string[];
 
-  constructor(triggers: ITriggers, listener: IZoneListener, id: string, name: string, ignored: boolean, notMonitored: boolean, devicesIgnored: string[]) {
+  constructor(
+    triggers: ITriggers,
+    listener: IZoneListener,
+    id: string,
+    name: string,
+    ignored: boolean,
+    notMonitored: boolean,
+    devicesIgnored: string[],
+  ) {
     this.triggers = triggers;
     this.listener = listener;
     this.id = id;
@@ -87,12 +95,14 @@ export class Zone {
     return thermometer;
   }
 
-
   public async removeDevice(id: string) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].id === id) {
         this.devices.splice(i, 1);
-        console.log(`Removing ${id} from ${this.name} yielded: `, this.devices.map(t => t.id))
+        console.log(
+          `Removing ${id} from ${this.name} yielded: `,
+          this.devices.map(t => t.id),
+        );
         await this.calculateZoneTemp();
         return;
       }
@@ -129,7 +139,7 @@ export class Zone {
     if (this.ignored) {
       return;
     }
-    if (!await this.calculateZoneTemp()) {
+    if (!(await this.calculateZoneTemp())) {
       return;
     }
     if (this.minTemp === undefined) {
@@ -157,7 +167,7 @@ export class Zone {
       maxTemp: this.maxTemp,
       minSensor: this.minSensor,
       minTemp: this.minTemp,
-    }
+    };
   }
   public setState(state: IZoneState) {
     this.maxSensor = state.maxSensor;
@@ -165,8 +175,6 @@ export class Zone {
     this.minSensor = state.minSensor;
     this.minTemp = state.minTemp;
   }
-
-
 
   public findDevice(id: string): Thermometer | undefined {
     for (const d of this.devices) {
@@ -191,7 +199,7 @@ export class Zone {
       }
     }
     if (count > 0) {
-      const newCurrent = Math.round(avgTemp / count * 10) / 10;
+      const newCurrent = Math.round((avgTemp / count) * 10) / 10;
       if (newCurrent !== this.current) {
         this.current = newCurrent;
         await this.onTempUpdated();

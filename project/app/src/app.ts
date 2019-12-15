@@ -9,7 +9,7 @@ class Wrapper extends Homey.App {
   }
   public get(): TempManager {
     return mgr;
- }
+  }
 }
 
 export = Wrapper;

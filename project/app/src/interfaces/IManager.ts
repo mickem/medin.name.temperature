@@ -1,6 +1,6 @@
-import { Triggers } from "../Triggers";
-import { IZoneList } from "../Zones";
-import { IDeviceList } from "./IDeviceType";
+import { Triggers } from '../Triggers';
+import { IZoneList } from '../Zones';
+import { IDeviceList } from './IDeviceType';
 
 export interface IManager {
   getTriggers(): Triggers;

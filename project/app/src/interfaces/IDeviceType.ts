@@ -1,5 +1,5 @@
 export interface IDeviceCapabilityType {
-  id: string
+  id: string;
   value: any;
 }
 export interface IDeviceCapabilityTypeList {
@@ -9,16 +9,16 @@ export interface IDeviceType {
   id: string;
   name: string;
   ready: boolean;
-  zone: string,
-  zoneName: string,
+  zone: string;
+  zoneName: string;
   iconObj: {
-    id: string,
-    url: string,
-  }
+    id: string;
+    url: string;
+  };
 
-  capabilitiesObj: IDeviceCapabilityTypeList,
+  capabilitiesObj: IDeviceCapabilityTypeList;
 
-  makeCapabilityInstance(capabilityId: string, listener: any),
+  makeCapabilityInstance(capabilityId: string, listener: any);
 
   /*
    * @property { string } driverUri

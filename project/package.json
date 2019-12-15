@@ -1,6 +1,6 @@
 {
   "name": "medin.name.temperatures",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "A temperature manager for homey",
   "main": "index.js",
   "scripts": {
@@ -14,11 +14,13 @@
     "clean": "npx rimraf ../node_modules ../api.js ../app.js ../package.json ../settings/index.html ../settings/settings.js",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
+    "version": "npm run format && git add -A app/src && git add -A settings/src",
     "postversion": "git push && git push --tags",
     "build": "npm run build-settings && npm run build-app && npm run build-api && npm run build-i18n && npm run install-dist",
     "test": "jest --collect-coverage",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "npm run format-app && npm run format-settings",
+    "format-app": "cd app && prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format-settings": "cd settings && prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint-app": "cd app && tslint -p tsconfig.json",
     "lint-settings": "cd settings && tslint -p tsconfig.json",
     "lint": "npm run lint-app && npm run lint-settings",
