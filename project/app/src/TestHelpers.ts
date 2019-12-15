@@ -25,9 +25,9 @@ export function makeDevice(id = "1234", name = "demo device", zoneId = "2345", z
 }
 export function makeZone(id = "1234", name = "demo device", ignored = false, notMonitored = false, devicesIgnored = []) {
     return new Zone({
-        onMaxUpdated(): Promise<void> { return; },
-        onMinUpdated(): Promise<void> { return; },
-        onTempUpdated(): Promise<void> { return; },
+        onMaxTemperatureChanged(): Promise<void> { return; },
+        onMinTemperatureChanged(): Promise<void> { return; },
+        onTemperatureChanged(): Promise<void> { return; },
         onTooCold(): Promise<void> { return; },
         onTooWarm(): Promise<void> { return; },
     }, {
@@ -36,9 +36,9 @@ export function makeZone(id = "1234", name = "demo device", ignored = false, not
 }
 export function makeZones() {
     return new Zones({
-        onMaxUpdated(): Promise<void> { return; },
-        onMinUpdated(): Promise<void> { return; },
-        onTempUpdated(): Promise<void> { return; },
+        onMaxTemperatureChanged(): Promise<void> { return; },
+        onMinTemperatureChanged(): Promise<void> { return; },
+        onTemperatureChanged(): Promise<void> { return; },
         onTooCold(): Promise<void> { return; },
         onTooWarm(): Promise<void> { return; },
     }, {

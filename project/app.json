@@ -1,0 +1,38 @@
+{
+    "sdk": 2,
+    "permissions": [
+        "homey:manager:api"
+    ],
+    "name": {
+        "en": "Temperature manager"
+    },
+    "description": {
+        "en": "Temperature manager"
+    },
+    "category": [
+        "climate",
+        "tools"
+    ],
+    "images": {
+        "large": "assets/images/large.png",
+        "small": "assets/images/small.png"
+    },
+    "compatibility": ">=2.0.5",
+    "contributing": {
+        "donate": {
+            "paypal": {
+                "username": "michaelmedin"
+            }
+        }
+    },
+    "tags": {
+        "en": [
+            "Home",
+            "Temperature",
+            "Alert",
+            "System",
+            "Tools"
+        ]
+    },
+    "source": "https://github.com/mickem/name.medin.temperature"
+}

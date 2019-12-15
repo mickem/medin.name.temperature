@@ -1,0 +1,150 @@
+{
+    "settings": {
+        "loading": "Indlæser...",
+        "tabs": {
+            "zones": "zoner",
+            "devices": "Enheder",
+            "settings": "Indstillinger"
+        },
+        "zones": {
+            "hints": {
+                "title": "Tip: Zoner",
+                "hint1": "Zoner er de samme som zoner i hjemmets hjem, og temperaturen vil være gennemsnittet af alle <b> aktiverede </b> termometre i zonen.",
+                "hint2": "En <b> overvåget </b> zone udsender alarmer, når temperaturen går uden for grænserne.",
+                "hint3": "En <b> aktiveret </b> zone udsender ikke nogen advarsler, men alle andre handlingskort til temperaturændring, maxmimum og minimum fungerer stadig.",
+                "hint4": "En <b> deaktiveret </b> zone ignoreres af applikationen.",
+                "hint5": "De viste værdier for hver zone er gennemsnitstemperaturen, minimumstemperaturen i dag og den maksimale temperatur i dag.",
+                "hint6": "Du kan aktivere disse tip i afsnittet med indstillinger.",
+                "button": "Forstået"
+            },
+            "unit": "& Deg; C",
+            "toggles": {
+                "monitored": "overvåget",
+                "enabled": "Aktiveret",
+                "disabled": "handicappet"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Tip: Enheder",
+                "hint1": "Enheder er forskellige termometre, der findes i Homey.",
+                "hint2": "En <b> aktiveret </b> enhed vil bidrage til den gennemsnitlige temperatur i den zone, den er i.",
+                "hint3": "En <b> deaktiveret </b> zone ignoreres af temperaturstyring.",
+                "hint4": "Du kan aktivere disse tip i afsnittet med indstillinger.",
+                "button": "Forstået"
+            },
+            "unit": "& Deg; C",
+            "toggles": {
+                "enabled": "Aktiveret",
+                "disabled": "handicappet"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Tip: Indstillinger",
+                "hint1": "Minimum og maksimal temperatur bruges af tooWarm- og TooCold-kortene til at udløse dine strømme.",
+                "hint2": "Hvis du deaktiverer (indstillet til aldrig) Tid til at nulstille max / min, kan du i stedet bruge et flowkort til at nulstille dem efter din egen tidsplan, hvis du for ugentlig ønsker ugentlig min / max.",
+                "hint3": "Du kan aktivere disse tip i afsnittet med indstillinger.",
+                "button": "Forstået"
+            },
+            "minTemperature": "Minimumstemperatur",
+            "maxTemperature": "Maksimal temperatur",
+            "dailyReset": "Tid til nulstilling af daglige gennemsnit (indstillet til aldrig at deaktivere)"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "En temperatur ændrede sig",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "gennemsnitstemperatur"
+                }
+            },
+            "TooCold": {
+                "title": "Temperaturen er for kold",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "TooWarm": {
+                "title": "Temperaturen er for varm",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "Minimumstemperaturen for en zone ændret",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "sensor": {
+                    "title": "Temperatur",
+                    "example": "Vægtermometer"
+                },
+                "temperature": {
+                    "title": "minimumstemperatur"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "Den maksimale temperatur for en zone ændret",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "sensor": {
+                    "title": "Termometer",
+                    "example": "Vægtermometer"
+                },
+                "temperature": {
+                    "title": "maksimal temperatur"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Indstil den maksimale temperatur",
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Indstil minimumstemperatur",
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Indstil maksimums- eller minimumstemperaturgrænser",
+                "type": {
+                    "title": "typen bundet, der skal indstilles"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Indstil tilstanden for en given zone",
+                "zone": {
+                    "title": "zone",
+                    "example": "TODO: Tilføj eksempel"
+                },
+                "mode": {
+                    "title": "mode"
+                }
+            }
+        }
+    }
+}

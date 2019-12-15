@@ -1,0 +1,150 @@
+{
+    "settings": {
+        "loading": "Bezig met laden...",
+        "tabs": {
+            "zones": "Zones",
+            "devices": "Apparaten",
+            "settings": "Instellingen"
+        },
+        "zones": {
+            "hints": {
+                "title": "Hints: zones",
+                "hint1": "Zones zijn hetzelfde als zones in huiselijke ruimtes en de temperatuur is het gemiddelde van alle <b> ingeschakelde </b> thermometers in de zone.",
+                "hint2": "Een <b> bewaakte </b> zone geeft waarschuwingen af wanneer de temperatuur buiten de grenzen valt.",
+                "hint3": "Een <b> ingeschakelde </b> zone zendt geen waarschuwingen uit, maar alle andere actiekaarten voor temperatuurverandering, maximum en minimum werken nog steeds.",
+                "hint4": "Een zone <b> uitgeschakeld </b> wordt door de toepassing genegeerd.",
+                "hint5": "De waarden die voor elke zone worden weergegeven, zijn de gemiddelde temperatuur, de minimale temperatuur vandaag en de maximale temperatuur vandaag.",
+                "hint6": "U kunt deze tips inschakelen in het gedeelte Instellingen.",
+                "button": "Ik snap het"
+            },
+            "unit": "&deg;C",
+            "toggles": {
+                "monitored": "bewaakte",
+                "enabled": "Ingeschakeld",
+                "disabled": "invalide"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Hints: Apparaten",
+                "hint1": "Apparaten zijn verschillende thermometers gevonden in Homey.",
+                "hint2": "Een <b> ingeschakeld </b> -apparaat draagt bij aan de gemiddelde temperatuur van de zone waarin het zich bevindt.",
+                "hint3": "Een <b> uitgeschakeld </b> zone wordt genegeerd door temperatuurmanager.",
+                "hint4": "U kunt deze tips inschakelen in het gedeelte Instellingen.",
+                "button": "Ik snap het"
+            },
+            "unit": "&deg;C",
+            "toggles": {
+                "enabled": "Ingeschakeld",
+                "disabled": "invalide"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Tips: Instellingen",
+                "hint1": "De minimum- en maximumtemperatuur worden gebruikt door de kaarten te warm en te koud om uw stromen te activeren.",
+                "hint2": "Als u uitschakelt (ingesteld op nooit) Tijd om max / min te resetten, kunt u in plaats daarvan een stroomkaart gebruiken om ze volgens uw eigen schema te resetten als u bijvoorbeeld wekelijkse min / max.",
+                "hint3": "U kunt deze tips inschakelen in het gedeelte Instellingen.",
+                "button": "Ik snap het"
+            },
+            "minTemperature": "Minimale temperatuur",
+            "maxTemperature": "Maximale temperatuur",
+            "dailyReset": "Tijd om dagelijkse gemiddelden te resetten (ingesteld om nooit uit te schakelen)"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "Een temperatuur veranderde",
+                "zone": {
+                    "title": "zone",
+                    "example": "Keuken"
+                },
+                "temperature": {
+                    "title": "Gemiddelde temperatuur"
+                }
+            },
+            "TooCold": {
+                "title": "De temperatuur is te koud",
+                "zone": {
+                    "title": "zone",
+                    "example": "Keuken"
+                },
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "TooWarm": {
+                "title": "De temperatuur is te warm",
+                "zone": {
+                    "title": "zone",
+                    "example": "Keuken"
+                },
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "De minimum temperatuur voor een zone is gewijzigd",
+                "zone": {
+                    "title": "zone",
+                    "example": "Keuken"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wandthermometer"
+                },
+                "temperature": {
+                    "title": "minimum temperatuur"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "De maximale temperatuur voor een zone is gewijzigd",
+                "zone": {
+                    "title": "zone",
+                    "example": "Keuken"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wandthermometer"
+                },
+                "temperature": {
+                    "title": "maximale temperatuur"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Stel de maximale temperatuur in",
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Stel de minimum temperatuur in",
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Stel de maximale of minimale temperatuurgrenzen in",
+                "type": {
+                    "title": "het type gebonden dat moet worden ingesteld"
+                },
+                "temperature": {
+                    "title": "temperatuur"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Stel de modus in voor een bepaalde zone",
+                "zone": {
+                    "title": "zone",
+                    "example": "TODO: Voorbeeld toevoegen"
+                },
+                "mode": {
+                    "title": "mode"
+                }
+            }
+        }
+    }
+}

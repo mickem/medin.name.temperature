@@ -4,24 +4,30 @@
   "description": "A temperature manager for homey",
   "main": "index.js",
   "scripts": {
+    "prebuild": "cpx fake-homey/index.js node_modules/homey",
     "build-settings": "cd settings && npx webpack --config settings-webpack.config.js --mode production",
-    "build-app": "cd app && npx webpack --config app-webpack.config.js --mode production",
+    "build-app": "cd app && npx webpack --config app-webpack.config.js --mode production && npm run compose",
     "build-api": "cd app && npx webpack --config api-webpack.config.js --mode production",
+    "build-i18n": "cpx locales/* ../locales",
+    "compose": "homey-ts-composer generate --app-file app.json --trigger-file app/src/Triggers.ts --action-file app/src/Actions.ts --locales locales --target ../app.json",
     "prepare": "npm run build",
     "clean": "npx rimraf ../node_modules ../api.js ../app.js ../package.json ../settings/index.html ../settings/settings.js",
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "prebuild": "cpx fake-homey/index.js node_modules/homey",
-    "build": "npm run build-settings && npm run build-app && npm run build-api && npm run install-dist",
-    "quick-build": "tsc",
+    "build": "npm run build-settings && npm run build-app && npm run build-api && npm run build-i18n && npm run install-dist",
     "test": "jest --collect-coverage",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint-app": "cd app && tslint -p tsconfig.json",
+    "lint-settings": "cd settings && tslint -p tsconfig.json",
+    "lint": "npm run lint-app && npm run lint-settings",
     "install-dist": "cpx package.json ..  && cd .. && npm install --no-package-lock --production"
   },
-  "author": "Michael Medin",
+  "author": {
+    "name": "Michael Medin",
+    "email": "michael@medin.name"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.23",
@@ -60,5 +66,8 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/mickem/name.medin.temperature/issues"
+  }
 }

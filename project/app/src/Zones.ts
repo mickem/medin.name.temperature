@@ -1,9 +1,9 @@
 import { IDeviceType } from "./interfaces/IDeviceType";
 import { IManager } from "./interfaces/IManager";
 import { ISettings } from "./SettingsManager";
-import { ITriggers } from "./Triggers";
 import { Thermometer } from "./Thermometer";
-import { Zone, IZoneListener } from "./Zone";
+import { ITriggers } from "./Triggers";
+import { IZoneListener, Zone } from "./Zone";
 
 export interface IZoneList {
     [key: string]: Zone;
@@ -57,6 +57,15 @@ export class Zones {
             return this.zones[id];
         }
     }
+    public findZoneByName(name: string): Zone | undefined {
+        for (const key in this.zones) {
+            if (this.zones[key].getName() === name) {
+                return this.zones[key];
+            }
+        }
+        return undefined;
+    }
+
     public removeZone(id: string) {
         const zone = this.getZoneById(id);
         if (zone) {

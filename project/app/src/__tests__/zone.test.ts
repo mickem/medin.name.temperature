@@ -1,6 +1,5 @@
 import { ISettings } from '../SettingsManager';
-import { FakeManager, makeDevice, makeDeviceEx, makeZone } from "../TestHelpers";
-import { Zone } from '../Zone';
+import { makeDevice, makeDeviceEx, makeZone } from "../TestHelpers";
 
 test('create zone', () => {
   const z = makeZone('1', 'create zone');

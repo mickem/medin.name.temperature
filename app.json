@@ -1,5 +1,4 @@
 {
-  "id": "name.medin.temperatures",
   "sdk": 2,
   "permissions": [
     "homey:manager:api"
@@ -18,12 +17,7 @@
     "large": "assets/images/large.png",
     "small": "assets/images/small.png"
   },
-  "version": "1.0.3",
   "compatibility": ">=2.0.5",
-  "author": {
-    "name": "Michael Medin",
-    "email": "michael@medin.name"
-  },
   "contributing": {
     "donate": {
       "paypal": {
@@ -40,173 +34,319 @@
       "Tools"
     ]
   },
+  "source": "https://github.com/mickem/name.medin.temperature",
+  "version": "1.0.0",
+  "id": "medin.name.temperatures",
   "bugs": {
     "url": "https://github.com/mickem/name.medin.temperature/issues"
   },
-  "source": "https://github.com/mickem/name.medin.temperature",
+  "author": {
+    "name": "Michael Medin",
+    "email": "michael@medin.name"
+  },
   "flow": {
     "triggers": [
       {
         "id": "TemperatureChanged",
         "title": {
-          "en": "A temperature changed."
+          "en": "A temperature changed",
+          "dk": "En temperatur ændrede sig",
+          "nl": "Een temperatuur veranderde",
+          "sv": "En temperatur har ändrats"
         },
         "tokens": [
           {
-            "name": "zone",
-            "type": "string",
-            "title": {
-              "en": "zone"
+            "example": {
+              "en": "Kitchen",
+              "dk": "Køkken",
+              "nl": "Keuken",
+              "sv": "Köket"
             },
-            "example": "Kitchen"
+            "name": "zone",
+            "title": {
+              "en": "zone",
+              "dk": "zone",
+              "nl": "zone",
+              "sv": "zon"
+            },
+            "type": "string"
           },
           {
+            "example": 14.5,
             "name": "temperature",
-            "type": "number",
             "title": {
-              "en": "average temperature"
+              "en": "average temperature",
+              "dk": "gennemsnitstemperatur",
+              "nl": "Gemiddelde temperatuur",
+              "sv": "medeltemperatur"
             },
-            "example": 12.4
+            "type": "number"
           }
         ]
       },
       {
         "id": "TooCold",
         "title": {
-          "en": "The temperature is too cold."
+          "en": "The temperature is too cold",
+          "dk": "Temperaturen er for kold",
+          "nl": "De temperatuur is te koud",
+          "sv": "Det är för kallt"
         },
         "tokens": [
           {
-            "name": "zone",
-            "type": "string",
-            "title": {
-              "en": "zone"
+            "example": {
+              "en": "Kitchen",
+              "dk": "Køkken",
+              "nl": "Keuken",
+              "sv": "Kök"
             },
-            "example": "Kitchen"
+            "name": "zone",
+            "title": {
+              "en": "zone",
+              "dk": "zone",
+              "nl": "zone",
+              "sv": "zon"
+            },
+            "type": "string"
           },
           {
+            "example": 14.5,
             "name": "temperature",
-            "type": "number",
             "title": {
-              "en": "temperature"
+              "en": "temperature",
+              "dk": "temperatur",
+              "nl": "temperatuur",
+              "sv": "temperatur"
             },
-            "example": 12.4
+            "type": "number"
           }
         ]
       },
       {
         "id": "TooWarm",
         "title": {
-          "en": "The temperature is too warm."
+          "en": "The temperature is too warm",
+          "dk": "Temperaturen er for varm",
+          "nl": "De temperatuur is te warm",
+          "sv": "Det är för varmt"
         },
         "tokens": [
           {
-            "name": "zone",
-            "type": "string",
-            "title": {
-              "en": "zone"
+            "example": {
+              "en": "Kitchen",
+              "dk": "Køkken",
+              "nl": "Keuken",
+              "sv": "Kök"
             },
-            "example": "Kitchen"
+            "name": "zone",
+            "title": {
+              "en": "zone",
+              "dk": "zone",
+              "nl": "zone",
+              "sv": "zon"
+            },
+            "type": "string"
           },
           {
+            "example": 14.5,
             "name": "temperature",
-            "type": "number",
             "title": {
-              "en": "temperature"
+              "en": "temperature",
+              "dk": "temperatur",
+              "nl": "temperatuur",
+              "sv": "temperatur"
             },
-            "example": 12.4
+            "type": "number"
           }
         ]
       },
       {
         "id": "MinTemperatureChanged",
         "title": {
-          "en": "The minimum temperature changed for a zone."
+          "en": "The minimum temperature for a zone changed",
+          "dk": "Minimumstemperaturen for en zone ændret",
+          "nl": "De minimum temperatuur voor een zone is gewijzigd",
+          "sv": "Minsta temperatur har ändrats"
         },
         "tokens": [
           {
+            "example": {
+              "en": "Kitchen",
+              "dk": "Køkken",
+              "nl": "Keuken",
+              "sv": "Kök"
+            },
             "name": "zone",
-            "type": "string",
             "title": {
-              "en": "zone"
+              "en": "zone",
+              "dk": "zone",
+              "nl": "zone",
+              "sv": "zopn"
             },
-            "example": "Kitchen"
+            "type": "string"
           },
           {
+            "example": {
+              "en": "Wall thermometer",
+              "dk": "Vægtermometer",
+              "nl": "Wandthermometer",
+              "sv": "Väggtermometer"
+            },
             "name": "sensor",
-            "type": "string",
             "title": {
-              "en": "sensor"
+              "en": "Thermometer",
+              "dk": "Temperatur",
+              "nl": "Thermometer",
+              "sv": "temperatur"
             },
-            "example": "Thermometer"
+            "type": "string"
           },
           {
+            "example": 14.5,
             "name": "temperature",
-            "type": "number",
             "title": {
-              "en": "temperature"
+              "en": "minimum temperature",
+              "dk": "minimumstemperatur",
+              "nl": "minimum temperatuur",
+              "sv": "minimum temperatur"
             },
-            "example": 12.4
+            "type": "number"
           }
         ]
       },
       {
         "id": "MaxTemperatureChanged",
         "title": {
-          "en": "The maximum temperature for a zone changed."
+          "en": "The maximum temperature for a zone changed",
+          "dk": "Den maksimale temperatur for en zone ændret",
+          "nl": "De maximale temperatuur voor een zone is gewijzigd",
+          "sv": "Max termperaturen i en zon har ändrat"
         },
         "tokens": [
           {
+            "example": {
+              "en": "Kitchen",
+              "dk": "Køkken",
+              "nl": "Keuken",
+              "sv": "Kök"
+            },
             "name": "zone",
-            "type": "string",
             "title": {
-              "en": "zone"
+              "en": "zone",
+              "dk": "zone",
+              "nl": "zone",
+              "sv": "zon"
             },
-            "example": "Kitchen"
+            "type": "string"
           },
           {
+            "example": {
+              "en": "Wall thermometer",
+              "dk": "Vægtermometer",
+              "nl": "Wandthermometer",
+              "sv": "Väggtermometer"
+            },
             "name": "sensor",
-            "type": "string",
             "title": {
-              "en": "sensor"
+              "en": "Thermometer",
+              "dk": "Termometer",
+              "nl": "Thermometer",
+              "sv": "termometer"
             },
-            "example": "Thermometer"
+            "type": "string"
           },
           {
+            "example": 14.5,
             "name": "temperature",
-            "type": "number",
             "title": {
-              "en": "temperature"
+              "en": "maximum temperature",
+              "dk": "maksimal temperatur",
+              "nl": "maximale temperatuur",
+              "sv": "max termperatur"
             },
-            "example": 12.4
+            "type": "number"
           }
         ]
       }
     ],
     "actions": [
       {
-        "id": "SetMinTemperature",
-        "title": {
-          "en": "Set the minimum temperature"
-        },
         "args": [
           {
+            "name": "type",
+            "title": {
+              "en": "the type of bound to set"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "min",
+                "label": {
+                  "en": "Minimum"
+                }
+              },
+              {
+                "id": "max",
+                "label": {
+                  "en": "Maximum"
+                }
+              }
+            ]
+          },
+          {
             "name": "temperature",
+            "title": {
+              "en": "temperature"
+            },
             "type": "number"
           }
-        ]
+        ],
+        "id": "SetTemperatureBounds",
+        "title": {
+          "en": "Set the maximum or minimum temperature bounds"
+        }
       },
       {
-        "id": "SetMaxTemperature",
-        "title": {
-          "en": "Set the maximum temperature"
-        },
         "args": [
           {
-            "name": "temperature",
-            "type": "number"
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "text"
+          },
+          {
+            "name": "mode",
+            "title": {
+              "en": "mode"
+            },
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "disabled",
+                "label": {
+                  "en": "Disabled"
+                }
+              },
+              {
+                "id": "enabled",
+                "label": {
+                  "en": "Enabled"
+                }
+              },
+              {
+                "id": "monitored",
+                "label": {
+                  "en": "Monitored"
+                }
+              }
+            ]
           }
-        ]
+        ],
+        "id": "SetZoneMode",
+        "title": {
+          "en": "Set the mode for a given zone"
+        }
       }
     ]
   }

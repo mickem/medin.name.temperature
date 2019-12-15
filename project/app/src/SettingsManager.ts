@@ -3,9 +3,9 @@ import { IZonesState } from "./Zones";
 import Homey from 'homey';
 
 export interface ISettings {
-    minTemperature: number;
-    maxTemperature: number;
-    dailyReset: string;
+    minTemperature?: number;
+    maxTemperature?: number;
+    dailyReset?: string;
 }
 export interface IDeviceConfig {
     devicesIgnored: string[];
@@ -76,6 +76,22 @@ export class SettingsManager {
     public getSettings(): ISettings {
         return this.settings;
     }
+    public setSettings(settings: ISettings) {
+        Homey.ManagerSettings.set('settings', { ...this.settings, ...settings });
+    }
+
+    public addZoneMonitored(zoneId: string) {
+        this.deviceConfig.zonesNotMonitored = this.removeFromList(this.deviceConfig.zonesNotMonitored, 'zonesNotMonitored', zoneId);
+        this.deviceConfig.zonesIgnored = this.removeFromList(this.deviceConfig.zonesIgnored, 'zonesIgnored', zoneId);
+    }
+    public addZoneEnabled(zoneId: string) {
+        this.deviceConfig.zonesNotMonitored = this.addToList(this.deviceConfig.zonesNotMonitored, 'zonesNotMonitored', zoneId);
+        this.deviceConfig.zonesIgnored = this.removeFromList(this.deviceConfig.zonesIgnored, 'zonesIgnored', zoneId);
+    }
+    public addZoneDisabled(zoneId: string) {
+        this.deviceConfig.zonesIgnored = this.addToList(this.deviceConfig.zonesIgnored, 'zonesIgnored', zoneId);
+        this.deviceConfig.zonesNotMonitored = this.addToList(this.deviceConfig.zonesNotMonitored, 'zonesNotMonitored', zoneId);
+    }
 
     private subscribe() {
         (Homey.ManagerSettings as any).on('set', async (variable: string) => {
@@ -101,4 +117,22 @@ export class SettingsManager {
             }
         });
     }
+
+
+    private removeFromList(list, name, value) {
+        const i = list.indexOf(value);
+        if (i !== -1) {
+            list.splice(i, 1);
+            Homey.ManagerSettings.set(name, list);
+        }
+        return list;
+    }
+    private addToList(list, name, value) {
+        if (list.indexOf(value) === -1) {
+            list.push(value);
+            Homey.ManagerSettings.set(name, list);
+        }
+        return list;
+    }
+
 }

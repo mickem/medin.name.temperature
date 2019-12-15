@@ -1,4 +1,3 @@
-const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 module.exports = {
@@ -26,5 +25,8 @@ module.exports = {
     },
     resolve: {
         extensions: ['.tsx', '.ts'],
+    },
+    optimization: {
+        minimize: false
     }
 };

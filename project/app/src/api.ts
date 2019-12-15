@@ -7,7 +7,7 @@ module.exports = [
   {
     description: 'Retrieve all devices with their information',
     fn: (args, callback) => {
-      (Homey.app as IManager)
+      (Homey.app.get() as IManager)
         .getDevices()
         .then((res: IDeviceList) => {
           callback(null,
@@ -34,7 +34,7 @@ module.exports = [
   {
     description: 'Retrieve all zones with their information',
     fn: (args, callback) => {
-      const res = Object.values((Homey.app as IManager)
+      const res = Object.values((Homey.app.get() as IManager)
         .getZones())
         .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({

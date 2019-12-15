@@ -2,6 +2,7 @@ import { IDeviceType } from './interfaces/IDeviceType';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 import { ITriggers } from './Triggers';
+import { Catch } from './utils';
 
 export interface IZoneState {
   minTemp: number;
@@ -123,6 +124,7 @@ export class Zone {
     this.maxTemp = undefined;
   }
 
+  @Catch()
   public async onDeviceUpdated(thermometer: Thermometer) {
     if (this.ignored) {
       return;
@@ -131,19 +133,19 @@ export class Zone {
       return;
     }
     if (this.minTemp === undefined) {
-      this.onMinUpdated(thermometer.name, thermometer.temp);
+      await this.onMinUpdated(thermometer.name, thermometer.temp);
     } else {
       const minTemp = Math.min(this.minTemp, thermometer.temp);
       if (this.minTemp !== minTemp) {
-        this.onMinUpdated(thermometer.name, thermometer.temp);
+        await this.onMinUpdated(thermometer.name, thermometer.temp);
       }
     }
     if (this.maxTemp === undefined) {
-      this.onMaxUpdated(thermometer.name, thermometer.temp);
+      await this.onMaxUpdated(thermometer.name, thermometer.temp);
     } else {
       const maxTemp = Math.max(this.maxTemp, thermometer.temp);
       if (this.maxTemp !== maxTemp) {
-        this.onMaxUpdated(thermometer.name, thermometer.temp);
+        await this.onMaxUpdated(thermometer.name, thermometer.temp);
       }
     }
     this.listener.onZoneUpdated();
@@ -204,26 +206,26 @@ export class Zone {
     return false;
   }
 
-  private onMaxUpdated(name: string, temperature: number) {
+  private async onMaxUpdated(name: string, temperature: number) {
     this.maxTemp = temperature;
     this.maxSensor = name;
-    this.triggers.onMaxUpdated(this.name, name, this.maxTemp);
+    await this.triggers.onMaxTemperatureChanged(this.name, name, this.maxTemp);
   }
-  private onMinUpdated(name: string, temperature: number) {
+  private async onMinUpdated(name: string, temperature: number) {
     this.minTemp = temperature;
     this.minSensor = name;
-    this.triggers.onMinUpdated(this.name, name, this.minTemp);
+    await this.triggers.onMinTemperatureChanged(this.name, name, this.minTemp);
   }
   private async onTempUpdated() {
     if (!this.notMonitored) {
-      await this.triggers.onTempUpdated(this.name, this.current);
+      await this.triggers.onTemperatureChanged(this.name, this.current);
     }
     if (this.current > this.maxAllowed) {
-      this.triggers.onTooWarm(this.name, this.current);
+      await this.triggers.onTooWarm(this.name, this.current);
     } else if (this.current < this.minAllowed) {
-      this.triggers.onTooCold(this.name, this.current);
+      await this.triggers.onTooCold(this.name, this.current);
     } else {
-      await this.triggers.onTempUpdated(this.name, this.current);
+      await this.triggers.onTemperatureChanged(this.name, this.current);
     }
   }
 }
