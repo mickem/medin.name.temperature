@@ -50,7 +50,7 @@
         "id": "TemperatureChanged",
         "title": {
           "en": "A temperature changed",
-          "dk": "En temperatur ændrede sig",
+          "da": "En temperatur ændrede sig",
           "nl": "Een temperatuur veranderde",
           "sv": "En temperatur har ändrats"
         },
@@ -58,14 +58,14 @@
           {
             "example": {
               "en": "Kitchen",
-              "dk": "Køkken",
+              "da": "Køkken",
               "nl": "Keuken",
               "sv": "Köket"
             },
             "name": "zone",
             "title": {
               "en": "zone",
-              "dk": "zone",
+              "da": "zone",
               "nl": "zone",
               "sv": "zon"
             },
@@ -76,7 +76,7 @@
             "name": "temperature",
             "title": {
               "en": "average temperature",
-              "dk": "gennemsnitstemperatur",
+              "da": "gennemsnitstemperatur",
               "nl": "Gemiddelde temperatuur",
               "sv": "medeltemperatur"
             },
@@ -88,7 +88,7 @@
         "id": "TooCold",
         "title": {
           "en": "The temperature is too cold",
-          "dk": "Temperaturen er for kold",
+          "da": "Temperaturen er for kold",
           "nl": "De temperatuur is te koud",
           "sv": "Det är för kallt"
         },
@@ -96,14 +96,14 @@
           {
             "example": {
               "en": "Kitchen",
-              "dk": "Køkken",
+              "da": "Køkken",
               "nl": "Keuken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
-              "dk": "zone",
+              "da": "zone",
               "nl": "zone",
               "sv": "zon"
             },
@@ -114,7 +114,7 @@
             "name": "temperature",
             "title": {
               "en": "temperature",
-              "dk": "temperatur",
+              "da": "temperatur",
               "nl": "temperatuur",
               "sv": "temperatur"
             },
@@ -126,7 +126,7 @@
         "id": "TooWarm",
         "title": {
           "en": "The temperature is too warm",
-          "dk": "Temperaturen er for varm",
+          "da": "Temperaturen er for varm",
           "nl": "De temperatuur is te warm",
           "sv": "Det är för varmt"
         },
@@ -134,14 +134,14 @@
           {
             "example": {
               "en": "Kitchen",
-              "dk": "Køkken",
+              "da": "Køkken",
               "nl": "Keuken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
-              "dk": "zone",
+              "da": "zone",
               "nl": "zone",
               "sv": "zon"
             },
@@ -152,7 +152,7 @@
             "name": "temperature",
             "title": {
               "en": "temperature",
-              "dk": "temperatur",
+              "da": "temperatur",
               "nl": "temperatuur",
               "sv": "temperatur"
             },
@@ -164,7 +164,7 @@
         "id": "MinTemperatureChanged",
         "title": {
           "en": "The minimum temperature for a zone changed",
-          "dk": "Minimumstemperaturen for en zone ændret",
+          "da": "Minimumstemperaturen for en zone ændret",
           "nl": "De minimum temperatuur voor een zone is gewijzigd",
           "sv": "Minsta temperatur har ändrats"
         },
@@ -172,14 +172,14 @@
           {
             "example": {
               "en": "Kitchen",
-              "dk": "Køkken",
+              "da": "Køkken",
               "nl": "Keuken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
-              "dk": "zone",
+              "da": "zone",
               "nl": "zone",
               "sv": "zopn"
             },
@@ -188,14 +188,14 @@
           {
             "example": {
               "en": "Wall thermometer",
-              "dk": "Vægtermometer",
+              "da": "Vægtermometer",
               "nl": "Wandthermometer",
               "sv": "Väggtermometer"
             },
             "name": "sensor",
             "title": {
               "en": "Thermometer",
-              "dk": "Temperatur",
+              "da": "Temperatur",
               "nl": "Thermometer",
               "sv": "temperatur"
             },
@@ -206,7 +206,7 @@
             "name": "temperature",
             "title": {
               "en": "minimum temperature",
-              "dk": "minimumstemperatur",
+              "da": "minimumstemperatur",
               "nl": "minimum temperatuur",
               "sv": "minimum temperatur"
             },
@@ -218,7 +218,7 @@
         "id": "MaxTemperatureChanged",
         "title": {
           "en": "The maximum temperature for a zone changed",
-          "dk": "Den maksimale temperatur for en zone ændret",
+          "da": "Den maksimale temperatur for en zone ændret",
           "nl": "De maximale temperatuur voor een zone is gewijzigd",
           "sv": "Max termperaturen i en zon har ändrat"
         },
@@ -226,14 +226,14 @@
           {
             "example": {
               "en": "Kitchen",
-              "dk": "Køkken",
+              "da": "Køkken",
               "nl": "Keuken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
-              "dk": "zone",
+              "da": "zone",
               "nl": "zone",
               "sv": "zon"
             },
@@ -242,14 +242,14 @@
           {
             "example": {
               "en": "Wall thermometer",
-              "dk": "Vægtermometer",
+              "da": "Vægtermometer",
               "nl": "Wandthermometer",
               "sv": "Väggtermometer"
             },
             "name": "sensor",
             "title": {
               "en": "Thermometer",
-              "dk": "Termometer",
+              "da": "Termometer",
               "nl": "Thermometer",
               "sv": "termometer"
             },
@@ -260,7 +260,7 @@
             "name": "temperature",
             "title": {
               "en": "maximum temperature",
-              "dk": "maksimal temperatur",
+              "da": "maksimal temperatur",
               "nl": "maximale temperatuur",
               "sv": "max termperatur"
             },
