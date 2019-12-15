@@ -1,15 +1,15 @@
 <template>
   <div class="container-fluid">
-    <div class="loader" v-if="loading">Loading settings...</div>
+    <div class="loader" v-if="loading"><I18nText id="loading" /></div>
     <ul class="nav nav-tabs" v-if="!loading">
-      <li class="nav-item" data-i18n="tab1.title">
-        <a href="#" class="nav-link" v-bind:class="{active: tab === 1}" @click="tab = 1">Zones</a>
+      <li class="nav-item">
+        <a href="#" class="nav-link" v-bind:class="{active: tab === 1}" @click="tab = 1"><I18nText id="tabs.zones" /></a>
       </li>
-      <li class="nav-item" data-i18n="tab2.title">
-        <a href="#" class="nav-link" v-bind:class="{active: tab === 2}" @click="tab = 2">Devices</a>
+      <li class="nav-item">
+        <a href="#" class="nav-link" v-bind:class="{active: tab === 2}" @click="tab = 2"><I18nText id="tabs.devices" /></a>
       </li>
-      <li class="nav-item" data-i18n="tab3.title">
-        <a href="#" class="nav-link" v-bind:class="{active: tab === 3}" @click="tab = 3">Settings</a>
+      <li class="nav-item">
+        <a href="#" class="nav-link" v-bind:class="{active: tab === 3}" @click="tab = 3"><I18nText id="tabs.settings" /></a>
       </li>
     </ul>
     <ZoneTab v-if="tab === 1" />
@@ -23,6 +23,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import ZoneTab from './components/ZoneTab.vue';
 import DeviceTab from './components/DeviceTab.vue';
 import SettingsTab from './components/SettingsTab.vue';
+import I18nText from './components/I18nText.vue';
 
 export default {
   name: 'app',
@@ -30,13 +31,15 @@ export default {
     ZoneTab,
     DeviceTab,
     SettingsTab,
+    I18nText,
   },
   props: ['homey'],
   data () {
     return {
       loading: true,
       tab: 1,
-      }
+      i18nScope: "settings",
+    }
   },
   mounted() {
     this.loading = false;

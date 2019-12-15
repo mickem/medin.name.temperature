@@ -1,34 +1,15 @@
 <template>
   <div>
-    <div class="card" v-if="settingsHints">
-      <div class="card-body">
-        <h5 class="card-title">Hints: Settings</h5>
-        <p
-          class="card-text"
-        >Minimum and maximum temperature will be used by the tooWarm and TooCold cards to trigger your flows.</p>
-        <p class="card-text">If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for istance you want weekly min/max.</p>
-        <p class="card-text">You can enable these hints in the settings section.</p>
-        <p class="btn btn-primary" @click="disableHints()">Got it</p>
-      </div>
-    </div>
-    <div class="form">
-      <div class="form-group">
-        <label for="minTemp">Minimum Temperature</label>
-        <input type="text" class="form-control" id="minTemp" v-model="minTemperature" />
-      </div>
-      <div class="form-group">
-        <label for="minTemp">Maximum Temperature</label>
-        <input type="text" class="form-control" id="minTemp" v-model="maxTemperature" />
-      </div>
-      <div class="form-group">
-        <label for="dailyReset">Time to reset daily averages (set to never to disable)</label>
-        <input type="text" @blur="updateDailyReset()" class="form-control" id="dailyReset" v-model="dailyReset" />
-      </div>
+    <Hints scope="settings.settings.hints" settingsKey="settingsHints" count="3" />
+    <SettingsTabEntry i18nScope="settings.settings" id="minTemperature" :value="minTemperature" @input="(v) => {minTemperature = v}" />
+    <SettingsTabEntry i18nScope="settings.settings" id="maxTemperature" :value="maxTemperature" @input="(v) => {maxTemperature = v}" />
+    <SettingsTabEntry i18nScope="settings.settings" id="dailyReset" :value="dailyReset" @input="(v) => {dailyReset = v}" />
 
       <div class="form-group">
         <label for="showHints">Show all hint dialogs in the settings app</label>
         <button id="showHints" class="btn btn-info" @click="showHints()">Show all hints</button>
       </div>
+      <SettingsTabButton id="refresh" @click="refresh()" />
       <div class="form-group">
         <label for="refresh">Refresh the settings view</label>
         <button id="refresh" class="btn btn-info" @click="refresh()">Refresh</button>
@@ -38,16 +19,21 @@
         <label for="resetAll">Reset all configuration and restoe defaults</label>
         <button id="resetAll" class="btn btn-danger" @click="reset()">Reset defaults</button>
       </div>
-    </div>
   </div>
 </template>
 
 <script lang="js">
+import SettingsTabEntry from './SettingsTabEntry.vue';
+import SettingsTabButton from './SettingsTabButton.vue';
+
 export default {
   name: 'SettingsTab',
+  components: {
+    SettingsTabEntry,
+    SettingsTabButton,
+  },
   data () {
     return {
-      dailyReset: this.$root.$data.getDailyReset(),
       settingsHints: this.$root.$data.getSettings().settingsHints,
     }
   },
@@ -68,12 +54,17 @@ export default {
         await this.$root.$data.saveSettings({ maxTemperature: newValue });
       }
     },
+    dailyReset: {
+      get: function() {
+        return this.$root.$data.getDailyReset();
+      },
+      set: async function() {
+        const value = this.$root.$data.setDailyReset(this.dailyReset);
+        await this.$root.$data.saveSettings({ dailyReset: value });
+      }
+    }
   },
   methods: {
-    updateDailyReset: async function() {
-      const value = this.$root.$data.setDailyReset(this.dailyReset);
-      await this.$root.$data.saveSettings({ dailyReset: value });
-    },
     disableHints: async function() {
       this.settingsHints = false;
       await this.$root.$data.saveSettings({ settingsHints: false });

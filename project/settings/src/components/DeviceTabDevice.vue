@@ -22,12 +22,12 @@
             class="btn btn-secondary"
             v-bind:class="{active: !isDisabled}"
             @click="setEnabled(device)"
-          >Enabled</label>
+          ><I18nText id="toggles.enabled" /></label>
           <label
             class="btn btn-secondary"
             v-bind:class="{active: isDisabled}"
             @click="setDisabled(device)"
-          >Disabled</label>
+          ><I18nText id="toggles.disabled" /></label>
         </div>
       </div>
     </div>
@@ -35,10 +35,20 @@
 </template>
 
 <script lang="js">
+import I18nText from './I18nText.vue';
+
 export default {
   name: 'DeviceTabDevice',
+  components: {
+    I18nText,
+  },
   props: {
     device: Object,
+  },
+  data() {
+    return {
+      i18nScope: "settings.devices",
+    }
   },
   computed: {
       isDisabled: function () {

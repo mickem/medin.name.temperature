@@ -3,7 +3,10 @@
     <div class="d-flex w-100 justify-content-between">
       <h6 class="mb-1">{{ zone.name }}</h6>
       <small v-if="!isDisabled">
-        <b>{{ zone.temperature }}&deg;C</b>
+        <b>
+          {{ zone.temperature }}
+          <I18nText id="unit" />
+        </b>
         ({{ Math.floor(zone.min) }}&hellip;{{ Math.ceil(zone.max) }})
       </small>
     </div>
@@ -12,26 +15,38 @@
         class="btn btn-secondary"
         v-bind:class="{active: isMonitored}"
         @click="addMonitored(zone)"
-      >Monitored</label>
-      <label
-        class="btn btn-secondary"
-        v-bind:class="{active: isEnabled}"
-        @click="addEnabled(zone)"
-      >Enabled</label>
+      >
+        <I18nText id="toggles.monitored" />
+      </label>
+      <label class="btn btn-secondary" v-bind:class="{active: isEnabled}" @click="addEnabled(zone)">
+        <I18nText id="toggles.enabled" />
+      </label>
       <label
         class="btn btn-secondary"
         v-bind:class="{active: isDisabled}"
         @click="addDisabled(zone)"
-      >Disabled</label>
+      >
+        <I18nText id="toggles.disabled" />
+      </label>
     </div>
   </li>
 </template>
 
 <script lang="js">
+import I18nText from './I18nText.vue';
+
 export default {
   name: 'ZoneTabZone',
+  components: {
+    I18nText,
+  },
   props: {
     zone: Object,
+  },
+  data() {
+    return {
+      i18nScope: "settings.zones",
+    }
   },
   computed: {
       isDisabled: function () {
@@ -59,6 +74,6 @@ export default {
 </script>
 <style scoped>
 .list-group-item {
-  padding: .75rem .75rem;
+  padding: 0.75rem 0.75rem;
 }
 </style>
