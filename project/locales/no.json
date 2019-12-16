@@ -1,3 +1,150 @@
 {
-
+    "settings": {
+        "loading": "",
+        "tabs": {
+            "zones": "",
+            "devices": "",
+            "settings": ""
+        },
+        "zones": {
+            "hints": {
+                "title": "",
+                "hint1": "",
+                "hint2": "",
+                "hint3": "",
+                "hint4": "",
+                "hint5": "",
+                "hint6": "",
+                "button": ""
+            },
+            "unit": "",
+            "toggles": {
+                "monitored": "",
+                "enabled": "",
+                "disabled": ""
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "",
+                "hint1": "",
+                "hint2": "",
+                "hint3": "",
+                "hint4": "",
+                "button": ""
+            },
+            "unit": "",
+            "toggles": {
+                "enabled": "",
+                "disabled": ""
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "",
+                "hint1": "",
+                "hint2": "",
+                "hint3": "",
+                "button": ""
+            },
+            "minTemperature": "",
+            "maxTemperature": "",
+            "dailyReset": ""
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "TooCold": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "TooWarm": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "sensor": {
+                    "title": "",
+                    "example": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "sensor": {
+                    "title": "",
+                    "example": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "",
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "SetMinTemperature": {
+                "title": "",
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "",
+                "type": {
+                    "title": ""
+                },
+                "temperature": {
+                    "title": ""
+                }
+            },
+            "SetZoneMode": {
+                "title": "",
+                "zone": {
+                    "title": "",
+                    "example": ""
+                },
+                "mode": {
+                    "title": ""
+                }
+            }
+        }
+    }
 }
