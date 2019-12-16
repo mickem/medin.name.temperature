@@ -1,3 +1,150 @@
 {
-
+    "settings": {
+        "loading": "Chargement...",
+        "tabs": {
+            "zones": "Zones",
+            "devices": "Dispositifs",
+            "settings": "Paramètres"
+        },
+        "zones": {
+            "hints": {
+                "title": "Astuces: Zones",
+                "hint1": "Les zones sont les mêmes que les zones dans la maison et la température sera la moyenne de tous les thermomètres <b> activés </b> de la zone.",
+                "hint2": "Une zone <b> surveillée </b> émettra des alertes chaque fois que la température sortira des limites.",
+                "hint3": "Une zone <b> activée </b> n'émettra aucune alerte mais toutes les autres cartes d'action pour le changement de température, maxmimum et minimum continueront de fonctionner.",
+                "hint4": "Une zone <b> désactivée </b> sera ignorée par l'application.",
+                "hint5": "Les valeurs affichées pour chaque zone sont la température moyenne, la température minimale aujourd'hui et la température maximale aujourd'hui.",
+                "hint6": "Vous pouvez activer ces conseils dans la section des paramètres.",
+                "button": "Je l'ai"
+            },
+            "unit": "& deg; C",
+            "toggles": {
+                "monitored": "Surveillé",
+                "enabled": "Activée",
+                "disabled": "désactivé"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Conseils: appareils",
+                "hint1": "Les appareils sont divers thermomètres trouvés à Homey.",
+                "hint2": "Un appareil <b> activé </b> contribuera à la température moyenne de la zone dans laquelle il se trouve.",
+                "hint3": "Une zone <b> désactivée </b> sera ignorée par le gestionnaire de température.",
+                "hint4": "Vous pouvez activer ces conseils dans la section des paramètres.",
+                "button": "Je l'ai"
+            },
+            "unit": "& deg; C",
+            "toggles": {
+                "enabled": "Activée",
+                "disabled": "désactivé"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Astuces: Paramètres",
+                "hint1": "Les températures minimum et maximum seront utilisées par les cartes tooWarm et TooCold pour déclencher vos flux.",
+                "hint2": "Si vous désactivez (défini sur jamais) le temps de réinitialisation max / min, vous pouvez utiliser à la place une carte de flux pour les réinitialiser à votre propre horaire si, par exemple, vous voulez min / max hebdomadaire.",
+                "hint3": "Vous pouvez activer ces conseils dans la section des paramètres.",
+                "button": "Je l'ai"
+            },
+            "minTemperature": "Température minimale",
+            "maxTemperature": "Température maximale",
+            "dailyReset": "Temps de réinitialisation des moyennes quotidiennes (réglé sur jamais pour désactiver)"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "Une température a changé",
+                "zone": {
+                    "title": "zone",
+                    "example": "Cuisine"
+                },
+                "temperature": {
+                    "title": "température moyenne"
+                }
+            },
+            "TooCold": {
+                "title": "La température est trop froide",
+                "zone": {
+                    "title": "zone",
+                    "example": "Cuisine"
+                },
+                "temperature": {
+                    "title": "Température"
+                }
+            },
+            "TooWarm": {
+                "title": "La température est trop chaude",
+                "zone": {
+                    "title": "zone",
+                    "example": "Cuisine"
+                },
+                "temperature": {
+                    "title": "Température"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "La température minimale d'une zone a changé",
+                "zone": {
+                    "title": "zone",
+                    "example": "Cuisine"
+                },
+                "sensor": {
+                    "title": "Thermomètre",
+                    "example": "Thermomètre mural"
+                },
+                "temperature": {
+                    "title": "température minimale"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "La température maximale d'une zone a changé",
+                "zone": {
+                    "title": "zone",
+                    "example": "Cuisine"
+                },
+                "sensor": {
+                    "title": "Thermomètre",
+                    "example": "Thermomètre mural"
+                },
+                "temperature": {
+                    "title": "Température maximale"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Réglez la température maximale",
+                "temperature": {
+                    "title": "Température"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Réglez la température minimale",
+                "temperature": {
+                    "title": "Température"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Définissez les limites de température maximale ou minimale",
+                "type": {
+                    "title": "le type de lié à définir"
+                },
+                "temperature": {
+                    "title": "Température"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Définir le mode pour une zone donnée",
+                "zone": {
+                    "title": "zone",
+                    "example": "TODO: Ajouter un exemple"
+                },
+                "mode": {
+                    "title": "mode"
+                }
+            }
+        }
+    }
 }
