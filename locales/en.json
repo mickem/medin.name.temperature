@@ -43,7 +43,7 @@
       "hints": {
         "title": "Hints: Settings",
         "hint1": "Minimum and maximum temperature will be used by the tooWarm and TooCold cards to trigger your flows.",
-        "hint2": "If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for istance you want weekly min/max.",
+        "hint2": "If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for instance you want weekly min/max.",
         "hint3": "You can enable these hints in the settings section.",
         "button": "Got it"
       },
