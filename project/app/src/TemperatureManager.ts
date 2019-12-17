@@ -23,7 +23,7 @@ export class TempManager implements IManager {
   private jobManager: JobManager;
 
   constructor() {
-    console.log(`Starting temperature manager ${__VERSION}, build ${__BUILD}`);
+    console.log(`Starting temperature manager`);
     this.api = undefined;
     this.triggers = new TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
     this.zones = new Zones(this.triggers.get(), {

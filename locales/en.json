@@ -53,7 +53,66 @@
     }
   },
   "flows": {
-    "triggers": {},
+    "triggers": {
+      "TemperatureChanged": {
+        "title": "A temperature changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "temperature": {
+          "title": "average temperature"
+        }
+      },
+      "TooCold": {
+        "title": "The temperature is too cold",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "temperature": {
+          "title": "temperature"
+        }
+      },
+      "TooWarm": {
+        "title": "The temperature is too warm",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "temperature": {
+          "title": "temperature"
+        }
+      },
+      "MinTemperatureChanged": {
+        "title": "The minimum temperature for a zone changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "sensor": {
+          "title": "Thermometer",
+          "example": "Wall thermometer"
+        },
+        "temperature": {
+          "title": "minimum temperature"
+        }
+      },
+      "MaxTemperatureChanged": {
+        "title": "The maximum temperature for a zone changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "sensor": {
+          "title": "Thermometer",
+          "example": "Wall thermometer"
+        },
+        "temperature": {
+          "title": "maximum temperature"
+        }
+      }
+    },
     "actions": {
       "SetTemperatureBounds": {
         "title": "Set the maximum or minimum temperature bounds",

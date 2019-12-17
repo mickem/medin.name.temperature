@@ -204,7 +204,7 @@ const utils_1 = __webpack_require__(1);
 const Zones_1 = __webpack_require__(10);
 class TempManager {
     constructor() {
-        console.log(`Starting temperature manager ${__VERSION}, build ${__BUILD}`);
+        console.log(`Starting temperature manager`);
         this.api = undefined;
         this.triggers = new TriggerManager_1.TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
         this.zones = new Zones_1.Zones(this.triggers.get(), {

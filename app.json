@@ -36,7 +36,7 @@
   },
   "source": "https://github.com/mickem/name.medin.temperature",
   "version": "1.0.4",
-  "id": "name.medin.temperatures",
+  "id": "medin.name.temperatures",
   "bugs": {
     "url": "https://github.com/mickem/name.medin.temperature/issues"
   },

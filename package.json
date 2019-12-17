@@ -1,5 +1,5 @@
 {
-  "name": "name.medin.temperatures",
+  "name": "medin.name.temperatures",
   "version": "1.0.4",
   "description": "A temperature manager for homey",
   "main": "index.js",
