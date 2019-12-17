@@ -1,0 +1,150 @@
+{
+    "settings": {
+        "loading": "Caricamento in corso...",
+        "tabs": {
+            "zones": "zone",
+            "devices": "dispositivi",
+            "settings": "impostazioni"
+        },
+        "zones": {
+            "hints": {
+                "title": "Suggerimenti: Zone",
+                "hint1": "Le zone sono le stesse delle zone domestiche e la temperatura sarà la media di tutti i termometri <b> abilitati </b> nella zona.",
+                "hint2": "Una zona <b> monitorata </b> emetterà avvisi ogni volta che la temperatura supera i limiti.",
+                "hint3": "Una zona <b> abilitata </b> non emetterà alcun avviso ma tutte le altre carte azione per il cambiamento di temperatura, il massimo e il minimo continueranno a funzionare.",
+                "hint4": "Una zona <b> disabilitata </b> verrà ignorata dall'applicazione.",
+                "hint5": "I valori indicati per ciascuna zona sono la temperatura media, la temperatura minima oggi e la temperatura massima oggi.",
+                "hint6": "È possibile abilitare questi suggerimenti nella sezione delle impostazioni.",
+                "button": "Fatto"
+            },
+            "unit": "& Deg; C",
+            "toggles": {
+                "monitored": "monitorato",
+                "enabled": "Abilitato",
+                "disabled": "Disabilitato"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Suggerimenti: dispositivi",
+                "hint1": "I dispositivi sono vari termometri trovati in Homey.",
+                "hint2": "Un dispositivo <b> abilitato </b> contribuirà alla temperatura media della zona in cui si trova.",
+                "hint3": "Una zona <b> disabilitata </b> verrà ignorata dal gestore della temperatura.",
+                "hint4": "È possibile abilitare questi suggerimenti nella sezione delle impostazioni.",
+                "button": "Fatto"
+            },
+            "unit": "& Deg; C",
+            "toggles": {
+                "enabled": "Abilitato",
+                "disabled": "Disabilitato"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Suggerimenti: impostazioni",
+                "hint1": "La temperatura minima e massima verrà utilizzata dalle carte tooWarm e TooCold per attivare i flussi.",
+                "hint2": "Se si disabilita (impostato su mai) Tempo per reimpostare max / min, è possibile invece utilizzare una scheda di flusso per reimpostarli secondo il proprio programma se, ad esempio, si desidera min / max settimanali.",
+                "hint3": "È possibile abilitare questi suggerimenti nella sezione delle impostazioni.",
+                "button": "Fatto"
+            },
+            "minTemperature": "Temperatura minima",
+            "maxTemperature": "Temperatura massima",
+            "dailyReset": "Tempo per ripristinare le medie giornaliere (impostato su mai per disabilitare)"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "Una temperatura è cambiata",
+                "zone": {
+                    "title": "zona",
+                    "example": "Cucina"
+                },
+                "temperature": {
+                    "title": "temperatura media"
+                }
+            },
+            "TooCold": {
+                "title": "La temperatura è troppo fredda",
+                "zone": {
+                    "title": "zona",
+                    "example": "Cucina"
+                },
+                "temperature": {
+                    "title": "temperatura"
+                }
+            },
+            "TooWarm": {
+                "title": "La temperatura è troppo calda",
+                "zone": {
+                    "title": "zona",
+                    "example": "Cucina"
+                },
+                "temperature": {
+                    "title": "temperatura"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "La temperatura minima per una zona è cambiata",
+                "zone": {
+                    "title": "zona",
+                    "example": "Cucina"
+                },
+                "sensor": {
+                    "title": "Termometro",
+                    "example": "Termometro da parete"
+                },
+                "temperature": {
+                    "title": "temperatura minima"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "La temperatura massima per una zona è cambiata",
+                "zone": {
+                    "title": "zona",
+                    "example": "Cucina"
+                },
+                "sensor": {
+                    "title": "Termometro",
+                    "example": "Termometro da parete"
+                },
+                "temperature": {
+                    "title": "temperatura massima"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Imposta la temperatura massima",
+                "temperature": {
+                    "title": "temperatura"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Imposta la temperatura minima",
+                "temperature": {
+                    "title": "temperatura"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Impostare i limiti di temperatura massima o minima",
+                "type": {
+                    "title": "il tipo di limite da impostare"
+                },
+                "temperature": {
+                    "title": "temperatura"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Imposta la modalità per una determinata zona",
+                "zone": {
+                    "title": "zona",
+                    "example": "TODO: aggiungi esempio"
+                },
+                "mode": {
+                    "title": "modalità"
+                }
+            }
+        }
+    }
+}

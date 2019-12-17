@@ -1,0 +1,150 @@
+{
+    "settings": {
+        "loading": "Laster ...",
+        "tabs": {
+            "zones": "soner",
+            "devices": "enheter",
+            "settings": "innstillinger"
+        },
+        "zones": {
+            "hints": {
+                "title": "Tips: Soner",
+                "hint1": "Soner er de samme som soner i hjemmet, og temperaturen er gjennomsnittet av alle <b> aktive </b> termometre i sonen.",
+                "hint2": "En <b> overvåket </b> sone vil sende alarmer når temperaturen går utenfor rekkevidden.",
+                "hint3": "En <b> aktiv </b> sone vil ikke sende alarmer, men andre kort som endret temperatur og endret minimum og maksimum vil fortsatt fungere.",
+                "hint4": "En <b> inaktiv </b> sone blir ignorert fullstendig av applikasjonen.",
+                "hint5": "Verdiene som vises for sonene er gjennomsnittstemperaturen, den laveste temperaturen i dag og den høyeste temperaturen i dag.",
+                "hint6": "Du kan se disse tipsene på nytt gjennom en knapp under Innstillinger.",
+                "button": "Jeg vet det"
+            },
+            "unit": "-Graders C",
+            "toggles": {
+                "monitored": "overvåket",
+                "enabled": "aktiv",
+                "disabled": "inaktiv"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Tips: Enheter",
+                "hint1": "Enhetene er forskjellige termometre som finnes i Homey.",
+                "hint2": "En <b> aktiv </b> enhet bidrar med temperarill til sonen den ligger i.",
+                "hint3": "En <b> inaktiv </b> enhet ignoreres av temperaturbehandleren.",
+                "hint4": "Du kan se disse tipsene på nytt gjennom en knapp under Innstillinger.",
+                "button": "Jeg vet det"
+            },
+            "unit": "-Graders C",
+            "toggles": {
+                "enabled": "aktiv",
+                "disabled": "inaktiv"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Tips: Innstillinger",
+                "hint1": "Minimum og maksimal temperatur vil bli brukt av tooWarm og TooCold-kortene for å utløse strømningene dine.",
+                "hint2": "Hvis du deaktiverer (innstilt på aldri) Tid for å tilbakestille maks / min, kan du i stedet bruke et flytkort for å tilbakestille dem til din egen tidsplan hvis du ønsker ukentlig min / maks.",
+                "hint3": "Du kan aktivere disse hintene i innstillingsdelen.",
+                "button": "Fikk det"
+            },
+            "minTemperature": "Minimum temperatur på temperaturen",
+            "maxTemperature": "Høyeste temperatur",
+            "dailyReset": "Tid på døgnet som dagsminimum / master skal tilbakestilles til <b> aldri </b> for å slå av automatisk tilbakestilling"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "En temperatur har endret seg",
+                "zone": {
+                    "title": "sonen",
+                    "example": "kjøkkenet"
+                },
+                "temperature": {
+                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
+                }
+            },
+            "TooCold": {
+                "title": "Det er for kaldt",
+                "zone": {
+                    "title": "sonen",
+                    "example": "kjøkken"
+                },
+                "temperature": {
+                    "title": "temperaturen"
+                }
+            },
+            "TooWarm": {
+                "title": "Det er for varmt",
+                "zone": {
+                    "title": "sonen",
+                    "example": "kjøkken"
+                },
+                "temperature": {
+                    "title": "temperaturen"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "Minimumstemperatur har endret seg",
+                "zone": {
+                    "title": "zopn",
+                    "example": "kjøkken"
+                },
+                "sensor": {
+                    "title": "temperaturen",
+                    "example": "Wall termometer"
+                },
+                "temperature": {
+                    "title": "minimumstemperatur"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "Den maksimale termiske temperaturen i en sone har endret seg",
+                "zone": {
+                    "title": "sonen",
+                    "example": "kjøkken"
+                },
+                "sensor": {
+                    "title": "termometer",
+                    "example": "Wall termometer"
+                },
+                "temperature": {
+                    "title": "maks term temperatur"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Still inn maksimal temperatur",
+                "temperature": {
+                    "title": "temperaturen"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Still minimumstemperatur",
+                "temperature": {
+                    "title": "temperaturen"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Sett grenser for temperatur",
+                "type": {
+                    "title": "slags grense å sette"
+                },
+                "temperature": {
+                    "title": "temperaturen"
+                }
+            },
+            "SetZoneMode": {
+                "title": "angi plassering for spesifisert sone",
+                "zone": {
+                    "title": "sonen",
+                    "example": "testing"
+                },
+                "mode": {
+                    "title": "stilling"
+                }
+            }
+        }
+    }
+}

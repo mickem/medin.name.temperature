@@ -1,0 +1,150 @@
+{
+    "settings": {
+        "loading": "Wird geladen...",
+        "tabs": {
+            "zones": "Zonen",
+            "devices": "Geräte",
+            "settings": "die Einstellungen"
+        },
+        "zones": {
+            "hints": {
+                "title": "Hinweise: Zonen",
+                "hint1": "Zonen sind mit Zonen in homey identisch und die Temperatur ist der Durchschnitt aller aktivierten Thermometer in der Zone.",
+                "hint2": "Eine <b> überwachte </ b> Zone gibt Warnungen aus, wenn die Temperatur überschritten wird.",
+                "hint3": "In einer <b> aktivierten </ b> Zone werden keine Warnungen ausgegeben, aber alle anderen Aktionskarten für Temperaturänderung, Maximum und Minimum funktionieren weiterhin.",
+                "hint4": "Eine <b> deaktivierte </ b> Zone wird von der Anwendung ignoriert.",
+                "hint5": "Die angezeigten Werte für jede Zone sind die Durchschnittstemperatur, die heutige Mindesttemperatur und die heutige Höchsttemperatur.",
+                "hint6": "Sie können diese Hinweise im Abschnitt Einstellungen aktivieren.",
+                "button": "Ich habs"
+            },
+            "unit": "& deg; C",
+            "toggles": {
+                "monitored": "Überwacht",
+                "enabled": "aktiviert",
+                "disabled": "Behindert"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Hinweise: Geräte",
+                "hint1": "Geräte sind verschiedene Thermometer, die in Homey zu finden sind.",
+                "hint2": "Ein <b> aktiviertes </ b> Gerät trägt zur Durchschnittstemperatur der Zone bei, in der es sich befindet.",
+                "hint3": "Eine <b> deaktivierte </ b> Zone wird vom Temperaturmanager ignoriert.",
+                "hint4": "Sie können diese Hinweise im Abschnitt Einstellungen aktivieren.",
+                "button": "Ich habs"
+            },
+            "unit": "& deg; C",
+            "toggles": {
+                "enabled": "aktiviert",
+                "disabled": "Behindert"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Hinweise: Einstellungen",
+                "hint1": "Die minimale und maximale Temperatur wird von den tooWarm- und TooCold-Karten verwendet, um Ihre Flüsse auszulösen.",
+                "hint2": "Wenn Sie die Zeit zum Zurücksetzen von max / min deaktivieren (auf nie einstellen), können Sie stattdessen eine Ablaufkarte verwenden, um sie nach Ihrem eigenen Zeitplan zurückzusetzen, wenn Sie beispielsweise wöchentlich min / max möchten.",
+                "hint3": "Sie können diese Hinweise im Abschnitt Einstellungen aktivieren.",
+                "button": "Ich habs"
+            },
+            "minTemperature": "Minimale Temperatur",
+            "maxTemperature": "Maximale Temperatur",
+            "dailyReset": "Zeit zum Zurücksetzen der täglichen Durchschnittswerte (auf \"Nie deaktivieren\" eingestellt)"
+        }
+    },
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "Eine Temperatur änderte sich",
+                "zone": {
+                    "title": "Zone",
+                    "example": "Küche"
+                },
+                "temperature": {
+                    "title": "Durchschnittstemperatur"
+                }
+            },
+            "TooCold": {
+                "title": "Die Temperatur ist zu kalt",
+                "zone": {
+                    "title": "Zone",
+                    "example": "Küche"
+                },
+                "temperature": {
+                    "title": "Temperatur"
+                }
+            },
+            "TooWarm": {
+                "title": "Die Temperatur ist zu warm",
+                "zone": {
+                    "title": "Zone",
+                    "example": "Küche"
+                },
+                "temperature": {
+                    "title": "Temperatur"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "Die Mindesttemperatur für eine Zone wurde geändert",
+                "zone": {
+                    "title": "Zone",
+                    "example": "Küche"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wandthermometer"
+                },
+                "temperature": {
+                    "title": "Mindesttemperatur"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "Die maximale Temperatur für eine Zone wurde geändert",
+                "zone": {
+                    "title": "Zone",
+                    "example": "Küche"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wandthermometer"
+                },
+                "temperature": {
+                    "title": "maximale Temperatur"
+                }
+            }
+        },
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Stellen Sie die maximale Temperatur ein",
+                "temperature": {
+                    "title": "Temperatur"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Stellen Sie die minimale Temperatur ein",
+                "temperature": {
+                    "title": "Temperatur"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Stellen Sie die maximalen oder minimalen Temperaturgrenzen ein",
+                "type": {
+                    "title": "die Art der zu setzenden Bindung"
+                },
+                "temperature": {
+                    "title": "Temperatur"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Stellen Sie den Modus für eine bestimmte Zone ein",
+                "zone": {
+                    "title": "Zone",
+                    "example": "TODO: Beispiel hinzufügen"
+                },
+                "mode": {
+                    "title": "Modus"
+                }
+            }
+        }
+    }
+}

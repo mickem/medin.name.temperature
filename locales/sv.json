@@ -139,7 +139,7 @@
                 "title": "set läge för angiven zon",
                 "zone": {
                     "title": "zon",
-                    "example": ""
+                    "example": "testing"
                 },
                 "mode": {
                     "title": "läge"
