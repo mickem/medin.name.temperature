@@ -36,7 +36,7 @@
   },
   "source": "https://github.com/mickem/name.medin.temperature",
   "version": "1.0.4",
-  "id": "medin.name.temperatures",
+  "id": "name.medin.temperatures",
   "bugs": {
     "url": "https://github.com/mickem/name.medin.temperature/issues"
   },
@@ -51,7 +51,12 @@
         "title": {
           "en": "A temperature changed",
           "da": "En temperatur ændrede sig",
-          "nl": "Een temperatuur veranderde",
+          "de": "Eine Temperatur änderte sich",
+          "es": "Una temperatura cambiada",
+          "fr": "Une température a changé",
+          "it": "Una temperatura è cambiata",
+          "nl": "De temperatuur is veranderd",
+          "no": "En temperatur har endret seg",
           "sv": "En temperatur har ändrats"
         },
         "tokens": [
@@ -59,14 +64,24 @@
             "example": {
               "en": "Kitchen",
               "da": "Køkken",
+              "de": "Küche",
+              "es": "Cocina",
+              "fr": "Cuisine",
+              "it": "Cucina",
               "nl": "Keuken",
+              "no": "kjøkkenet",
               "sv": "Köket"
             },
             "name": "zone",
             "title": {
               "en": "zone",
               "da": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
               "nl": "zone",
+              "no": "sonen",
               "sv": "zon"
             },
             "type": "string"
@@ -77,7 +92,12 @@
             "title": {
               "en": "average temperature",
               "da": "gennemsnitstemperatur",
+              "de": "Durchschnittstemperatur",
+              "es": "temperatura media",
+              "fr": "température moyenne",
+              "it": "temperatura media",
               "nl": "Gemiddelde temperatuur",
+              "no": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP",
               "sv": "medeltemperatur"
             },
             "type": "number"
@@ -89,7 +109,12 @@
         "title": {
           "en": "The temperature is too cold",
           "da": "Temperaturen er for kold",
+          "de": "Die Temperatur ist zu kalt",
+          "es": "La temperatura es muy fría.",
+          "fr": "La température est trop froide",
+          "it": "La temperatura è troppo fredda",
           "nl": "De temperatuur is te koud",
+          "no": "Det er for kaldt",
           "sv": "Det är för kallt"
         },
         "tokens": [
@@ -97,14 +122,24 @@
             "example": {
               "en": "Kitchen",
               "da": "Køkken",
+              "de": "Küche",
+              "es": "Cocina",
+              "fr": "Cuisine",
+              "it": "Cucina",
               "nl": "Keuken",
+              "no": "kjøkken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
               "da": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
               "nl": "zone",
+              "no": "sonen",
               "sv": "zon"
             },
             "type": "string"
@@ -115,7 +150,12 @@
             "title": {
               "en": "temperature",
               "da": "temperatur",
+              "de": "Temperatur",
+              "es": "temperatura",
+              "fr": "Température",
+              "it": "temperatura",
               "nl": "temperatuur",
+              "no": "temperaturen",
               "sv": "temperatur"
             },
             "type": "number"
@@ -127,7 +167,12 @@
         "title": {
           "en": "The temperature is too warm",
           "da": "Temperaturen er for varm",
+          "de": "Die Temperatur ist zu warm",
+          "es": "La temperatura es muy alta.",
+          "fr": "La température est trop chaude",
+          "it": "La temperatura è troppo calda",
           "nl": "De temperatuur is te warm",
+          "no": "Det er for varmt",
           "sv": "Det är för varmt"
         },
         "tokens": [
@@ -135,14 +180,24 @@
             "example": {
               "en": "Kitchen",
               "da": "Køkken",
+              "de": "Küche",
+              "es": "Cocina",
+              "fr": "Cuisine",
+              "it": "Cucina",
               "nl": "Keuken",
+              "no": "kjøkken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
               "da": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
               "nl": "zone",
+              "no": "sonen",
               "sv": "zon"
             },
             "type": "string"
@@ -153,7 +208,12 @@
             "title": {
               "en": "temperature",
               "da": "temperatur",
+              "de": "Temperatur",
+              "es": "temperatura",
+              "fr": "Température",
+              "it": "temperatura",
               "nl": "temperatuur",
+              "no": "temperaturen",
               "sv": "temperatur"
             },
             "type": "number"
@@ -165,7 +225,12 @@
         "title": {
           "en": "The minimum temperature for a zone changed",
           "da": "Minimumstemperaturen for en zone ændret",
+          "de": "Die Mindesttemperatur für eine Zone wurde geändert",
+          "es": "La temperatura mínima para una zona cambió",
+          "fr": "La température minimale d'une zone a changé",
+          "it": "La temperatura minima per una zona è cambiata",
           "nl": "De minimum temperatuur voor een zone is gewijzigd",
+          "no": "Minimumstemperatur har endret seg",
           "sv": "Minsta temperatur har ändrats"
         },
         "tokens": [
@@ -173,14 +238,24 @@
             "example": {
               "en": "Kitchen",
               "da": "Køkken",
+              "de": "Küche",
+              "es": "Cocina",
+              "fr": "Cuisine",
+              "it": "Cucina",
               "nl": "Keuken",
+              "no": "kjøkken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
               "da": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
               "nl": "zone",
+              "no": "zopn",
               "sv": "zopn"
             },
             "type": "string"
@@ -189,14 +264,24 @@
             "example": {
               "en": "Wall thermometer",
               "da": "Vægtermometer",
+              "de": "Wandthermometer",
+              "es": "Termómetro de pared",
+              "fr": "Thermomètre mural",
+              "it": "Termometro da parete",
               "nl": "Wandthermometer",
+              "no": "Wall termometer",
               "sv": "Väggtermometer"
             },
             "name": "sensor",
             "title": {
               "en": "Thermometer",
               "da": "Temperatur",
+              "de": "Thermometer",
+              "es": "Termómetro",
+              "fr": "Thermomètre",
+              "it": "Termometro",
               "nl": "Thermometer",
+              "no": "temperaturen",
               "sv": "temperatur"
             },
             "type": "string"
@@ -207,7 +292,12 @@
             "title": {
               "en": "minimum temperature",
               "da": "minimumstemperatur",
+              "de": "Mindesttemperatur",
+              "es": "temperatura mínima",
+              "fr": "température minimale",
+              "it": "temperatura minima",
               "nl": "minimum temperatuur",
+              "no": "minimumstemperatur",
               "sv": "minimum temperatur"
             },
             "type": "number"
@@ -219,7 +309,12 @@
         "title": {
           "en": "The maximum temperature for a zone changed",
           "da": "Den maksimale temperatur for en zone ændret",
+          "de": "Die maximale Temperatur für eine Zone wurde geändert",
+          "es": "La temperatura máxima para una zona cambió",
+          "fr": "La température maximale d'une zone a changé",
+          "it": "La temperatura massima per una zona è cambiata",
           "nl": "De maximale temperatuur voor een zone is gewijzigd",
+          "no": "Den maksimale termiske temperaturen i en sone har endret seg",
           "sv": "Max termperaturen i en zon har ändrat"
         },
         "tokens": [
@@ -227,14 +322,24 @@
             "example": {
               "en": "Kitchen",
               "da": "Køkken",
+              "de": "Küche",
+              "es": "Cocina",
+              "fr": "Cuisine",
+              "it": "Cucina",
               "nl": "Keuken",
+              "no": "kjøkken",
               "sv": "Kök"
             },
             "name": "zone",
             "title": {
               "en": "zone",
               "da": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
               "nl": "zone",
+              "no": "sonen",
               "sv": "zon"
             },
             "type": "string"
@@ -243,14 +348,24 @@
             "example": {
               "en": "Wall thermometer",
               "da": "Vægtermometer",
+              "de": "Wandthermometer",
+              "es": "Termómetro de pared",
+              "fr": "Thermomètre mural",
+              "it": "Termometro da parete",
               "nl": "Wandthermometer",
+              "no": "Wall termometer",
               "sv": "Väggtermometer"
             },
             "name": "sensor",
             "title": {
               "en": "Thermometer",
               "da": "Termometer",
+              "de": "Thermometer",
+              "es": "Termómetro",
+              "fr": "Thermomètre",
+              "it": "Termometro",
               "nl": "Thermometer",
+              "no": "termometer",
               "sv": "termometer"
             },
             "type": "string"
@@ -261,7 +376,12 @@
             "title": {
               "en": "maximum temperature",
               "da": "maksimal temperatur",
+              "de": "maximale Temperatur",
+              "es": "temperatura máxima",
+              "fr": "Température maximale",
+              "it": "temperatura massima",
               "nl": "maximale temperatuur",
+              "no": "maks term temperatur",
               "sv": "max termperatur"
             },
             "type": "number"

@@ -217,23 +217,23 @@ export class Zone {
   private async onMaxUpdated(name: string, temperature: number) {
     this.maxTemp = temperature;
     this.maxSensor = name;
-    await this.triggers.onMaxTemperatureChanged(this.name, name, this.maxTemp);
+    await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.maxTemp });
   }
   private async onMinUpdated(name: string, temperature: number) {
     this.minTemp = temperature;
     this.minSensor = name;
-    await this.triggers.onMinTemperatureChanged(this.name, name, this.minTemp);
+    await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.minTemp });
   }
   private async onTempUpdated() {
     if (!this.notMonitored) {
-      await this.triggers.onTemperatureChanged(this.name, this.current);
+      await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
     }
     if (this.current > this.maxAllowed) {
-      await this.triggers.onTooWarm(this.name, this.current);
+      await this.triggers.TooWarm({ zone: this.name, temperature: this.current });
     } else if (this.current < this.minAllowed) {
-      await this.triggers.onTooCold(this.name, this.current);
+      await this.triggers.TooCold({ zone: this.name, temperature: this.current });
     } else {
-      await this.triggers.onTemperatureChanged(this.name, this.current);
+      await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
     }
   }
 }

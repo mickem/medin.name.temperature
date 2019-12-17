@@ -197,18 +197,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const athom_api_1 = __webpack_require__(4);
 const ActionManager_1 = __webpack_require__(5);
 const DeviceManager_1 = __webpack_require__(6);
-const HomeyWrappers_1 = __webpack_require__(7);
-const JobManager_1 = __webpack_require__(8);
-const SettingsManager_1 = __webpack_require__(9);
-const Triggers_1 = __webpack_require__(10);
+const JobManager_1 = __webpack_require__(7);
+const SettingsManager_1 = __webpack_require__(8);
+const TriggerManager_1 = __webpack_require__(9);
 const utils_1 = __webpack_require__(1);
-const Zones_1 = __webpack_require__(11);
+const Zones_1 = __webpack_require__(10);
 class TempManager {
     constructor() {
+        console.log(`Starting temperature manager ${__VERSION}, build ${__BUILD}`);
         this.api = undefined;
-        this.triggers = new Triggers_1.Triggers();
-        console.log('creating zoned');
-        this.zones = new Zones_1.Zones(this.triggers, {
+        this.triggers = new TriggerManager_1.TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
+        this.zones = new Zones_1.Zones(this.triggers.get(), {
             onZoneUpdated: () => {
                 this.settingsManager.setState({
                     zones: this.zones.getState(),
@@ -218,11 +217,11 @@ class TempManager {
         this.actions = new ActionManager_1.ActionManager({
             SetTemperatureBounds: args => {
                 if (args.type === 'min') {
-                    console.log('---> set min temperature bound: ', args.temperature);
+                    console.log(`A flow updated the minimum temperature bound to ${args.temperature}`);
                     this.settingsManager.setSettings({ minTemperature: args.temperature });
                 }
                 else if (args.type === 'max') {
-                    console.log('---> set max temperature bound: ', args.temperature);
+                    console.log(`A flow updated the maximum temperature bound to ${args.temperature}`);
                     this.settingsManager.setSettings({ maxTemperature: args.temperature });
                 }
                 else {
@@ -238,24 +237,24 @@ class TempManager {
                     return false;
                 }
                 if (args.mode === 'enabled') {
-                    console.log('---> SetZoneMode enabling: ', zone.getId());
+                    console.log(`A flow enabled ${zone.getId()} as ${zone.getName()}`);
                     this.settingsManager.addZoneEnabled(zone.getId());
                 }
                 else if (args.mode === 'disabled') {
-                    console.log('---> SetZoneMode disabling: ', zone.getId());
+                    console.log(`A flow disabled ${zone.getId()} as ${zone.getName()}`);
                     this.settingsManager.addZoneDisabled(zone.getId());
                 }
                 else if (args.mode === 'monitored') {
-                    console.log('---> SetZoneMode monitored: ', zone.getId());
+                    console.log(`A flow set ${zone.getId()} as ${zone.getName()} to monitored`);
                     this.settingsManager.addZoneMonitored(zone.getId());
                 }
                 else {
+                    console.error(`A flow set unkown mode (${args.mode}) for ${args.zone}`);
                     return false;
                 }
                 return true;
             },
         });
-        console.log('creating settings manager', this.settingsManager);
         this.settingsManager = new SettingsManager_1.SettingsManager({
             onAppState: (state) => {
                 if (state.zones) {
@@ -263,17 +262,13 @@ class TempManager {
                 }
             },
             onDeviceConfigUpdated: (config) => __awaiter(this, void 0, void 0, function* () {
-                console.log('Device configuration updated: ', config);
                 yield this.zones.updateDevices(config.zonesIgnored || [], config.zonesNotMonitored || [], config.devicesIgnored || []);
             }),
             onSettingsUpdated: (settings) => __awaiter(this, void 0, void 0, function* () {
-                console.log('Settings updated: ', settings);
                 this.zones.onUpdateSettings(settings);
                 yield this.jobManager.onSettinsUpdated(settings.dailyReset);
             }),
         });
-        console.log('created settings manager', this.settingsManager);
-        console.log('job manager');
         this.jobManager = new JobManager_1.JobManager({
             onResetMaxMin() {
                 console.log('Reseting all zones max/min temperatures: ' + new Date());
@@ -283,7 +278,7 @@ class TempManager {
     }
     onInit() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(HomeyWrappers_1.__('title'));
+            console.log(`Booting temperature manager`);
             this.api = yield athom_api_1.HomeyAPI.forCurrentHomey();
             this.deviceManager = new DeviceManager_1.DeviceManager(this.api, this.zones);
             yield this.settingsManager.start();
@@ -293,11 +288,11 @@ class TempManager {
             this.triggers.disable();
             yield this.deviceManager.start();
             this.triggers.enable();
-            console.log('Application loaded');
+            console.log('Application loaded, triggers enabled');
         });
     }
     getTriggers() {
-        return this.triggers;
+        return this.triggers.get();
     }
     getZones() {
         return this.zones.getAll();
@@ -344,7 +339,6 @@ class ActionManager {
         this.cards = {};
         for (const id in handler) {
             try {
-                console.log(`Adding action card: ${id}`);
                 this.cards[id] = new homey_1.default.FlowCardAction(id);
             }
             catch (error) {
@@ -353,7 +347,7 @@ class ActionManager {
         }
     }
     register() {
-        console.log('Registering all actions');
+        console.log(`Registering ${Object.keys(this.cards).length} actions`);
         for (const id in this.cards) {
             this.cards[id].register().registerRunListener((args, state) => {
                 console.log(this.handler[id](args));
@@ -556,23 +550,6 @@ exports.DeviceManager = DeviceManager;
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __importDefault(__webpack_require__(0));
-function __(key, data) {
-    return homey_1.default.__(key, data);
-}
-exports.__ = __;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -642,7 +619,7 @@ exports.JobManager = JobManager;
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -762,7 +739,7 @@ exports.SettingsManager = SettingsManager;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -788,28 +765,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __importDefault(__webpack_require__(0));
 const utils_1 = __webpack_require__(1);
-class Triggers {
-    constructor() {
-        try {
-            this.MaxTemperatureChanged = new homey_1.default.FlowCardTrigger('MaxTemperatureChanged');
-            this.MinTemperatureChanged = new homey_1.default.FlowCardTrigger('MinTemperatureChanged');
-            this.TemperatureChanged = new homey_1.default.FlowCardTrigger('TemperatureChanged');
-            this.TooCold = new homey_1.default.FlowCardTrigger('TooCold');
-            this.TooWarm = new homey_1.default.FlowCardTrigger('TooWarm');
-            this.enabled = true;
-        }
-        catch (error) {
-            console.error(`Failed to register trigger cards: `, error);
+class TriggerManager {
+    constructor(functions) {
+        this.enabled = true;
+        this.wrapper = {};
+        this.cards = {};
+        for (const id of functions) {
+            try {
+                console.log(`Registring function: ${id}`);
+                this.cards[id] = new homey_1.default.FlowCardTrigger(id);
+                this.wrapper[id] = (args) => __awaiter(this, void 0, void 0, function* () {
+                    if (!this.enabled) {
+                        return;
+                    }
+                    yield this.cards[id].trigger(args);
+                });
+            }
+            catch (error) {
+                console.error(`Failed to register action card ${id}: `, error);
+            }
         }
     }
-    start() { }
+    get() {
+        return this.wrapper;
+    }
     register() {
         console.log('Registering triggers');
-        this.TemperatureChanged.register();
-        this.MaxTemperatureChanged.register();
-        this.MinTemperatureChanged.register();
-        this.TooCold.register();
-        this.TooWarm.register();
+        for (const id in this.cards) {
+            this.cards[id].register();
+        }
     }
     enable() {
         console.log('Enabling all triggers');
@@ -819,99 +803,15 @@ class Triggers {
         console.log('Disabling all triggers');
         this.enabled = false;
     }
-    /**
-     * A temperature changed
-     * @param zone zone #sample:Kitchen
-     * @param temperature average temperature #sample:14.5
-     */
-    onTemperatureChanged(zone, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.enabled) {
-                return;
-            }
-            yield this.TemperatureChanged.trigger({
-                temperature,
-                zone,
-            });
-        });
-    }
-    /**
-     * The temperature is too cold
-     * @param zone zone #sample:Kitchen
-     * @param temperature temperature #sample:14.5
-     */
-    onTooCold(zone, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.enabled) {
-                return;
-            }
-            yield this.TooCold.trigger({
-                temperature,
-                zone,
-            });
-        });
-    }
-    /**
-     * The temperature is too warm
-     * @param zone zone #sample:Kitchen
-     * @param temperature temperature #sample:14.5
-     */
-    onTooWarm(zone, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.enabled) {
-                return;
-            }
-            yield this.TooWarm.trigger({
-                temperature,
-                zone,
-            });
-        });
-    }
-    /**
-     * The minimum temperature for a zone changed
-     * @param zone zone #sample:Kitchen
-     * @param sensor Thermometer #sample:Wall thermometer
-     * @param temperature minimum temperature #sample:14.5
-     */
-    onMinTemperatureChanged(zone, sensor, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.enabled) {
-                return;
-            }
-            yield this.MinTemperatureChanged.trigger({
-                sensor,
-                temperature,
-                zone,
-            });
-        });
-    }
-    /**
-     * The maximum temperature for a zone changed
-     * @param zone zone #sample:Kitchen
-     * @param sensor Thermometer #sample:Wall thermometer
-     * @param temperature maximum temperature #sample:14.5
-     */
-    onMaxTemperatureChanged(zone, sensor, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.enabled) {
-                return;
-            }
-            yield this.MaxTemperatureChanged.trigger({
-                sensor,
-                temperature,
-                zone,
-            });
-        });
-    }
 }
 __decorate([
     utils_1.Catch()
-], Triggers.prototype, "register", null);
-exports.Triggers = Triggers;
+], TriggerManager.prototype, "register", null);
+exports.TriggerManager = TriggerManager;
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -926,7 +826,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Zone_1 = __webpack_require__(12);
+const Zone_1 = __webpack_require__(11);
 class Zones {
     constructor(triggerManager, listener) {
         this.triggerManager = triggerManager;
@@ -1053,7 +953,7 @@ exports.Zones = Zones;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1074,7 +974,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Thermometer_1 = __webpack_require__(13);
+const Thermometer_1 = __webpack_require__(12);
 const utils_1 = __webpack_require__(1);
 class Zone {
     constructor(triggers, listener, id, name, ignored, notMonitored, devicesIgnored) {
@@ -1257,29 +1157,29 @@ class Zone {
         return __awaiter(this, void 0, void 0, function* () {
             this.maxTemp = temperature;
             this.maxSensor = name;
-            yield this.triggers.onMaxTemperatureChanged(this.name, name, this.maxTemp);
+            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.maxTemp });
         });
     }
     onMinUpdated(name, temperature) {
         return __awaiter(this, void 0, void 0, function* () {
             this.minTemp = temperature;
             this.minSensor = name;
-            yield this.triggers.onMinTemperatureChanged(this.name, name, this.minTemp);
+            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.minTemp });
         });
     }
     onTempUpdated() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.notMonitored) {
-                yield this.triggers.onTemperatureChanged(this.name, this.current);
+                yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
             }
             if (this.current > this.maxAllowed) {
-                yield this.triggers.onTooWarm(this.name, this.current);
+                yield this.triggers.TooWarm({ zone: this.name, temperature: this.current });
             }
             else if (this.current < this.minAllowed) {
-                yield this.triggers.onTooCold(this.name, this.current);
+                yield this.triggers.TooCold({ zone: this.name, temperature: this.current });
             }
             else {
-                yield this.triggers.onTemperatureChanged(this.name, this.current);
+                yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
             }
         });
     }
@@ -1291,7 +1191,7 @@ exports.Zone = Zone;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

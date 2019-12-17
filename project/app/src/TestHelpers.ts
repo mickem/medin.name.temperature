@@ -1,5 +1,5 @@
 import { IManager } from './interfaces/IManager';
-import { Triggers } from './Triggers';
+import { ITriggers } from './Triggers';
 import { Zone } from './Zone';
 import { Zones } from './Zones';
 
@@ -20,7 +20,7 @@ export function makeDevice(id = '1234', name = 'demo device', zoneId = '2345', z
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) {},
+    makeCapabilityInstance(capabilityId: string, listener: any) { },
   };
 }
 export function makeZone(
@@ -32,24 +32,24 @@ export function makeZone(
 ) {
   return new Zone(
     {
-      onMaxTemperatureChanged(): Promise<void> {
+      MaxTemperatureChanged(): Promise<void> {
         return;
       },
-      onMinTemperatureChanged(): Promise<void> {
+      MinTemperatureChanged(): Promise<void> {
         return;
       },
-      onTemperatureChanged(): Promise<void> {
+      TemperatureChanged(): Promise<void> {
         return;
       },
-      onTooCold(): Promise<void> {
+      TooCold(): Promise<void> {
         return;
       },
-      onTooWarm(): Promise<void> {
+      TooWarm(): Promise<void> {
         return;
       },
     },
     {
-      onZoneUpdated() {},
+      onZoneUpdated() { },
     },
     id,
     name,
@@ -61,24 +61,24 @@ export function makeZone(
 export function makeZones() {
   return new Zones(
     {
-      onMaxTemperatureChanged(): Promise<void> {
+      MaxTemperatureChanged(): Promise<void> {
         return;
       },
-      onMinTemperatureChanged(): Promise<void> {
+      MinTemperatureChanged(): Promise<void> {
         return;
       },
-      onTemperatureChanged(): Promise<void> {
+      TemperatureChanged(): Promise<void> {
         return;
       },
-      onTooCold(): Promise<void> {
+      TooCold(): Promise<void> {
         return;
       },
-      onTooWarm(): Promise<void> {
+      TooWarm(): Promise<void> {
         return;
       },
     },
     {
-      onZoneUpdated() {},
+      onZoneUpdated() { },
     },
   );
 }
@@ -100,7 +100,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) {},
+    makeCapabilityInstance(capabilityId: string, listener: any) { },
   };
 }
 
@@ -111,19 +111,15 @@ export class FakeManager implements IManager {
   public getMaxTemp() {
     return 12;
   }
-  public getTriggers() {
-    return ({
-      register() {},
-      enable() {},
-      disable() {},
+  public getTriggers(): ITriggers {
+    return {
+      async MaxTemperatureChanged(args) { },
+      async MinTemperatureChanged(args) { },
 
-      async onMaxUpdated(zone: string, device: string, temp: number) {},
-      async onMinUpdated(zone: string, device: string, temp: number) {},
-
-      async onTooWarm(zone: string, temp: number) {},
-      async onTooCold(zone: string, temp: number) {},
-      async onTempUpdated(zone: string, temp: number) {},
-    } as any) as Triggers;
+      async TooWarm(args) { },
+      async TooCold(args) { },
+      async TemperatureChanged(args) { },
+    };
   }
   public getZones() {
     return {};

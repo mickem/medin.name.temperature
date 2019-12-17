@@ -8,13 +8,14 @@ import { IDeviceList } from './interfaces/IDeviceType';
 import { IManager } from './interfaces/IManager';
 import { JobManager } from './JobManager';
 import { IAppState, IDeviceConfig, ISettings, SettingsManager } from './SettingsManager';
-import { Triggers } from './Triggers';
+import { TriggerManager } from './TriggerManager';
+import { ITriggers } from './Triggers';
 import { Catch } from './utils';
 import { IZoneList, Zones } from './Zones';
 
 export class TempManager implements IManager {
   private api: HomeyAPI | undefined;
-  private triggers: Triggers;
+  private triggers: TriggerManager<ITriggers>;
   private actions: ActionManager<IActionHandler>;
   private zones: Zones;
   private deviceManager: DeviceManager;
@@ -24,8 +25,8 @@ export class TempManager implements IManager {
   constructor() {
     console.log(`Starting temperature manager ${__VERSION}, build ${__BUILD}`);
     this.api = undefined;
-    this.triggers = new Triggers();
-    this.zones = new Zones(this.triggers, {
+    this.triggers = new TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
+    this.zones = new Zones(this.triggers.get(), {
       onZoneUpdated: () => {
         this.settingsManager.setState({
           zones: this.zones.getState(),
@@ -104,14 +105,14 @@ export class TempManager implements IManager {
 
     this.triggers.register();
     this.actions.register();
-    this.triggers.disable();
 
+    this.triggers.disable();
     await this.deviceManager.start();
     this.triggers.enable();
-    console.log('Application loaded');
+    console.log('Application loaded, triggers enabled');
   }
-  public getTriggers(): Triggers {
-    return this.triggers;
+  public getTriggers(): ITriggers {
+    return this.triggers.get();
   }
 
   public getZones(): IZoneList {

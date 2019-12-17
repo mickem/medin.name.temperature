@@ -52,11 +52,11 @@ describe('managing zones', () => {
     await zones.addDevice(makeDevice('id3', 'test 3', 'another id', 'zone 2'));
     await zones.addDevice(makeDevice('id4', 'test 3', 'another id', 'zone 2'));
     expect(Object.keys(zones.getAll())).toContain('id');
-    expect(zones.getAll()['id']).toHaveProperty('devices');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual(['id1', 'id2']);
+    expect(zones.getAll().id).toHaveProperty('devices');
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id1', 'id2']);
     expect(Object.keys(zones.getAll())).toContain('another id');
     expect(zones.getAll()['another id']).toHaveProperty('devices');
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual(['id3', 'id4']);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3', 'id4']);
   });
   test('find added devices', async () => {
     expect(zones.findDevice('id1')).toBeDefined();
@@ -76,29 +76,29 @@ describe('managing zones', () => {
     const t1 = zones.findDevice('id1');
     const t2 = zones.findDevice('id4');
     expect(Object.keys(zones.getAll())).toContain('id');
-    expect(zones.getAll()['id']).toHaveProperty('devices');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual(['id1', 'id2']);
+    expect(zones.getAll().id).toHaveProperty('devices');
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id1', 'id2']);
     expect(Object.keys(zones.getAll())).toContain('another id');
     expect(zones.getAll()['another id']).toHaveProperty('devices');
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual(['id3', 'id4']);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3', 'id4']);
     await zones.moveDevice(t1, 'id', 'another id', 'The new name');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual(['id2']);
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual(['id3', 'id4', 'id1']);
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id2']);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3', 'id4', 'id1']);
     await zones.moveDevice(t2, 'another id', 'id', 'The new name');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual(['id2', 'id4']);
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual(['id3', 'id1']);
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id2', 'id4']);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3', 'id1']);
   });
   test('removed devices', async () => {
     await zones.removeDeviceById('id2');
     await zones.removeDeviceById('id1');
-    expect(zones.getAll()['id']).toHaveProperty('devices');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual(['id4']);
+    expect(zones.getAll().id).toHaveProperty('devices');
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id4']);
     expect(zones.getAll()['another id']).toHaveProperty('devices');
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual(['id3']);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3']);
     await zones.removeDeviceById('id3');
     await zones.removeDeviceById('id4');
-    expect(zones.getAll()['id']['devices'].map(d => d.id)).toEqual([]);
-    expect(zones.getAll()['another id']['devices'].map(d => d.id)).toEqual([]);
+    expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual([]);
+    expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual([]);
   });
   test('removed zones should be removed', () => {
     zones.removeZone('id');

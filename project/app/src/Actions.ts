@@ -1,6 +1,3 @@
-import Homey from 'homey';
-import { Catch } from './utils';
-
 export interface IActionHandler {
   /**
    * Set the maximum or minimum temperature bounds
