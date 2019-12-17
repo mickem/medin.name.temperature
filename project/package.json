@@ -1,5 +1,5 @@
 {
-  "name": "medin.name.temperatures",
+  "name": "name.medin.temperatures",
   "version": "1.0.4",
   "description": "A temperature manager for homey",
   "main": "index.js",
@@ -38,6 +38,7 @@
     "cpx": "^1.5.0",
     "css-loader": "^3.2.1",
     "homey-lib": "^2.4.5",
+    "homey-ts-composer": "^1.0.0",
     "html-minifier": "^4.0.0",
     "html-minifier-terser": "^5.0.2",
     "html-webpack-inline-source-plugin": "0.0.10",

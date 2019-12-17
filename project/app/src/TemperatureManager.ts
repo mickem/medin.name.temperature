@@ -1,6 +1,7 @@
 import { HomeyAPI } from 'athom-api';
 import Homey from 'homey';
 import { ActionManager } from './ActionManager';
+import { IActionHandler } from './Actions';
 import { DeviceManager } from './DeviceManager';
 import { __ } from './HomeyWrappers';
 import { IDeviceList } from './interfaces/IDeviceType';
@@ -14,16 +15,16 @@ import { IZoneList, Zones } from './Zones';
 export class TempManager implements IManager {
   private api: HomeyAPI | undefined;
   private triggers: Triggers;
-  private actions: ActionManager;
+  private actions: ActionManager<IActionHandler>;
   private zones: Zones;
   private deviceManager: DeviceManager;
   private settingsManager: SettingsManager;
   private jobManager: JobManager;
 
   constructor() {
+    console.log(`Starting temperature manager ${__VERSION}, build ${__BUILD}`);
     this.api = undefined;
     this.triggers = new Triggers();
-    console.log('creating zoned');
     this.zones = new Zones(this.triggers, {
       onZoneUpdated: () => {
         this.settingsManager.setState({
@@ -34,10 +35,10 @@ export class TempManager implements IManager {
     this.actions = new ActionManager({
       SetTemperatureBounds: args => {
         if (args.type === 'min') {
-          console.log('---> set min temperature bound: ', args.temperature);
+          console.log(`A flow updated the minimum temperature bound to ${args.temperature}`);
           this.settingsManager.setSettings({ minTemperature: args.temperature });
         } else if (args.type === 'max') {
-          console.log('---> set max temperature bound: ', args.temperature);
+          console.log(`A flow updated the maximum temperature bound to ${args.temperature}`);
           this.settingsManager.setSettings({ maxTemperature: args.temperature });
         } else {
           console.error(`Unknown bound ${args.type}`);
@@ -52,21 +53,21 @@ export class TempManager implements IManager {
           return false;
         }
         if (args.mode === 'enabled') {
-          console.log('---> SetZoneMode enabling: ', zone.getId());
+          console.log(`A flow enabled ${zone.getId()} as ${zone.getName()}`);
           this.settingsManager.addZoneEnabled(zone.getId());
         } else if (args.mode === 'disabled') {
-          console.log('---> SetZoneMode disabling: ', zone.getId());
+          console.log(`A flow disabled ${zone.getId()} as ${zone.getName()}`);
           this.settingsManager.addZoneDisabled(zone.getId());
         } else if (args.mode === 'monitored') {
-          console.log('---> SetZoneMode monitored: ', zone.getId());
+          console.log(`A flow set ${zone.getId()} as ${zone.getName()} to monitored`);
           this.settingsManager.addZoneMonitored(zone.getId());
         } else {
+          console.error(`A flow set unkown mode (${args.mode}) for ${args.zone}`);
           return false;
         }
         return true;
       },
     });
-    console.log('creating settings manager', this.settingsManager);
     this.settingsManager = new SettingsManager({
       onAppState: (state: IAppState) => {
         if (state.zones) {
@@ -74,7 +75,6 @@ export class TempManager implements IManager {
         }
       },
       onDeviceConfigUpdated: async (config: IDeviceConfig) => {
-        console.log('Device configuration updated: ', config);
         await this.zones.updateDevices(
           config.zonesIgnored || [],
           config.zonesNotMonitored || [],
@@ -82,13 +82,10 @@ export class TempManager implements IManager {
         );
       },
       onSettingsUpdated: async (settings: ISettings) => {
-        console.log('Settings updated: ', settings);
         this.zones.onUpdateSettings(settings);
         await this.jobManager.onSettinsUpdated(settings.dailyReset);
       },
     });
-    console.log('created settings manager', this.settingsManager);
-    console.log('job manager');
     this.jobManager = new JobManager({
       onResetMaxMin() {
         console.log('Reseting all zones max/min temperatures: ' + new Date());
@@ -99,12 +96,10 @@ export class TempManager implements IManager {
 
   @Catch()
   public async onInit() {
-    console.log(__('title'));
-
+    console.log(`Booting temperature manager`);
     this.api = await HomeyAPI.forCurrentHomey();
     this.deviceManager = new DeviceManager(this.api, this.zones);
     await this.settingsManager.start();
-
     await this.jobManager.start();
 
     this.triggers.register();
