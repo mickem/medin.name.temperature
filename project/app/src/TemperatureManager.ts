@@ -1,11 +1,10 @@
 import { HomeyAPI } from 'athom-api';
-import Homey from 'homey';
 import { ActionManager } from './ActionManager';
 import { IActionHandler } from './Actions';
 import { DeviceManager } from './DeviceManager';
 import { __ } from './HomeyWrappers';
 import { IDeviceList } from './interfaces/IDeviceType';
-import { IManager } from './interfaces/IManager';
+import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { JobManager } from './JobManager';
 import { IAppState, IDeviceConfig, ISettings, SettingsManager } from './SettingsManager';
 import { TriggerManager } from './TriggerManager';
@@ -13,7 +12,8 @@ import { ITriggers } from './Triggers';
 import { Catch } from './utils';
 import { IZoneList, Zones } from './Zones';
 
-export class TempManager implements IManager {
+interface IZoneLisener { [key: string]: Array<() => void> }
+export class TempManager implements ITemperatureManager {
   private api: HomeyAPI | undefined;
   private triggers: TriggerManager<ITriggers>;
   private actions: ActionManager<IActionHandler>;
@@ -21,13 +21,22 @@ export class TempManager implements IManager {
   private deviceManager: DeviceManager;
   private settingsManager: SettingsManager;
   private jobManager: JobManager;
+  private listeners: IZoneLisener;
+  private loaded: boolean;
 
   constructor() {
+    this.loaded = false;
     console.log(`Starting temperature manager`);
     this.api = undefined;
+    this.listeners = {}
     this.triggers = new TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
     this.zones = new Zones(this.triggers.get(), {
-      onZoneUpdated: () => {
+      onZoneUpdated: (id: string) => {
+        if (this.listeners[id] !== undefined) {
+          for (const cb of this.listeners[id]) {
+            cb();
+          }
+        }
         this.settingsManager.setState({
           zones: this.zones.getState(),
         });
@@ -88,7 +97,7 @@ export class TempManager implements IManager {
       },
     });
     this.jobManager = new JobManager({
-      onResetMaxMin() {
+      onResetMaxMin: () => {
         console.log('Reseting all zones max/min temperatures: ' + new Date());
         this.zones.resetMaxMin();
       },
@@ -109,7 +118,15 @@ export class TempManager implements IManager {
     this.triggers.disable();
     await this.deviceManager.start();
     this.triggers.enable();
-    console.log('Application loaded, triggers enabled');
+
+    for (const key in this.listeners) {
+      for (const cb of this.listeners[key]) {
+        cb();
+      }
+    }
+
+    console.log(`${this.zones.countDevices()} devices monitored, enabling triggers`);
+    this.loaded = true;
   }
   public getTriggers(): ITriggers {
     return this.triggers.get();
@@ -117,6 +134,17 @@ export class TempManager implements IManager {
 
   public getZones(): IZoneList {
     return this.zones.getAll();
+  }
+  public subscribeToZone(id: string, callback: () => void) {
+    if (id in this.listeners) {
+      this.listeners[id].push(callback);
+    } else {
+      this.listeners[id] = [callback];
+    }
+    if (this.loaded) {
+      callback();
+    }
+
   }
 
   public async getDevices(): Promise<IDeviceList> {

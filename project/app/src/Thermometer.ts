@@ -47,9 +47,12 @@ export class Thermometer {
   }
 
   public setIgnored(ignored: boolean): boolean {
-    const ret = this.ignored !== ignored;
-    this.ignored = ignored;
-    return true;
+    if (this.ignored !== ignored) {
+      console.log(`Device ignored status changed for ${this.name} to ${ignored}`);
+      this.ignored = ignored;
+      return true;
+    }
+    return false;
   }
 
   public hasTemp() {

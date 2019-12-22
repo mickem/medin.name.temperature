@@ -1,5 +1,5 @@
 import { IDeviceType } from './interfaces/IDeviceType';
-import { IManager } from './interfaces/IManager';
+import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 import { ITriggers } from './Triggers';
@@ -107,6 +107,10 @@ export class Zones {
     await newZone.addThermometer(thermometer);
     await oldZone.removeDevice(thermometer.id);
     thermometer.setZone(newZone);
+  }
+
+  public countDevices() : number{
+    return Object.values(this.zones).map(z => z.countDevices()).reduce((t, v) => t+v, 0);
   }
 
   public getAll(): IZoneList {

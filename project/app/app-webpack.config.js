@@ -2,7 +2,13 @@ const path = require('path');
 
 module.exports = {
     devtool: false,
-    entry: './src/app.ts',
+    entry: {
+        app: './src/app.ts',
+        "drivers/zone-temperature-cur/driver": './src/drivers/zone-temperature-cur/driver.ts',
+        "drivers/zone-temperature-cur/device": './src/drivers/zone-temperature-cur/device.ts',
+        "drivers/zone-temperature-daily/driver": './src/drivers/zone-temperature-daily/driver.ts',
+        "drivers/zone-temperature-daily/device": './src/drivers/zone-temperature-daily/device.ts',
+    },
     externals: [
         {
             'athom-api': "athom-api",
@@ -13,7 +19,7 @@ module.exports = {
     plugins: [
     ],
     output: {
-        filename: 'app.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, '../..'),
         library: 'library',
         libraryTarget: 'umd',

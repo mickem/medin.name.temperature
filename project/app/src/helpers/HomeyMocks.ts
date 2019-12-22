@@ -1,5 +1,3 @@
-import Homey from 'homey';
-
 const Homey = {
     FlowCardAction: class FlowCardAction {
         public name: string;

@@ -1,13 +1,13 @@
 import Homey from 'homey';
 import { IDeviceList, IDeviceType } from './interfaces/IDeviceType';
-import { IManager } from './interfaces/IManager';
+import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { Zone } from './Zone';
 
 module.exports = [
   {
     description: 'Retrieve all devices with their information',
     fn: (args, callback) => {
-      (Homey.app.get() as IManager)
+      (Homey.app.get() as ITemperatureManager)
         .getDevices()
         .then((res: IDeviceList) => {
           callback(
@@ -54,12 +54,12 @@ module.exports = [
   {
     description: 'Retrieve all zones with their information',
     fn: (args, callback) => {
-      const res = Object.values((Homey.app.get() as IManager).getZones())
+      const res = Object.values((Homey.app.get() as ITemperatureManager).getZones())
         .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({
           id: zone.getId(),
-          max: zone.getMax(),
-          min: zone.getMin(),
+          max: zone.getDailyMax(),
+          min: zone.getDailyMin(),
           name: zone.getName(),
           temperature: zone.getTemperature(),
         }))

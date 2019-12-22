@@ -469,5 +469,99 @@
         }
       }
     ]
-  }
+  },
+  "drivers": [
+    {
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "capabilities": [
+        "measure_temperature.max",
+        "measure_temperature.min",
+        "measure_temperature"
+      ],
+      "capabilitiesOptions": {
+        "measure_temperature.max": {
+          "title": {
+            "en": "Maximum temperature"
+          }
+        },
+        "measure_temperature.min": {
+          "title": {
+            "en": "Minimum temperature"
+          }
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Current temperature"
+          }
+        }
+      },
+      "name": {
+        "en": "Virtual thermometer for current values."
+      },
+      "class": "sensor",
+      "images": {
+        "large": "/assets/drivers/zone-temperature-cur/large.png",
+        "small": "/assets/drivers/zone-temperature-cur/small.png"
+      },
+      "id": "zone-temperature-cur"
+    },
+    {
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_my_devices"
+          }
+        },
+        {
+          "id": "add_my_devices",
+          "template": "add_devices"
+        }
+      ],
+      "capabilities": [
+        "measure_temperature.max",
+        "measure_temperature.min",
+        "measure_temperature"
+      ],
+      "capabilitiesOptions": {
+        "measure_temperature.max": {
+          "title": {
+            "en": "Maximum temperature"
+          }
+        },
+        "measure_temperature.min": {
+          "title": {
+            "en": "Minimum temperature"
+          }
+        },
+        "measure_temperature": {
+          "title": {
+            "en": "Current temperature"
+          }
+        }
+      },
+      "name": {
+        "en": "Virtual thermometer for daily averages."
+      },
+      "class": "sensor",
+      "images": {
+        "large": "/assets/drivers/zone-temperature-daily/large.png",
+        "small": "/assets/drivers/zone-temperature-daily/small.png"
+      },
+      "id": "zone-temperature-daily"
+    }
+  ]
 }

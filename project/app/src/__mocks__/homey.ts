@@ -1,36 +1,46 @@
-const Homey = {
-    FlowCardAction: class FlowCardAction {
-        public name: string;
-        public handler: any;
-        constructor(name: string) {
-            this.name = `$$${name}`;
-            if (name === "throw") {
-                throw new Error('This is a simulated homey');
+export class FlowCardAction {
+    public name: string;
+    public handler: any;
+    constructor(name: string) {
+        this.name = `$$${name}`;
+        if (name === "throw") {
+            throw new Error('This is a simulated homey');
+        }
+    }
+    public register() {
+        return {
+            registerRunListener: (handler) => {
+                this.handler = handler;
             }
         }
-        public register() {
-            return {
-                registerRunListener: (handler) => {
-                    this.handler = handler;
-                }
-            }
-
-        }
-    },
-    // tslint:disable-next-line: max-classes-per-file
-    FlowCardTrigger: class FlowCardTrigger {
-        public name: string;
-        public handler: any;
-        constructor(name: string) {
-            this.name = `$$${name}`;
-            if (name === "throw") {
-                throw new Error('This is a simulated homey');
-            }
-        }
-        public register() {
-        }
-        public trigger(args) {
-        }
-    },
+    }
 }
-export default Homey;
+// tslint:disable-next-line: max-classes-per-file
+export class FlowCardTrigger {
+    public name: string;
+    public handler: any;
+    constructor(name: string) {
+        this.name = `$$${name}`;
+        if (name === "throw") {
+            throw new Error('This is a simulated homey');
+        }
+    }
+    public register() {
+    }
+    public trigger(args) {
+    }
+}
+
+// tslint:disable-next-line: max-classes-per-file
+export class ManagerCron {
+    public getTasks(taskname) {
+        return [];
+
+    }
+    public unregisterTask(taskId: string) {
+
+    }
+    public registerTask(taskname, cron) { }
+
+};
+

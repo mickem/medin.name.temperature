@@ -1,8 +1,8 @@
-import Homey from 'homey';
+import { FlowCardTrigger } from 'homey';
 import { Catch } from './utils';
 
 interface ICardList {
-  [key: string]: Homey.FlowCardTrigger;
+  [key: string]: FlowCardTrigger;
 }
 
 export class TriggerManager<Triggers> {
@@ -18,7 +18,7 @@ export class TriggerManager<Triggers> {
     for (const id of functions) {
       try {
         console.log(`Registring function: ${id}`);
-        this.cards[id] = new Homey.FlowCardTrigger(id);
+        this.cards[id] = new FlowCardTrigger(id);
         (this.wrapper as any)[id] = async (args) => {
           if (!this.enabled) {
             return;

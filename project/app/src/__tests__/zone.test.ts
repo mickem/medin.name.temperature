@@ -1,5 +1,6 @@
 import { ISettings } from '../SettingsManager';
 import { makeDevice, makeDeviceEx, makeZone } from '../TestHelpers';
+import { Thermometer } from '../Thermometer';
 
 test('create zone', () => {
   const z = makeZone('1', 'create zone');
@@ -10,8 +11,8 @@ test('create zone', () => {
   expect(z.getName()).toEqual('create zone');
   expect(z.hasDevice()).toBeFalsy();
   expect((z as any).devices).toHaveLength(0);
-  expect(z.getMin()).toBeUndefined();
-  expect(z.getMax()).toBeUndefined();
+  expect(z.getDailyMin()).toBeUndefined();
+  expect(z.getDailyMax()).toBeUndefined();
   expect((z as any).minSensor).toBeUndefined();
   expect((z as any).maxSensor).toBeUndefined();
   expect((z as any).minAllowed).toEqual(7);
@@ -25,10 +26,8 @@ describe('adding devices', () => {
     expect(z.getId()).toEqual('1');
     expect(z.getName()).toEqual('adding devices');
     expect(z.getTemperature()).toEqual(8);
-    expect(z.getMin()).toEqual(8);
-    expect(z.getMax()).toEqual(8);
-    expect((z as any).minSensor).toEqual('Device');
-    expect((z as any).maxSensor).toEqual('Device');
+    expect(z.getDailyMin()).toEqual(8);
+    expect(z.getDailyMax()).toEqual(8);
   });
 
   test('change name', async () => {
@@ -45,10 +44,8 @@ describe('adding devices', () => {
     await z.addDevice(makeDeviceEx('123456', 'Device', 'zone1', 'zone one', undefined));
     expect((z as any).devices).toHaveLength(1);
     expect(z.getTemperature()).toEqual(undefined);
-    expect(z.getMin()).toEqual(undefined);
-    expect(z.getMax()).toEqual(undefined);
-    expect((z as any).minSensor).toEqual(undefined);
-    expect((z as any).maxSensor).toEqual(undefined);
+    expect(z.getDailyMin()).toEqual(undefined);
+    expect(z.getDailyMax()).toEqual(undefined);
   });
 
   test('add multiple devices', async () => {
@@ -58,10 +55,8 @@ describe('adding devices', () => {
     await z.addDevice(makeDevice('3', 'Device 3', 'zone1', 'zone one', '7'));
     expect((z as any).devices).toHaveLength(3);
     expect(z.hasDevice()).toBeTruthy();
-    expect(z.getMin()).toEqual(7);
-    expect(z.getMax()).toEqual(9);
-    expect((z as any).minSensor).toEqual('Device 3');
-    expect((z as any).maxSensor).toEqual('Device 2');
+    expect(z.getDailyMin()).toEqual(7);
+    expect(z.getDailyMax()).toEqual(9);
   });
 });
 describe('update temperature', () => {
@@ -72,15 +67,108 @@ describe('update temperature', () => {
     await z.addDevice(makeDevice('3', 'Device 3', 'zone1', 'zone one', '7'));
   });
   test('update should work', async () => {
-    expect(z.getMax()).toEqual(9);
-    expect((z as any).maxSensor).toEqual('Device 2');
+    expect(z.getDailyMax()).toEqual(9);
     expect(z.getTemperature()).toEqual(8);
     const t = z.findDevice('3');
     await t.update(22);
-    expect(z.getMax()).toEqual(22);
-    expect((z as any).maxSensor).toEqual('Device 3');
+    expect(z.getDailyMax()).toEqual(22);
     expect(z.getTemperature()).toEqual(13);
   });
+});
+
+
+describe('ensure not monigored works', () => {
+  const z = makeZone('1', 'update temp');
+  const TemperatureChanged = jest.spyOn((z as any).triggers, 'TemperatureChanged');
+  const TooCold = jest.spyOn((z as any).triggers, 'TooCold');
+  const TooWarm = jest.spyOn((z as any).triggers, 'TooWarm');
+  let t: Thermometer;
+  beforeAll(async () => {
+    z.onUpdateSettings({
+      maxTemperature: 9,
+      minTemperature: 7,
+    })
+    await z.addDevice(makeDevice('1', 'Device 1', 'zone1', 'zone one', '8'));
+    await z.addDevice(makeDevice('2', 'Device 2', 'zone1', 'zone one', '9'));
+    await z.addDevice(makeDevice('3', 'Device 3', 'zone1', 'zone one', '7'));
+    t = z.findDevice('3');
+  });
+
+  test('setup', () => {
+    expect(z.getDailyMax()).toEqual(9);
+    expect(z.getDailyMin()).toEqual(7);
+    expect(z.getTemperature()).toEqual(8);
+  })
+  test('enable monitoring', async () => {
+    z.setNotMonitored(false);
+    TemperatureChanged.mockClear();
+    TooCold.mockClear();
+    TooWarm.mockClear();
+  })
+
+  test('monitored should fire: TemperatureChanged', async () => {
+    await t.update(9);
+    expect(z.getTemperature()).toEqual(8.7);
+    expect(TemperatureChanged).toBeCalledTimes(1);
+    expect(TemperatureChanged).toBeCalledWith({ temperature: 8.7, zone: "update temp" });
+  })
+  test('monitored should fire: TooCold', async () => {
+    await t.update(1);
+    expect(z.getDailyMin()).toEqual(1);
+    expect(TooCold).toBeCalledTimes(1);
+    expect(TooCold).toBeCalledWith({ temperature: 6, zone: "update temp" });
+  })
+  test('monitored should fire: TooWarm', async () => {
+    await t.update(12);
+    expect(z.getDailyMax()).toEqual(12);
+    expect(TooWarm).toBeCalledTimes(1);
+    expect(TooWarm).toBeCalledWith({ temperature: 9.7, zone: "update temp" });
+  })
+
+  test('disable monitoring', async () => {
+    z.setNotMonitored(true);
+    TemperatureChanged.mockClear();
+    TooCold.mockClear();
+    TooWarm.mockClear();
+  })
+
+  test('monitored should still fire: TemperatureChanged', async () => {
+    await t.update(10);
+    expect(z.getTemperature()).toEqual(9);
+    expect(TemperatureChanged).toBeCalledTimes(1);
+    expect(TemperatureChanged).toBeCalledWith({ temperature: 9, zone: "update temp" });
+  })
+  test('monitored should not fire: TooCold', async () => {
+    await t.update(0);
+    expect(TooCold).not.toBeCalled();
+  })
+  test('monitored should not fire: TooWarm', async () => {
+    await t.update(23);
+    expect(TooWarm).not.toBeCalled();
+  })
+
+  test('re-enable monitoring', async () => {
+    z.setNotMonitored(false);
+    TemperatureChanged.mockClear();
+    TooCold.mockClear();
+    TooWarm.mockClear();
+  })
+  test('monitored should still(!) fire: TemperatureChanged', async () => {
+    await t.update(10);
+    expect(z.getTemperature()).toEqual(9);
+    expect(TemperatureChanged).toBeCalledTimes(1);
+    expect(TemperatureChanged).toBeCalledWith({ temperature: 9, zone: "update temp" });
+  })
+  test('monitored should fire again: TooCold', async () => {
+    await t.update(0);
+    expect(TooCold).toBeCalledTimes(1);
+    expect(TooCold).toBeCalledWith({ temperature: 5.7, zone: "update temp" });
+  })
+  test('monitored should fire again: TooWarm', async () => {
+    await t.update(23);
+    expect(TooWarm).toBeCalledTimes(1);
+    expect(TooWarm).toBeCalledWith({ temperature: 13.3, zone: "update temp" });
+  })
 });
 
 describe('device by id', () => {
@@ -134,20 +222,57 @@ test('can reset max/min', async () => {
   await t.update(2);
 
   expect(z.getTemperature()).toEqual(2);
-  expect(z.getMin()).toEqual(-4);
-  expect(z.getMax()).toEqual(66);
+  expect(z.getDailyMin()).toEqual(-4);
+  expect(z.getDailyMax()).toEqual(66);
 
   z.resetMaxMin();
 
   expect(z.getTemperature()).toEqual(2);
-  expect(z.getMin()).toBeUndefined();
-  expect(z.getMax()).toBeUndefined();
+  expect(z.getDailyMin()).toBeUndefined();
+  expect(z.getDailyMax()).toBeUndefined();
 
   await t.update(4);
 
   expect(z.getTemperature()).toEqual(4);
-  expect(z.getMin()).toEqual(4);
-  expect(z.getMax()).toEqual(4);
+  expect(z.getDailyMin()).toEqual(4);
+  expect(z.getDailyMax()).toEqual(4);
+});
+
+
+
+describe('max min notifications works', () => {
+  const z = makeZone('1', 'update temp');
+  const MaxTemperatureChanged = jest.spyOn((z as any).triggers, 'MaxTemperatureChanged');
+  const MinTemperatureChanged = jest.spyOn((z as any).triggers, 'MinTemperatureChanged');
+  let t: Thermometer;
+  beforeAll(async () => {
+    await z.addDevice(makeDevice('1', 'Device 1', 'zone1', 'zone one', '8'));
+    await z.addDevice(makeDevice('2', 'Device 2', 'zone1', 'zone one', '9'));
+    await z.addDevice(makeDevice('3', 'Device 3', 'zone1', 'zone one', '7'));
+    t = z.findDevice('3');
+  });
+
+  test('setup', () => {
+    expect(z.getDailyMax()).toEqual(9);
+    expect(z.getDailyMin()).toEqual(7);
+    expect(z.getTemperature()).toEqual(8);
+    MaxTemperatureChanged.mockClear();
+    MinTemperatureChanged.mockClear();
+  })
+  test('should fire: MinTemperatureChanged', async () => {
+    await t.update(1);
+    expect(z.getDailyMin()).toEqual(1);
+    expect(MinTemperatureChanged).toBeCalledTimes(1);
+    expect(MinTemperatureChanged).toBeCalledWith({ temperature: 1, sensor: "Device 3", zone: "update temp" });
+    expect(MaxTemperatureChanged).not.toBeCalled();
+  })
+  test('should fire: MinTemperatureChanged', async () => {
+    await t.update(12);
+    expect(z.getDailyMax()).toEqual(12);
+    expect(MaxTemperatureChanged).toBeCalledTimes(1);
+    expect(MaxTemperatureChanged).toBeCalledWith({ temperature: 12, sensor: "Device 3", zone: "update temp" });
+    expect(MinTemperatureChanged).toBeCalledTimes(1);
+  })
 });
 
 test('ignored zones', async () => {

@@ -1,3 +1,4 @@
+import Average, { IAverageState } from './helpers/Average';
 import { IDeviceType } from './interfaces/IDeviceType';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
@@ -6,12 +7,13 @@ import { Catch } from './utils';
 
 export interface IZoneState {
   minTemp: number;
-  minSensor: string;
   maxTemp: number;
-  maxSensor: string;
+  dailyMax?: number;
+  dailyMin?: number;
+  average?: IAverageState;
 }
 export interface IZoneListener {
-  onZoneUpdated();
+  onZoneUpdated(id: string);
 }
 export class Zone {
   private triggers: ITriggers;
@@ -19,16 +21,17 @@ export class Zone {
   private name: string;
   private id: string;
   private devices: Thermometer[];
-  private minTemp: number;
-  private minSensor: string;
-  private maxTemp: number;
-  private maxSensor: string;
+  private dailyMinTemp: number;
+  private dailyMaxTemp: number;
+  private currentMinTemp: number;
+  private currentMaxTemp: number;
   private minAllowed: number;
   private maxAllowed: number;
   private current: number;
   private ignored: boolean;
   private notMonitored: boolean;
   private devicesIgnored: string[];
+  private avg: Average;
 
   constructor(
     triggers: ITriggers,
@@ -44,14 +47,15 @@ export class Zone {
     this.id = id;
     this.name = name;
     this.devices = [];
-    this.minTemp = undefined;
-    this.minSensor = undefined;
-    this.maxTemp = undefined;
-    this.maxSensor = undefined;
+    this.dailyMinTemp = undefined;
+    this.dailyMaxTemp = undefined;
+    this.currentMinTemp = undefined;
+    this.currentMaxTemp = undefined;
     this.current = undefined;
     this.ignored = ignored;
     this.notMonitored = notMonitored;
     this.devicesIgnored = devicesIgnored;
+    this.avg = new Average();
   }
 
   public getId(): string {
@@ -68,15 +72,29 @@ export class Zone {
   public getTemperature() {
     return this.current;
   }
-  public getMin(): number {
-    return this.minTemp;
+  public getDailyMin(): number {
+    return this.dailyMinTemp;
   }
-  public getMax(): number {
-    return this.maxTemp;
+  public getDailyMax(): number {
+    return this.dailyMaxTemp;
+  }
+  public getCurrentMin(): number {
+    return this.currentMinTemp;
+  }
+  public getCurrentMax(): number {
+    return this.currentMaxTemp;
+  }
+  public getAvg(): number {
+    return this.avg.get();
   }
   public hasDevice(): boolean {
     return this.devices.length > 0;
   }
+
+  public countDevices(): number {
+    return this.devices.length;
+  }
+
 
   public onUpdateSettings(settings: ISettings) {
     this.minAllowed = settings.minTemperature;
@@ -111,12 +129,16 @@ export class Zone {
 
   public async setIgnored(ignored: boolean) {
     if (this.ignored !== ignored) {
+      console.log(`Zone ignore status changed for ${this.name} to ${ignored}`);
       this.ignored = ignored;
       await this.calculateZoneTemp();
     }
   }
   public setNotMonitored(notMonitored: boolean) {
-    this.notMonitored = notMonitored;
+    if (this.notMonitored !== notMonitored) {
+      this.notMonitored = notMonitored;
+      console.log(`Zone not-monitored status changed for ${this.name} to ${notMonitored}`);
+    }
   }
   public async setDevicesIgnored(devicesIgnored: string[]) {
     this.devicesIgnored = devicesIgnored;
@@ -126,12 +148,15 @@ export class Zone {
         hasChanged = true;
       }
     }
-    await this.calculateZoneTemp();
+    if (hasChanged) {
+      await this.calculateZoneTemp();
+    }
   }
 
   public resetMaxMin() {
-    this.minTemp = undefined;
-    this.maxTemp = undefined;
+    this.dailyMinTemp = undefined;
+    this.dailyMaxTemp = undefined;
+    this.avg.reset();
   }
 
   @Catch()
@@ -142,38 +167,46 @@ export class Zone {
     if (!(await this.calculateZoneTemp())) {
       return;
     }
-    if (this.minTemp === undefined) {
+    if (this.dailyMinTemp === undefined) {
       await this.onMinUpdated(thermometer.name, thermometer.temp);
     } else {
-      const minTemp = Math.min(this.minTemp, thermometer.temp);
-      if (this.minTemp !== minTemp) {
+      const minTemp = Math.min(this.dailyMinTemp, thermometer.temp);
+      if (this.dailyMinTemp !== minTemp) {
         await this.onMinUpdated(thermometer.name, thermometer.temp);
       }
     }
-    if (this.maxTemp === undefined) {
+    if (this.dailyMaxTemp === undefined) {
       await this.onMaxUpdated(thermometer.name, thermometer.temp);
     } else {
-      const maxTemp = Math.max(this.maxTemp, thermometer.temp);
-      if (this.maxTemp !== maxTemp) {
+      const maxTemp = Math.max(this.dailyMaxTemp, thermometer.temp);
+      if (this.dailyMaxTemp !== maxTemp) {
         await this.onMaxUpdated(thermometer.name, thermometer.temp);
       }
     }
-    this.listener.onZoneUpdated();
+    this.listener.onZoneUpdated(this.id);
   }
 
   public getState(): IZoneState {
     return {
-      maxSensor: this.maxSensor,
-      maxTemp: this.maxTemp,
-      minSensor: this.minSensor,
-      minTemp: this.minTemp,
+      average: this.avg.getState(),
+      dailyMax: this.dailyMaxTemp,
+      dailyMin: this.dailyMinTemp,
+      maxTemp: this.dailyMaxTemp,
+      minTemp: this.dailyMinTemp,
     };
   }
   public setState(state: IZoneState) {
-    this.maxSensor = state.maxSensor;
-    this.maxTemp = state.maxTemp;
-    this.minSensor = state.minSensor;
-    this.minTemp = state.minTemp;
+    this.dailyMaxTemp = state.maxTemp;
+    this.dailyMinTemp = state.minTemp;
+    if (state.dailyMax) {
+      this.dailyMaxTemp = state.dailyMax;
+    }
+    if (state.dailyMin) {
+      this.dailyMinTemp = state.dailyMin;
+    }
+    if (state.average) {
+      this.avg.setState(state.average);
+    }
   }
 
   public findDevice(id: string): Thermometer | undefined {
@@ -186,6 +219,8 @@ export class Zone {
   }
 
   private async calculateZoneTemp(): Promise<boolean> {
+    let curMin;
+    let curMax;
     if (this.ignored) {
       this.current = undefined;
       return false;
@@ -194,11 +229,23 @@ export class Zone {
     let count = 0;
     for (const device of this.devices) {
       if (device.hasTemp()) {
+        if (curMax === undefined) {
+          curMax = device.temp;
+        } else if (device.temp > curMax) {
+          curMax = device.temp;
+        }
+        if (curMin === undefined) {
+          curMin = device.temp;
+        } else if (device.temp < curMin) {
+          curMin = device.temp;
+        }
         avgTemp += device.temp;
         count++;
       }
     }
     if (count > 0) {
+      this.currentMaxTemp = curMax;
+      this.currentMinTemp = curMin;
       const newCurrent = Math.round((avgTemp / count) * 10) / 10;
       if (newCurrent !== this.current) {
         this.current = newCurrent;
@@ -215,25 +262,22 @@ export class Zone {
   }
 
   private async onMaxUpdated(name: string, temperature: number) {
-    this.maxTemp = temperature;
-    this.maxSensor = name;
-    await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.maxTemp });
+    this.dailyMaxTemp = temperature;
+    await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMaxTemp });
   }
   private async onMinUpdated(name: string, temperature: number) {
-    this.minTemp = temperature;
-    this.minSensor = name;
-    await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.minTemp });
+    this.dailyMinTemp = temperature;
+    await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMinTemp });
   }
   private async onTempUpdated() {
+    this.avg.update(this.current);
+    await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
     if (!this.notMonitored) {
-      await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
-    }
-    if (this.current > this.maxAllowed) {
-      await this.triggers.TooWarm({ zone: this.name, temperature: this.current });
-    } else if (this.current < this.minAllowed) {
-      await this.triggers.TooCold({ zone: this.name, temperature: this.current });
-    } else {
-      await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
+      if (this.current > this.maxAllowed) {
+        await this.triggers.TooWarm({ zone: this.name, temperature: this.current });
+      } else if (this.current < this.minAllowed) {
+        await this.triggers.TooCold({ zone: this.name, temperature: this.current });
+      }
     }
   }
 }

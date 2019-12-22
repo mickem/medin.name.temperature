@@ -7,6 +7,7 @@ export interface IDeviceCapabilityTypeList {
 }
 export interface IDeviceType {
   id: string;
+  driverUri: string;
   name: string;
   ready: boolean;
   zone: string;
@@ -16,6 +17,7 @@ export interface IDeviceType {
     url: string;
   };
 
+  capabilities: string[];
   capabilitiesObj: IDeviceCapabilityTypeList;
 
   makeCapabilityInstance(capabilityId: string, listener: any);

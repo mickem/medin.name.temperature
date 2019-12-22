@@ -7,7 +7,13 @@ import { Zones } from './Zones';
 const delay = time => new Promise(res => setTimeout(res, time));
 
 const isThermometer = (device: IDeviceType) => {
-  return 'measure_temperature' in device.capabilitiesObj;
+  if (device.capabilitiesObj) {
+    return 'measure_temperature' in device.capabilitiesObj;
+  } else  if (device.capabilities) {
+    return 'measure_temperature' in device.capabilities;
+  }
+  console.log(`Failed to finc capabilities list from: `, device);
+  return false;
 };
 
 export class DeviceManager {
@@ -52,6 +58,9 @@ export class DeviceManager {
         return;
       }
       const d = this.zones.findDevice(device.id);
+      if (!d) {
+        return;
+      }
       if (d && d.getZoneId() !== device.zone) {
         await this.zones.moveDevice(d, d.getZoneId(), device.zone, device.zoneName);
       }
@@ -59,14 +68,11 @@ export class DeviceManager {
         d.setName(device.name);
       }
     } catch (error) {
-      console.error(`Failed to handle device.update: ${error}`);
+      console.error(`Failed to handle device.update: ${error}`, error);
     }
   }
   private async onDeviceDelete(device: IDeviceType) {
     try {
-      if (!isThermometer(device)) {
-        return;
-      }
       await this.zones.removeDeviceById(device.id);
     } catch (error) {
       console.error(`Failed to handle device.delete: ${error}`);
@@ -121,6 +127,10 @@ export class DeviceManager {
         if (!allDevices[id].ready) {
           console.log('Skipping: ', allDevices[id]);
         }
+        continue;
+      }
+      if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures') {
+        console.log(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
         continue;
       }
       const device = await this.waitForDevice(allDevices[id], 12);

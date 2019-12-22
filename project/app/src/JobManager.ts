@@ -1,5 +1,4 @@
-import Homey from 'homey';
-import { ICronTaskType } from './interfaces/ICronTaskType';
+import {ManagerCron} from 'homey';
 
 const taskname = 'dailyreset';
 
@@ -27,10 +26,10 @@ export class JobManager {
     try {
       console.log('installing scheduled tasks');
       try {
-        const tasks = (await (Homey.ManagerCron as any).getTasks(taskname)) as ICronTaskType[];
+        const tasks = (await ManagerCron.getTasks(taskname));
         for (const task of tasks) {
           console.log(`Uninstalling task: ${task.id}`);
-          await (Homey.ManagerCron as any).unregisterTask(task.id);
+          await ManagerCron.unregisterTask(task.id);
         }
       } catch (error) {
         console.log('Failed to remove existing job', error);
@@ -38,7 +37,7 @@ export class JobManager {
       if (this.dailyReset !== 'never') {
         const cron = this.getDailyRestCron();
         console.log(`Updated time to: ${cron}`);
-        this.task = await (Homey.ManagerCron as any).registerTask(taskname, cron);
+        this.task = await ManagerCron.registerTask(taskname, cron);
         this.task.on('run', () => this.listener.onResetMaxMin());
       } else {
         console.log('Reseting of max/min temperatures is disabled');

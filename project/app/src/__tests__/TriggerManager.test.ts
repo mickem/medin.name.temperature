@@ -5,6 +5,7 @@ interface ITmp {
     bar(args);
 }
 
+
 describe('Should work', () => {
     test('can be created', () => {
         const t = new TriggerManager<ITmp>(['foo', 'bar']);

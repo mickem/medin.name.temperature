@@ -7,7 +7,7 @@
 		exports["library"] = factory(require("homey"), require("athom-api"));
 	else
 		root["library"] = factory(root["homey"], root["athom-api"]);
-})(global, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__4__) {
+})(global, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -107,29 +107,27 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-// decorator factory function
-function Catch() {
+function Catch(swallow = false) {
     return (target, propertyKey, descriptor) => {
-        // save a reference to the original method
         const originalMethod = descriptor.value;
-        // rewrite original method with custom wrapper
         descriptor.value = function (...args) {
             try {
                 const result = originalMethod.apply(this, args);
                 // check if method is asynchronous
                 if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
-                    // return promise
                     return result.catch((error) => {
-                        console.log(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, '\n| ')}`);
-                        console.log(error);
-                        throw error;
+                        console.error(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, '\n| ')}`, error);
+                        if (!swallow) {
+                            throw error;
+                        }
                     });
                 }
-                // return actual result
                 return result;
             }
             catch (error) {
-                throw error;
+                if (!swallow) {
+                    throw error;
+                }
             }
         };
         return descriptor;
@@ -139,7 +137,9 @@ exports.Catch = Catch;
 
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -157,23 +157,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const homey_1 = __importDefault(__webpack_require__(0));
-const TemperatureManager_1 = __webpack_require__(3);
+const TemperatureManager_1 = __webpack_require__(5);
 const mgr = new TemperatureManager_1.TempManager();
 class Wrapper extends homey_1.default.App {
+    get() {
+        return mgr;
+    }
     onInit() {
         return __awaiter(this, void 0, void 0, function* () {
             yield mgr.onInit();
         });
-    }
-    get() {
-        return mgr;
     }
 }
 module.exports = Wrapper;
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -194,21 +194,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const athom_api_1 = __webpack_require__(4);
-const ActionManager_1 = __webpack_require__(5);
-const DeviceManager_1 = __webpack_require__(6);
-const JobManager_1 = __webpack_require__(7);
-const SettingsManager_1 = __webpack_require__(8);
-const TriggerManager_1 = __webpack_require__(9);
+const athom_api_1 = __webpack_require__(6);
+const ActionManager_1 = __webpack_require__(7);
+const DeviceManager_1 = __webpack_require__(8);
+const JobManager_1 = __webpack_require__(9);
+const SettingsManager_1 = __webpack_require__(10);
+const TriggerManager_1 = __webpack_require__(11);
 const utils_1 = __webpack_require__(1);
-const Zones_1 = __webpack_require__(10);
+const Zones_1 = __webpack_require__(12);
 class TempManager {
     constructor() {
+        this.loaded = false;
         console.log(`Starting temperature manager`);
         this.api = undefined;
+        this.listeners = {};
         this.triggers = new TriggerManager_1.TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
         this.zones = new Zones_1.Zones(this.triggers.get(), {
-            onZoneUpdated: () => {
+            onZoneUpdated: (id) => {
+                if (this.listeners[id] !== undefined) {
+                    for (const cb of this.listeners[id]) {
+                        cb();
+                    }
+                }
                 this.settingsManager.setState({
                     zones: this.zones.getState(),
                 });
@@ -270,7 +277,7 @@ class TempManager {
             }),
         });
         this.jobManager = new JobManager_1.JobManager({
-            onResetMaxMin() {
+            onResetMaxMin: () => {
                 console.log('Reseting all zones max/min temperatures: ' + new Date());
                 this.zones.resetMaxMin();
             },
@@ -288,7 +295,13 @@ class TempManager {
             this.triggers.disable();
             yield this.deviceManager.start();
             this.triggers.enable();
-            console.log('Application loaded, triggers enabled');
+            for (const key in this.listeners) {
+                for (const cb of this.listeners[key]) {
+                    cb();
+                }
+            }
+            console.log(`${this.zones.countDevices()} devices monitored, enabling triggers`);
+            this.loaded = true;
         });
     }
     getTriggers() {
@@ -296,6 +309,17 @@ class TempManager {
     }
     getZones() {
         return this.zones.getAll();
+    }
+    subscribeToZone(id, callback) {
+        if (id in this.listeners) {
+            this.listeners[id].push(callback);
+        }
+        else {
+            this.listeners[id] = [callback];
+        }
+        if (this.loaded) {
+            callback();
+        }
     }
     getDevices() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -310,13 +334,13 @@ exports.TempManager = TempManager;
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE__4__;
+module.exports = __WEBPACK_EXTERNAL_MODULE__6__;
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -327,11 +351,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __importDefault(__webpack_require__(0));
+const homey_1 = __webpack_require__(0);
 const utils_1 = __webpack_require__(1);
 class ActionManager {
     constructor(handler) {
@@ -339,7 +360,7 @@ class ActionManager {
         this.cards = {};
         for (const id in handler) {
             try {
-                this.cards[id] = new homey_1.default.FlowCardAction(id);
+                this.cards[id] = new homey_1.FlowCardAction(id);
             }
             catch (error) {
                 console.error(`Failed to register action card ${id}: `, error);
@@ -363,7 +384,7 @@ exports.ActionManager = ActionManager;
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -380,7 +401,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const delay = time => new Promise(res => setTimeout(res, time));
 const isThermometer = (device) => {
-    return 'measure_temperature' in device.capabilitiesObj;
+    if (device.capabilitiesObj) {
+        return 'measure_temperature' in device.capabilitiesObj;
+    }
+    else if (device.capabilities) {
+        return 'measure_temperature' in device.capabilities;
+    }
+    console.log(`Failed to finc capabilities list from: `, device);
+    return false;
 };
 class DeviceManager {
     constructor(api, zones) {
@@ -423,6 +451,9 @@ class DeviceManager {
                     return;
                 }
                 const d = this.zones.findDevice(device.id);
+                if (!d) {
+                    return;
+                }
                 if (d && d.getZoneId() !== device.zone) {
                     yield this.zones.moveDevice(d, d.getZoneId(), device.zone, device.zoneName);
                 }
@@ -431,16 +462,13 @@ class DeviceManager {
                 }
             }
             catch (error) {
-                console.error(`Failed to handle device.update: ${error}`);
+                console.error(`Failed to handle device.update: ${error}`, error);
             }
         });
     }
     onDeviceDelete(device) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!isThermometer(device)) {
-                    return;
-                }
                 yield this.zones.removeDeviceById(device.id);
             }
             catch (error) {
@@ -508,6 +536,10 @@ class DeviceManager {
                     }
                     continue;
                 }
+                if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures') {
+                    console.log(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
+                    continue;
+                }
                 const device = yield this.waitForDevice(allDevices[id], 12);
                 if (device) {
                     yield this.addDevice(device);
@@ -545,7 +577,7 @@ exports.DeviceManager = DeviceManager;
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -559,11 +591,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __importDefault(__webpack_require__(0));
+const homey_1 = __webpack_require__(0);
 const taskname = 'dailyreset';
 class JobManager {
     constructor(listener) {
@@ -584,10 +613,10 @@ class JobManager {
             try {
                 console.log('installing scheduled tasks');
                 try {
-                    const tasks = (yield homey_1.default.ManagerCron.getTasks(taskname));
+                    const tasks = (yield homey_1.ManagerCron.getTasks(taskname));
                     for (const task of tasks) {
                         console.log(`Uninstalling task: ${task.id}`);
-                        yield homey_1.default.ManagerCron.unregisterTask(task.id);
+                        yield homey_1.ManagerCron.unregisterTask(task.id);
                     }
                 }
                 catch (error) {
@@ -596,7 +625,7 @@ class JobManager {
                 if (this.dailyReset !== 'never') {
                     const cron = this.getDailyRestCron();
                     console.log(`Updated time to: ${cron}`);
-                    this.task = yield homey_1.default.ManagerCron.registerTask(taskname, cron);
+                    this.task = yield homey_1.ManagerCron.registerTask(taskname, cron);
                     this.task.on('run', () => this.listener.onResetMaxMin());
                 }
                 else {
@@ -619,7 +648,7 @@ exports.JobManager = JobManager;
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -633,11 +662,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __importDefault(__webpack_require__(0));
+const homey_1 = __webpack_require__(0);
 exports.defaultSettings = {
     dailyReset: '02:00',
     maxTemperature: 22,
@@ -656,14 +682,14 @@ class SettingsManager {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.settings = Object.assign(Object.assign({}, exports.defaultSettings), (homey_1.default.ManagerSettings.get('settings') || exports.defaultSettings));
+            this.settings = Object.assign(Object.assign({}, exports.defaultSettings), (homey_1.ManagerSettings.get('settings') || exports.defaultSettings));
             yield this.listener.onSettingsUpdated(this.settings);
-            this.deviceConfig.zonesIgnored = homey_1.default.ManagerSettings.get('zonesIgnored') || [];
-            this.deviceConfig.zonesNotMonitored = homey_1.default.ManagerSettings.get('zonesNotMonitored') || [];
-            this.deviceConfig.devicesIgnored = homey_1.default.ManagerSettings.get('devicesIgnored') || [];
+            this.deviceConfig.zonesIgnored = homey_1.ManagerSettings.get('zonesIgnored') || [];
+            this.deviceConfig.zonesNotMonitored = homey_1.ManagerSettings.get('zonesNotMonitored') || [];
+            this.deviceConfig.devicesIgnored = homey_1.ManagerSettings.get('devicesIgnored') || [];
             yield this.listener.onDeviceConfigUpdated(this.deviceConfig);
             this.subscribe();
-            const state = homey_1.default.ManagerSettings.get('state');
+            const state = homey_1.ManagerSettings.get('state');
             if (state) {
                 console.log(`Restoring state: `);
                 yield this.listener.onAppState(state);
@@ -671,13 +697,13 @@ class SettingsManager {
         });
     }
     setState(state) {
-        homey_1.default.ManagerSettings.set('state', state);
+        homey_1.ManagerSettings.set('state', state);
     }
     getSettings() {
         return this.settings;
     }
     setSettings(settings) {
-        homey_1.default.ManagerSettings.set('settings', Object.assign(Object.assign({}, this.settings), settings));
+        homey_1.ManagerSettings.set('settings', Object.assign(Object.assign({}, this.settings), settings));
     }
     addZoneMonitored(zoneId) {
         this.deviceConfig.zonesNotMonitored = this.removeFromList(this.deviceConfig.zonesNotMonitored, 'zonesNotMonitored', zoneId);
@@ -692,25 +718,25 @@ class SettingsManager {
         this.deviceConfig.zonesNotMonitored = this.addToList(this.deviceConfig.zonesNotMonitored, 'zonesNotMonitored', zoneId);
     }
     subscribe() {
-        homey_1.default.ManagerSettings.on('set', (variable) => __awaiter(this, void 0, void 0, function* () {
+        homey_1.ManagerSettings.on('set', (variable) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (variable === 'settings') {
-                    const settings = homey_1.default.ManagerSettings.get('settings');
+                    const settings = homey_1.ManagerSettings.get('settings');
                     console.log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
                     console.log(`Reset max/min running at: ${settings.dailyReset}`);
                     this.settings = Object.assign({}, settings);
                     yield this.listener.onSettingsUpdated(this.settings);
                 }
                 else if (variable === 'zonesIgnored') {
-                    this.deviceConfig.zonesIgnored = homey_1.default.ManagerSettings.get('zonesIgnored') || [];
+                    this.deviceConfig.zonesIgnored = homey_1.ManagerSettings.get('zonesIgnored') || [];
                     yield this.listener.onDeviceConfigUpdated(this.deviceConfig);
                 }
                 else if (variable === 'zonesNotMonitored') {
-                    this.deviceConfig.zonesNotMonitored = homey_1.default.ManagerSettings.get('zonesNotMonitored') || [];
+                    this.deviceConfig.zonesNotMonitored = homey_1.ManagerSettings.get('zonesNotMonitored') || [];
                     yield this.listener.onDeviceConfigUpdated(this.deviceConfig);
                 }
                 else if (variable === 'devicesIgnored') {
-                    this.deviceConfig.devicesIgnored = homey_1.default.ManagerSettings.get('devicesIgnored') || [];
+                    this.deviceConfig.devicesIgnored = homey_1.ManagerSettings.get('devicesIgnored') || [];
                     yield this.listener.onDeviceConfigUpdated(this.deviceConfig);
                 }
             }
@@ -723,14 +749,14 @@ class SettingsManager {
         const i = list.indexOf(value);
         if (i !== -1) {
             list.splice(i, 1);
-            homey_1.default.ManagerSettings.set(name, list);
+            homey_1.ManagerSettings.set(name, list);
         }
         return list;
     }
     addToList(list, name, value) {
         if (list.indexOf(value) === -1) {
             list.push(value);
-            homey_1.default.ManagerSettings.set(name, list);
+            homey_1.ManagerSettings.set(name, list);
         }
         return list;
     }
@@ -739,7 +765,7 @@ exports.SettingsManager = SettingsManager;
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -759,11 +785,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __importDefault(__webpack_require__(0));
+const homey_1 = __webpack_require__(0);
 const utils_1 = __webpack_require__(1);
 class TriggerManager {
     constructor(functions) {
@@ -773,7 +796,7 @@ class TriggerManager {
         for (const id of functions) {
             try {
                 console.log(`Registring function: ${id}`);
-                this.cards[id] = new homey_1.default.FlowCardTrigger(id);
+                this.cards[id] = new homey_1.FlowCardTrigger(id);
                 this.wrapper[id] = (args) => __awaiter(this, void 0, void 0, function* () {
                     if (!this.enabled) {
                         return;
@@ -811,7 +834,7 @@ exports.TriggerManager = TriggerManager;
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -826,7 +849,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Zone_1 = __webpack_require__(11);
+const Zone_1 = __webpack_require__(13);
 class Zones {
     constructor(triggerManager, listener) {
         this.triggerManager = triggerManager;
@@ -907,6 +930,9 @@ class Zones {
             thermometer.setZone(newZone);
         });
     }
+    countDevices() {
+        return Object.values(this.zones).map(z => z.countDevices()).reduce((t, v) => t + v, 0);
+    }
     getAll() {
         return this.zones;
     }
@@ -953,7 +979,7 @@ exports.Zones = Zones;
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -973,8 +999,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const Thermometer_1 = __webpack_require__(12);
+const Average_1 = __importDefault(__webpack_require__(14));
+const Thermometer_1 = __webpack_require__(15);
 const utils_1 = __webpack_require__(1);
 class Zone {
     constructor(triggers, listener, id, name, ignored, notMonitored, devicesIgnored) {
@@ -983,14 +1013,15 @@ class Zone {
         this.id = id;
         this.name = name;
         this.devices = [];
-        this.minTemp = undefined;
-        this.minSensor = undefined;
-        this.maxTemp = undefined;
-        this.maxSensor = undefined;
+        this.dailyMinTemp = undefined;
+        this.dailyMaxTemp = undefined;
+        this.currentMinTemp = undefined;
+        this.currentMaxTemp = undefined;
         this.current = undefined;
         this.ignored = ignored;
         this.notMonitored = notMonitored;
         this.devicesIgnored = devicesIgnored;
+        this.avg = new Average_1.default();
     }
     getId() {
         return this.id;
@@ -1004,14 +1035,26 @@ class Zone {
     getTemperature() {
         return this.current;
     }
-    getMin() {
-        return this.minTemp;
+    getDailyMin() {
+        return this.dailyMinTemp;
     }
-    getMax() {
-        return this.maxTemp;
+    getDailyMax() {
+        return this.dailyMaxTemp;
+    }
+    getCurrentMin() {
+        return this.currentMinTemp;
+    }
+    getCurrentMax() {
+        return this.currentMaxTemp;
+    }
+    getAvg() {
+        return this.avg.get();
     }
     hasDevice() {
         return this.devices.length > 0;
+    }
+    countDevices() {
+        return this.devices.length;
     }
     onUpdateSettings(settings) {
         this.minAllowed = settings.minTemperature;
@@ -1047,13 +1090,17 @@ class Zone {
     setIgnored(ignored) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.ignored !== ignored) {
+                console.log(`Zone ignore status changed for ${this.name} to ${ignored}`);
                 this.ignored = ignored;
                 yield this.calculateZoneTemp();
             }
         });
     }
     setNotMonitored(notMonitored) {
-        this.notMonitored = notMonitored;
+        if (this.notMonitored !== notMonitored) {
+            this.notMonitored = notMonitored;
+            console.log(`Zone not-monitored status changed for ${this.name} to ${notMonitored}`);
+        }
     }
     setDevicesIgnored(devicesIgnored) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1064,12 +1111,15 @@ class Zone {
                     hasChanged = true;
                 }
             }
-            yield this.calculateZoneTemp();
+            if (hasChanged) {
+                yield this.calculateZoneTemp();
+            }
         });
     }
     resetMaxMin() {
-        this.minTemp = undefined;
-        this.maxTemp = undefined;
+        this.dailyMinTemp = undefined;
+        this.dailyMaxTemp = undefined;
+        this.avg.reset();
     }
     onDeviceUpdated(thermometer) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1079,40 +1129,48 @@ class Zone {
             if (!(yield this.calculateZoneTemp())) {
                 return;
             }
-            if (this.minTemp === undefined) {
+            if (this.dailyMinTemp === undefined) {
                 yield this.onMinUpdated(thermometer.name, thermometer.temp);
             }
             else {
-                const minTemp = Math.min(this.minTemp, thermometer.temp);
-                if (this.minTemp !== minTemp) {
+                const minTemp = Math.min(this.dailyMinTemp, thermometer.temp);
+                if (this.dailyMinTemp !== minTemp) {
                     yield this.onMinUpdated(thermometer.name, thermometer.temp);
                 }
             }
-            if (this.maxTemp === undefined) {
+            if (this.dailyMaxTemp === undefined) {
                 yield this.onMaxUpdated(thermometer.name, thermometer.temp);
             }
             else {
-                const maxTemp = Math.max(this.maxTemp, thermometer.temp);
-                if (this.maxTemp !== maxTemp) {
+                const maxTemp = Math.max(this.dailyMaxTemp, thermometer.temp);
+                if (this.dailyMaxTemp !== maxTemp) {
                     yield this.onMaxUpdated(thermometer.name, thermometer.temp);
                 }
             }
-            this.listener.onZoneUpdated();
+            this.listener.onZoneUpdated(this.id);
         });
     }
     getState() {
         return {
-            maxSensor: this.maxSensor,
-            maxTemp: this.maxTemp,
-            minSensor: this.minSensor,
-            minTemp: this.minTemp,
+            average: this.avg.getState(),
+            dailyMax: this.dailyMaxTemp,
+            dailyMin: this.dailyMinTemp,
+            maxTemp: this.dailyMaxTemp,
+            minTemp: this.dailyMinTemp,
         };
     }
     setState(state) {
-        this.maxSensor = state.maxSensor;
-        this.maxTemp = state.maxTemp;
-        this.minSensor = state.minSensor;
-        this.minTemp = state.minTemp;
+        this.dailyMaxTemp = state.maxTemp;
+        this.dailyMinTemp = state.minTemp;
+        if (state.dailyMax) {
+            this.dailyMaxTemp = state.dailyMax;
+        }
+        if (state.dailyMin) {
+            this.dailyMinTemp = state.dailyMin;
+        }
+        if (state.average) {
+            this.avg.setState(state.average);
+        }
     }
     findDevice(id) {
         for (const d of this.devices) {
@@ -1124,6 +1182,8 @@ class Zone {
     }
     calculateZoneTemp() {
         return __awaiter(this, void 0, void 0, function* () {
+            let curMin;
+            let curMax;
             if (this.ignored) {
                 this.current = undefined;
                 return false;
@@ -1132,11 +1192,25 @@ class Zone {
             let count = 0;
             for (const device of this.devices) {
                 if (device.hasTemp()) {
+                    if (curMax === undefined) {
+                        curMax = device.temp;
+                    }
+                    else if (device.temp > curMax) {
+                        curMax = device.temp;
+                    }
+                    if (curMin === undefined) {
+                        curMin = device.temp;
+                    }
+                    else if (device.temp < curMin) {
+                        curMin = device.temp;
+                    }
                     avgTemp += device.temp;
                     count++;
                 }
             }
             if (count > 0) {
+                this.currentMaxTemp = curMax;
+                this.currentMinTemp = curMin;
                 const newCurrent = Math.round((avgTemp / count) * 10) / 10;
                 if (newCurrent !== this.current) {
                     this.current = newCurrent;
@@ -1155,31 +1229,27 @@ class Zone {
     }
     onMaxUpdated(name, temperature) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.maxTemp = temperature;
-            this.maxSensor = name;
-            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.maxTemp });
+            this.dailyMaxTemp = temperature;
+            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMaxTemp });
         });
     }
     onMinUpdated(name, temperature) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.minTemp = temperature;
-            this.minSensor = name;
-            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.minTemp });
+            this.dailyMinTemp = temperature;
+            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMinTemp });
         });
     }
     onTempUpdated() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.avg.update(this.current);
+            yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
             if (!this.notMonitored) {
-                yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
-            }
-            if (this.current > this.maxAllowed) {
-                yield this.triggers.TooWarm({ zone: this.name, temperature: this.current });
-            }
-            else if (this.current < this.minAllowed) {
-                yield this.triggers.TooCold({ zone: this.name, temperature: this.current });
-            }
-            else {
-                yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
+                if (this.current > this.maxAllowed) {
+                    yield this.triggers.TooWarm({ zone: this.name, temperature: this.current });
+                }
+                else if (this.current < this.minAllowed) {
+                    yield this.triggers.TooCold({ zone: this.name, temperature: this.current });
+                }
             }
         });
     }
@@ -1191,7 +1261,88 @@ exports.Zone = Zone;
 
 
 /***/ }),
-/* 12 */
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Average {
+    constructor() {
+        this.value = undefined;
+        this.seconds = undefined;
+        this.lastUpdate = undefined;
+        this.lastValue = undefined;
+    }
+    reset() {
+        if (this.lastUpdate === undefined) {
+            return;
+        }
+        this.value = 0;
+        this.seconds = 0;
+        this.lastUpdate = Date.now();
+    }
+    update(value) {
+        if (this.lastUpdate === undefined || this.lastValue === undefined) {
+            this.value = value;
+            this.lastValue = value;
+            this.seconds = 0;
+            this.lastUpdate = Date.now();
+            return;
+        }
+        const now = Date.now();
+        const delta = now - this.lastUpdate;
+        const seconds = Math.round(delta / 1000);
+        if (seconds > 1) {
+            this.value += (this.lastValue * (seconds - 1)) + value;
+            this.seconds += seconds;
+        }
+        else if (seconds === 1) {
+            this.value += value;
+            this.seconds++;
+        }
+        else {
+            // No time has passed, do nothing...
+        }
+        this.lastValue = value;
+        this.lastUpdate = now;
+    }
+    get() {
+        if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
+            return undefined;
+        }
+        this.update(this.lastValue);
+        if (this.seconds === 0) {
+            return Math.round(this.lastValue * 100) / 100;
+        }
+        return Math.round(this.value / this.seconds * 100) / 100;
+    }
+    getState() {
+        if (!this.lastUpdate || !this.lastValue || !this.seconds || !this.value) {
+            return undefined;
+        }
+        return {
+            lastUpdate: this.lastUpdate,
+            lastValue: this.lastValue,
+            seconds: this.seconds,
+            value: this.value,
+        };
+    }
+    setState(state) {
+        if (!state) {
+            return;
+        }
+        this.lastUpdate = state.lastUpdate;
+        this.lastValue = state.lastValue;
+        this.seconds = state.seconds;
+        this.value = state.value;
+    }
+}
+exports.default = Average;
+
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1245,9 +1396,12 @@ class Thermometer {
         });
     }
     setIgnored(ignored) {
-        const ret = this.ignored !== ignored;
-        this.ignored = ignored;
-        return true;
+        if (this.ignored !== ignored) {
+            console.log(`Device ignored status changed for ${this.name} to ${ignored}`);
+            this.ignored = ignored;
+            return true;
+        }
+        return false;
     }
     hasTemp() {
         if (this.ignored) {

@@ -1,16 +1,21 @@
-import { IManager } from './interfaces/IManager';
+import { IDeviceType } from './interfaces/IDeviceType';
+import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { ITriggers } from './Triggers';
 import { Zone } from './Zone';
 import { Zones } from './Zones';
 
-export function makeDevice(id = '1234', name = 'demo device', zoneId = '2345', zoneName = 'the zone', temp = '23.4') {
+export function makeDevice(id = '1234', name = 'demo device', zoneId = '2345', zoneName = 'the zone', temp = '23.4'): IDeviceType {
   return {
+    capabilities: [
+      'measure_temperature',
+    ],
     capabilitiesObj: {
       measure_temperature: {
         id: 'n/a',
         value: temp,
       },
     },
+    driverUri: '',
     iconObj: {
       id: 'n/a',
       url: 'n/a',
@@ -83,14 +88,16 @@ export function makeZones() {
   );
 }
 
-export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
+export function makeDeviceEx(id, name, zoneId, zoneName, temp): IDeviceType {
   return {
+    capabilities: ['measure_temperature'],
     capabilitiesObj: {
       measure_temperature: {
         id: 'n/a',
         value: temp,
       },
     },
+    driverUri: '',
     iconObj: {
       id: 'n/a',
       url: 'n/a',
@@ -104,7 +111,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp) {
   };
 }
 
-export class FakeManager implements IManager {
+export class FakeManager implements ITemperatureManager {
   public getMinTemp() {
     return 7;
   }

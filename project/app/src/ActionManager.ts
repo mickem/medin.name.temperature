@@ -1,9 +1,8 @@
-import Homey from 'homey';
-import { IActionHandler } from './Actions';
+import { FlowCardAction } from 'homey';
 import { Catch } from './utils';
 
 interface ICardList {
-  [key: string]: Homey.FlowCardAction;
+  [key: string]: FlowCardAction;
 }
 export class ActionManager<Handler> {
   private handler: Handler;
@@ -14,7 +13,7 @@ export class ActionManager<Handler> {
     this.cards = {};
     for (const id in handler) {
       try {
-        this.cards[id] = new Homey.FlowCardAction(id);
+        this.cards[id] = new FlowCardAction(id);
       } catch (error) {
         console.error(`Failed to register action card ${id}: `, error);
       }
