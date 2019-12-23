@@ -109,8 +109,10 @@ export class Zones {
     thermometer.setZone(newZone);
   }
 
-  public countDevices() : number{
-    return Object.values(this.zones).map(z => z.countDevices()).reduce((t, v) => t+v, 0);
+  public countDevices(): number {
+    return Object.values(this.zones)
+      .map(z => z.countDevices())
+      .reduce((t, v) => t + v, 0);
   }
 
   public getAll(): IZoneList {

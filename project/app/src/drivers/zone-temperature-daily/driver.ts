@@ -1,3 +1,3 @@
-import { ZoneTemperatureDriver } from "./DriverImpl";
+import { ZoneTemperatureDriver } from './DriverImpl';
 
 module.exports = ZoneTemperatureDriver;

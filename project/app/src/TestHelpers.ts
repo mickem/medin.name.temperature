@@ -4,11 +4,15 @@ import { ITriggers } from './Triggers';
 import { Zone } from './Zone';
 import { Zones } from './Zones';
 
-export function makeDevice(id = '1234', name = 'demo device', zoneId = '2345', zoneName = 'the zone', temp = '23.4'): IDeviceType {
+export function makeDevice(
+  id = '1234',
+  name = 'demo device',
+  zoneId = '2345',
+  zoneName = 'the zone',
+  temp = '23.4',
+): IDeviceType {
   return {
-    capabilities: [
-      'measure_temperature',
-    ],
+    capabilities: ['measure_temperature'],
     capabilitiesObj: {
       measure_temperature: {
         id: 'n/a',
@@ -25,7 +29,7 @@ export function makeDevice(id = '1234', name = 'demo device', zoneId = '2345', z
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) { },
+    makeCapabilityInstance(capabilityId: string, listener: any) {},
   };
 }
 export function makeZone(
@@ -54,7 +58,7 @@ export function makeZone(
       },
     },
     {
-      onZoneUpdated() { },
+      onZoneUpdated() {},
     },
     id,
     name,
@@ -83,7 +87,7 @@ export function makeZones() {
       },
     },
     {
-      onZoneUpdated() { },
+      onZoneUpdated() {},
     },
   );
 }
@@ -107,7 +111,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp): IDeviceType {
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) { },
+    makeCapabilityInstance(capabilityId: string, listener: any) {},
   };
 }
 
@@ -120,12 +124,12 @@ export class FakeManager implements ITemperatureManager {
   }
   public getTriggers(): ITriggers {
     return {
-      async MaxTemperatureChanged(args) { },
-      async MinTemperatureChanged(args) { },
+      async MaxTemperatureChanged(args) {},
+      async MinTemperatureChanged(args) {},
 
-      async TooWarm(args) { },
-      async TooCold(args) { },
-      async TemperatureChanged(args) { },
+      async TooWarm(args) {},
+      async TooCold(args) {},
+      async TemperatureChanged(args) {},
     };
   }
   public getZones() {

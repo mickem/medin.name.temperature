@@ -1,4 +1,4 @@
-import {ManagerCron} from 'homey';
+import { ManagerCron } from 'homey';
 
 const taskname = 'dailyreset';
 
@@ -26,7 +26,7 @@ export class JobManager {
     try {
       console.log('installing scheduled tasks');
       try {
-        const tasks = (await ManagerCron.getTasks(taskname));
+        const tasks = await ManagerCron.getTasks(taskname);
         for (const task of tasks) {
           console.log(`Uninstalling task: ${task.id}`);
           await ManagerCron.unregisterTask(task.id);

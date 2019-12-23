@@ -12,7 +12,9 @@ import { ITriggers } from './Triggers';
 import { Catch } from './utils';
 import { IZoneList, Zones } from './Zones';
 
-interface IZoneLisener { [key: string]: Array<() => void> }
+interface IZoneLisener {
+  [key: string]: Array<() => void>;
+}
 export class TempManager implements ITemperatureManager {
   private api: HomeyAPI | undefined;
   private triggers: TriggerManager<ITriggers>;
@@ -28,8 +30,14 @@ export class TempManager implements ITemperatureManager {
     this.loaded = false;
     console.log(`Starting temperature manager`);
     this.api = undefined;
-    this.listeners = {}
-    this.triggers = new TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
+    this.listeners = {};
+    this.triggers = new TriggerManager([
+      'TemperatureChanged',
+      'TooCold',
+      'TooWarm',
+      'MinTemperatureChanged',
+      'MaxTemperatureChanged',
+    ]);
     this.zones = new Zones(this.triggers.get(), {
       onZoneUpdated: (id: string) => {
         if (this.listeners[id] !== undefined) {
@@ -144,7 +152,6 @@ export class TempManager implements ITemperatureManager {
     if (this.loaded) {
       callback();
     }
-
   }
 
   public async getDevices(): Promise<IDeviceList> {

@@ -95,7 +95,6 @@ export class Zone {
     return this.devices.length;
   }
 
-
   public onUpdateSettings(settings: ISettings) {
     this.minAllowed = settings.minTemperature;
     this.maxAllowed = settings.maxTemperature;

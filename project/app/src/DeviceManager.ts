@@ -9,7 +9,7 @@ const delay = time => new Promise(res => setTimeout(res, time));
 const isThermometer = (device: IDeviceType) => {
   if (device.capabilitiesObj) {
     return 'measure_temperature' in device.capabilitiesObj;
-  } else  if (device.capabilities) {
+  } else if (device.capabilities) {
     return 'measure_temperature' in device.capabilities;
   }
   console.log(`Failed to finc capabilities list from: `, device);

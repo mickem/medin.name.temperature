@@ -19,17 +19,16 @@ export class TriggerManager<Triggers> {
       try {
         console.log(`Registring function: ${id}`);
         this.cards[id] = new FlowCardTrigger(id);
-        (this.wrapper as any)[id] = async (args) => {
+        (this.wrapper as any)[id] = async args => {
           if (!this.enabled) {
             return;
           }
           await this.cards[id].trigger(args);
-        }
+        };
       } catch (error) {
         console.error(`Failed to register action card ${id}: `, error);
       }
     }
-
   }
 
   public get(): Triggers {
