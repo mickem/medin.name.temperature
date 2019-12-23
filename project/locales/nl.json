@@ -146,5 +146,35 @@
                 }
             }
         }
+    },
+    "drivers": {
+        "zone-temperature-cur": {
+            "name": "Virtuele thermometer voor actuele waarden.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Maximale temperatuur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimale temperatuur"
+                },
+                "measure_temperature": {
+                    "title": "Huidige temperatuur"
+                }
+            }
+        },
+        "zone-temperature-daily": {
+            "name": "Virtuele thermometer voor dagelijkse gemiddelden.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Maximale temperatuur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimale temperatuur"
+                },
+                "measure_temperature": {
+                    "title": "Gemiddelde temperatuur"
+                }
+            }
+        }
     }
 }
