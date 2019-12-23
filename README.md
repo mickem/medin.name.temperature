@@ -12,6 +12,7 @@ There is also cards for when the termperature in a zone changes as well as when 
 * Configure which zones and devices should be monitored on the settings page.
 * Add a flow with the desired actions when the toowarm and toocold alarms are triggered.
 * Detailed instructions can be found on the Instructions tab in the apps settings.
+* You can also add virtual thermometers (Add new device select temerpature manager).
 
 ## Need Help, Have questions or remarks?
 
@@ -21,18 +22,20 @@ Some things which are planne din the near future are:
 
 * Configure indivdual temperature bounds for zones
 * notification for when temperature gos out of bounds
-* Create a virtual thermometers:
-  * Allows insights
-  * Individual bounds
-  * Individual trigger cards
-* ...
 
 ## Donate
 If you like the app, consider buying me a beer!  
 [![Paypal donate][pp-donate-image]][pp-donate-link]
 
-## Version 1.0.0
+## Changelog
+
+### Version 1.0
 * Application released
+
+### Verison 1.1
+* Internationalization
+* Virtual thermometers
+
 
 ## Help out
 

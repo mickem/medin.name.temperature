@@ -1,4 +1,7 @@
 {
+  "1.1.0": {
+    "en": "Added virtual devices for zone temperatures"
+  },
   "1.0.4": {
     "en": "Added translations English, Swedish, Dutch and Danish as well as new actioncard for setting tgemperature bound and zone mode"
   },
