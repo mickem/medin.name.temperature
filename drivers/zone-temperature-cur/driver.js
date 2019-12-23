@@ -135,15 +135,15 @@ exports.capabilities = {
     /**
      * Maximum temperature
      */
-    max: "measure_temperature.max",
+    max: 'measure_temperature.max',
     /**
      * Minimum temperature
      */
-    min: "measure_temperature.min",
+    min: 'measure_temperature.min',
     /**
      * Current temperature
      */
-    temp: "measure_temperature",
+    temp: 'measure_temperature',
 };
 /**
  * Virtual thermometer for current values.
@@ -156,7 +156,10 @@ class ZoneAvgTemperatureDriver extends homey_1.Driver {
         });
     }
     onPair(socket) {
-        const devices = Object.values(this.getTM().getZones()).map(z => ({ name: `${z.getName()} current`, data: { id: z.getId() } }));
+        const devices = Object.values(this.getTM().getZones()).map(z => ({
+            name: `${z.getName()} current`,
+            data: { id: z.getId() },
+        }));
         socket.on('list_devices', (data, callback) => {
             socket.emit('list_devices', devices);
             callback(null, devices);
@@ -168,8 +171,8 @@ class ZoneAvgTemperatureDriver extends homey_1.Driver {
             callback(null, [
                 {
                     capabilities: exports.capabilities,
-                    name: "Device.pair",
-                }
+                    name: 'Device.pair',
+                },
             ]);
         });
     }

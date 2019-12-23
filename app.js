@@ -208,7 +208,13 @@ class TempManager {
         console.log(`Starting temperature manager`);
         this.api = undefined;
         this.listeners = {};
-        this.triggers = new TriggerManager_1.TriggerManager(['TemperatureChanged', 'TooCold', 'TooWarm', 'MinTemperatureChanged', 'MaxTemperatureChanged']);
+        this.triggers = new TriggerManager_1.TriggerManager([
+            'TemperatureChanged',
+            'TooCold',
+            'TooWarm',
+            'MinTemperatureChanged',
+            'MaxTemperatureChanged',
+        ]);
         this.zones = new Zones_1.Zones(this.triggers.get(), {
             onZoneUpdated: (id) => {
                 if (this.listeners[id] !== undefined) {
@@ -613,7 +619,7 @@ class JobManager {
             try {
                 console.log('installing scheduled tasks');
                 try {
-                    const tasks = (yield homey_1.ManagerCron.getTasks(taskname));
+                    const tasks = yield homey_1.ManagerCron.getTasks(taskname);
                     for (const task of tasks) {
                         console.log(`Uninstalling task: ${task.id}`);
                         yield homey_1.ManagerCron.unregisterTask(task.id);
@@ -931,7 +937,9 @@ class Zones {
         });
     }
     countDevices() {
-        return Object.values(this.zones).map(z => z.countDevices()).reduce((t, v) => t + v, 0);
+        return Object.values(this.zones)
+            .map(z => z.countDevices())
+            .reduce((t, v) => t + v, 0);
     }
     getAll() {
         return this.zones;
@@ -1294,7 +1302,7 @@ class Average {
         const delta = now - this.lastUpdate;
         const seconds = Math.round(delta / 1000);
         if (seconds > 1) {
-            this.value += (this.lastValue * (seconds - 1)) + value;
+            this.value += this.lastValue * (seconds - 1) + value;
             this.seconds += seconds;
         }
         else if (seconds === 1) {
@@ -1315,7 +1323,7 @@ class Average {
         if (this.seconds === 0) {
             return Math.round(this.lastValue * 100) / 100;
         }
-        return Math.round(this.value / this.seconds * 100) / 100;
+        return Math.round((this.value / this.seconds) * 100) / 100;
     }
     getState() {
         if (!this.lastUpdate || !this.lastValue || !this.seconds || !this.value) {
