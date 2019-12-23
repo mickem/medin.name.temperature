@@ -141,7 +141,7 @@ exports.capabilities = {
      */
     min: "measure_temperature.min",
     /**
-     * Current temperature
+     * Average temperature
      */
     temp: "measure_temperature",
 };

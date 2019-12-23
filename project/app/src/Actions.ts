@@ -7,7 +7,7 @@ export interface IActionHandler {
   SetTemperatureBounds(args: { type: string; temperature: number }): boolean;
   /**
    * Set the mode for a given zone
-   * @param args.zone zone
+   * @param args.zone zone #sample:Kitchen
    * @param args.mode mode #dropdown:{"disabled":"Disabled", "enabled":"Enabled", "monitored":"Monitored"}
    */
   SetZoneMode(args: { zone: string; mode: string }): boolean;
