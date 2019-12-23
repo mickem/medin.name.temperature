@@ -146,5 +146,35 @@
                 }
             }
         }
+    },
+    "drivers": {
+        "zone-temperature-cur": {
+            "name": "Termómetro virtual para valores actuales.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Temperatura máxima"
+                },
+                "measure_temperature.min": {
+                    "title": "Temperatura mínima"
+                },
+                "measure_temperature": {
+                    "title": "Temperatura actual"
+                }
+            }
+        },
+        "zone-temperature-daily": {
+            "name": "Termómetro virtual para promedios diarios.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Temperatura máxima"
+                },
+                "measure_temperature.min": {
+                    "title": "Temperatura mínima"
+                },
+                "measure_temperature": {
+                    "title": "Temperatura media"
+                }
+            }
+        }
     }
 }
