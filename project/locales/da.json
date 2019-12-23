@@ -146,5 +146,35 @@
                 }
             }
         }
+    },
+    "drivers": {
+        "zone-temperature-cur": {
+            "name": "Virtuel termometer til aktuelle værdier",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Højeste temperatur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimumstemperatur"
+                },
+                "measure_temperature": {
+                    "title": "Nuværende temperatur"
+                }
+            }
+        },
+        "zone-temperature-daily": {
+            "name": "Virtuel termometer til dagstemperatur",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Højeste temperatur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimumstemperatur"
+                },
+                "measure_temperature": {
+                    "title": "gennemsnitstemperaturen"
+                }
+            }
+        }
     }
 }
