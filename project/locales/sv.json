@@ -146,5 +146,35 @@
                 }
             }
         }
+    },
+    "drivers": {
+        "zone-temperature-cur": {
+            "name": "Virtuell termometer för nuvarande värden",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Högsta temperatur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minsta temperatur"
+                },
+                "measure_temperature": {
+                    "title": "Nuvarande temperatur"
+                }
+            }
+        },
+        "zone-temperature-daily": {
+            "name": "Virtuell termometer för dags temperatur",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Högsta temperatur"
+                },
+                "measure_temperature.min": {
+                    "title": "Minsta temperatur"
+                },
+                "measure_temperature": {
+                    "title": "Snitttemperatur"
+                }
+            }
+        }
     }
 }
