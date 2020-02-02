@@ -1,5 +1,6 @@
 import { IDeviceType } from './interfaces/IDeviceType';
 import { ITemperatureManager } from './interfaces/ITemperatureManager';
+import { ILogMessage } from './LogManager';
 import { ITriggers } from './Triggers';
 import { Zone } from './Zone';
 import { Zones } from './Zones';
@@ -116,7 +117,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp): IDeviceType {
 }
 
 export class FakeManager implements ITemperatureManager {
-  getLogs(): import("./LogManager").ILogMessage[] {
+  public getLogs(): ILogMessage[] {
     return [];
   }
   public getMinTemp() {

@@ -1,6 +1,6 @@
 import { FlowCardAction } from 'homey';
-import { Catch } from './utils';
 import { log } from './LogManager';
+import { Catch } from './utils';
 
 interface ICardList {
   [key: string]: FlowCardAction;

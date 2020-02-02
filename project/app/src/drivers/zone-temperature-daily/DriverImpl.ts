@@ -27,8 +27,8 @@ export class ZoneTemperatureDriver extends Driver {
 
   public onPair(socket) {
     const devices = Object.values(this.getTM().getZones()).map(z => ({
-      name: `${z.getName()} daily average`,
       data: { id: z.getId() },
+      name: `${z.getName()} daily average`,
     }));
     socket.on('list_devices', (data, callback) => {
       socket.emit('list_devices', devices);

@@ -40,7 +40,7 @@ describe('managing zones', () => {
     expect((z as any).maxAllowed).toEqual(8);
   });
   test('state should not be propagated to old zones', () => {
-    zones.setState({ 'id': { dailyMin: 2, dailyMax: 12 }, 'new zone': { dailyMin: 2, dailyMax: 12 } } as IZonesState);
+    zones.setState({ id: { dailyMin: 2, dailyMax: 12 }, 'new zone': { dailyMin: 2, dailyMax: 12 } } as IZonesState);
     const z = zones.addZone('id', 'new name');
     expect((z as any).dailyMinTemp).toBeUndefined();
     expect((z as any).dailyMaxTemp).toBeUndefined();
@@ -110,9 +110,9 @@ describe('managing zones', () => {
   });
   test('We should be able to retrieve state', () => {
     expect(zones.getState()).toEqual({
-      "another id": { "average": undefined, "dailyMax": 23.4, "dailyMin": 23.4 },
-      "id": { "average": undefined, "dailyMax": 23.4, "dailyMin": 23.4 },
-      "new zone": { "average": undefined, "dailyMax": 12, "dailyMin": 2 }
+      'another id': { average: undefined, dailyMax: 23.4, dailyMin: 23.4 },
+      id: { average: undefined, dailyMax: 23.4, dailyMin: 23.4 },
+      'new zone': { average: undefined, dailyMax: 12, dailyMin: 2 },
     });
   });
   test('We should be able to count devices', () => {

@@ -1,4 +1,4 @@
-import { ILogMessage} from '../LogManager'
+import { ILogMessage } from '../LogManager';
 import { ITriggers } from '../Triggers';
 import { IZoneList } from '../Zones';
 import { IDeviceList } from './IDeviceType';

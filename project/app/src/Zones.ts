@@ -1,10 +1,9 @@
 import { IDeviceType } from './interfaces/IDeviceType';
-import { ITemperatureManager } from './interfaces/ITemperatureManager';
+import { log } from './LogManager';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 import { ITriggers } from './Triggers';
 import { IZoneListener, IZoneState, Zone } from './Zone';
-import { log } from './LogManager';
 
 export interface IZoneList {
   [key: string]: Zone;

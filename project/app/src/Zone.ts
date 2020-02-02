@@ -1,10 +1,10 @@
 import Average, { IAverageState } from './helpers/Average';
 import { IDeviceType } from './interfaces/IDeviceType';
+import { debug, log } from './LogManager';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 import { ITriggers } from './Triggers';
 import { Catch } from './utils';
-import { log, debug } from './LogManager';
 
 export interface IZoneState {
   dailyMax?: number;
