@@ -49,7 +49,19 @@
       },
       "minTemperature": "Minimum Temperature",
       "maxTemperature": "Maxmimum Temperature",
-      "dailyReset": "Time to reset daily averages (set to never to disable)"
+      "dailyReset": "Time to reset daily averages (set to never to disable)",
+      "refresh": {
+        "button": "Refresh",
+        "label": "Refresh the settings view"
+      },
+      "resetAll": {
+        "button": "Reset defaults",
+        "label": "Reset all configuration and restoe defaults"
+      },
+      "showHints": {
+        "button": "Show all hints",
+        "label": "Show all hint dialogs in the settings app"
+      }
     }
   },
   "flows": {
