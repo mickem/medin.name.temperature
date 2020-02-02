@@ -417,8 +417,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __webpack_require__(0);
-const utils_1 = __webpack_require__(2);
 const LogManager_1 = __webpack_require__(1);
+const utils_1 = __webpack_require__(2);
 class ActionManager {
     constructor(handler) {
         this.handler = handler;
@@ -912,8 +912,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Zone_1 = __webpack_require__(14);
 const LogManager_1 = __webpack_require__(1);
+const Zone_1 = __webpack_require__(14);
 class Zones {
     constructor(triggerManager, listener) {
         this.triggerManager = triggerManager;
@@ -1070,9 +1070,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Average_1 = __importDefault(__webpack_require__(15));
+const LogManager_1 = __webpack_require__(1);
 const Thermometer_1 = __webpack_require__(16);
 const utils_1 = __webpack_require__(2);
-const LogManager_1 = __webpack_require__(1);
 class Zone {
     constructor(triggers, listener, id, name, ignored, notMonitored, devicesIgnored) {
         this.triggers = triggers;

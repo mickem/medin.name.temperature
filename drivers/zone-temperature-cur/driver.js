@@ -157,8 +157,8 @@ class ZoneAvgTemperatureDriver extends homey_1.Driver {
     }
     onPair(socket) {
         const devices = Object.values(this.getTM().getZones()).map(z => ({
-            name: `${z.getName()} current`,
             data: { id: z.getId() },
+            name: `${z.getName()} current`,
         }));
         socket.on('list_devices', (data, callback) => {
             socket.emit('list_devices', devices);
