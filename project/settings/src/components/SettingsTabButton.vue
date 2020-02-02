@@ -1,7 +1,7 @@
 <template>
   <div class="form-group">
     <label :for="id"><I18nText :id="labelId" /></label>
-    <button :id="id" class="btn btn-info"  @click="$emit('click', $event.target.value)"><I18nText :id="btnId" /></button>
+    <button :id="id" class="btn" :class="extraClass"  @click="$emit('click', $event.target.value)"><I18nText :id="btnId" /></button>
   </div>
 </template>
 
@@ -15,6 +15,10 @@ export default {
   },
   props: {
     id: String,
+    extraClass: {
+      type: String,
+      default: 'btn-info'
+    },
     i18nScope: String,
   },
   data() {

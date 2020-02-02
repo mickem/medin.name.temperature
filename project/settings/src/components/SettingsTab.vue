@@ -4,21 +4,9 @@
     <SettingsTabEntry i18nScope="settings.settings" id="minTemperature" :value="minTemperature" @input="(v) => {minTemperature = v}" />
     <SettingsTabEntry i18nScope="settings.settings" id="maxTemperature" :value="maxTemperature" @input="(v) => {maxTemperature = v}" />
     <SettingsTabEntry i18nScope="settings.settings" id="dailyReset" :value="dailyReset" @input="(v) => {dailyReset = v}" />
-
-      <div class="form-group">
-        <label for="showHints">Show all hint dialogs in the settings app</label>
-        <button id="showHints" class="btn btn-info" @click="showHints()">Show all hints</button>
-      </div>
-      <SettingsTabButton id="refresh" @click="refresh()" />
-      <div class="form-group">
-        <label for="refresh">Refresh the settings view</label>
-        <button id="refresh" class="btn btn-info" @click="refresh()">Refresh</button>
-      </div>
-
-      <div class="form-group">
-        <label for="resetAll">Reset all configuration and restoe defaults</label>
-        <button id="resetAll" class="btn btn-danger" @click="reset()">Reset defaults</button>
-      </div>
+    <SettingsTabButton i18nScope="settings.settings" id="showHints" @click="showHints()" />
+    <SettingsTabButton i18nScope="settings.settings" id="refresh" @click="refresh()" />
+    <SettingsTabButton i18nScope="settings.settings" id="resetAll" extra-class="btn-danger" @click="reset()" />
   </div>
 </template>
 
