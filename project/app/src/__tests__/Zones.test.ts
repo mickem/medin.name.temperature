@@ -1,5 +1,7 @@
 import { ISettings } from '../SettingsManager';
 import { makeDevice, makeZones } from '../TestHelpers';
+import { IZoneState } from '../Zone';
+import { IZonesState } from '../Zones';
 
 test('create zones', () => {
   const zones = makeZones();
@@ -37,11 +39,29 @@ describe('managing zones', () => {
     expect((z as any).minAllowed).toEqual(4);
     expect((z as any).maxAllowed).toEqual(8);
   });
+  test('state should not be propagated to old zones', () => {
+    zones.setState({ 'id': { dailyMin: 2, dailyMax: 12 }, 'new zone': { dailyMin: 2, dailyMax: 12 } } as IZonesState);
+    const z = zones.addZone('id', 'new name');
+    expect((z as any).dailyMinTemp).toBeUndefined();
+    expect((z as any).dailyMaxTemp).toBeUndefined();
+  });
   test('settings should be propagated to new zones', () => {
     zones.onUpdateSettings({ minTemperature: 4, maxTemperature: 8 } as ISettings);
     const z = zones.addZone('new zone', 'new name');
     expect((z as any).minAllowed).toEqual(4);
     expect((z as any).maxAllowed).toEqual(8);
+  });
+  test('state should be propagated to new zones', () => {
+    const z = zones.addZone('new zone', 'new name');
+    expect((z as any).dailyMinTemp).toEqual(2);
+    expect((z as any).dailyMaxTemp).toEqual(12);
+  });
+  test('Should be able to find zone by name', () => {
+    expect(zones.findZoneByName('new name')).toBeDefined();
+    expect(zones.findZoneByName('new name').getId()).toEqual('new zone');
+  });
+  test('Searcing for unknown zones should return undefined', () => {
+    expect(zones.findZoneByName('missing')).toBeUndefined();
   });
   test('getAll should retrieve all zones', () => {
     expect(Object.keys(zones.getAll())).toEqual(['id', 'another id', 'new zone']);
@@ -87,6 +107,16 @@ describe('managing zones', () => {
     await zones.moveDevice(t2, 'another id', 'id', 'The new name');
     expect((zones.getAll().id as any).devices.map(d => d.id)).toEqual(['id2', 'id4']);
     expect((zones.getAll()['another id'] as any).devices.map(d => d.id)).toEqual(['id3', 'id1']);
+  });
+  test('We should be able to retrieve state', () => {
+    expect(zones.getState()).toEqual({
+      "another id": { "average": undefined, "dailyMax": 23.4, "dailyMin": 23.4 },
+      "id": { "average": undefined, "dailyMax": 23.4, "dailyMin": 23.4 },
+      "new zone": { "average": undefined, "dailyMax": 12, "dailyMin": 2 }
+    });
+  });
+  test('We should be able to count devices', () => {
+    expect(zones.countDevices()).toEqual(4);
   });
   test('removed devices', async () => {
     await zones.removeDeviceById('id2');

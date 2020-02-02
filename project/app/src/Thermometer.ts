@@ -1,4 +1,5 @@
 import { IDeviceType } from './interfaces/IDeviceType';
+import { debug } from './LogManager';
 import { Zone } from './Zone';
 
 export class Thermometer {
@@ -48,7 +49,7 @@ export class Thermometer {
 
   public setIgnored(ignored: boolean): boolean {
     if (this.ignored !== ignored) {
-      console.log(`Device ignored status changed for ${this.name} to ${ignored}`);
+      debug(`Device ignored status changed for ${this.name} to ${ignored}`);
       this.ignored = ignored;
       return true;
     }

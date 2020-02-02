@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -104,6 +104,168 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 /***/ }),
 
 /***/ 1:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const logs = [];
+let logEnabled = true;
+function logRaw(level, message) {
+    if (!logEnabled) {
+        return;
+    }
+    logs.push({
+        date: new Date(),
+        level,
+        message,
+    });
+    if (logs.length > 100) {
+        logs.unshift();
+    }
+}
+function log(message) {
+    logRaw('ok', message);
+    console.log(message);
+}
+exports.log = log;
+function error(message) {
+    logRaw('error', message);
+    console.error(message);
+}
+exports.error = error;
+function debug(message) {
+    logRaw('debug', message);
+    console.log(message);
+}
+exports.debug = debug;
+function get() {
+    return logs;
+}
+exports.get = get;
+function enableLog() {
+    logEnabled = true;
+}
+exports.enableLog = enableLog;
+function disableLog() {
+    logEnabled = false;
+}
+exports.disableLog = disableLog;
+
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const homey_1 = __webpack_require__(0);
+const LogManager_1 = __webpack_require__(1);
+const utils_1 = __webpack_require__(2);
+const CapabilityWrapper_1 = __webpack_require__(19);
+const DriverImpl_1 = __webpack_require__(3);
+class ZoneTemperatue extends homey_1.Device {
+    onInit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const id = this.getMyData().id || 'none';
+            LogManager_1.log(`Adding device for ${id}`);
+            this.max = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.max);
+            this.min = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.min);
+            this.cur = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.temp);
+            homey_1.app.get().subscribeToZone(id, () => __awaiter(this, void 0, void 0, function* () {
+                const z = this.getTM().getZones()[id];
+                if (!z) {
+                    LogManager_1.error(`No device found for ${id}`);
+                    return;
+                }
+                yield this.max.set(z.getCurrentMax());
+                yield this.min.set(z.getCurrentMin());
+                yield this.cur.set(z.getTemperature());
+            }));
+        });
+    }
+    getMyData() {
+        return this.getData();
+    }
+    getTM() {
+        return homey_1.app.get();
+    }
+}
+__decorate([
+    utils_1.Catch(true)
+], ZoneTemperatue.prototype, "onInit", null);
+module.exports = ZoneTemperatue;
+
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const LogManager_1 = __webpack_require__(1);
+class CapabilityWrapper {
+    constructor(handler, name) {
+        this.handler = handler;
+        this.name = name;
+    }
+    set(value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (value === undefined) {
+                    return;
+                }
+                if (this.lastValue === undefined || this.lastValue !== value) {
+                    this.lastValue = value;
+                    LogManager_1.log(`Updating ${this.name} to ${value}`);
+                    yield this.handler.setCapabilityValue(this.name, value);
+                }
+            }
+            catch (error) {
+                console.error(`Failed to update ${this.name}: ${error}`, error);
+            }
+        });
+    }
+    setOptions(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.handler.setCapabilityOptions(this.name, data);
+        });
+    }
+}
+exports.CapabilityWrapper = CapabilityWrapper;
+
+
+/***/ }),
+
+/***/ 2:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -140,115 +302,7 @@ exports.Catch = Catch;
 
 /***/ }),
 
-/***/ 17:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const homey_1 = __webpack_require__(0);
-const utils_1 = __webpack_require__(1);
-const CapabilityWrapper_1 = __webpack_require__(18);
-const DriverImpl_1 = __webpack_require__(2);
-class ZoneTemperatue extends homey_1.Device {
-    onInit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const id = this.getMyData().id || 'none';
-            console.log(`Adding device for ${id}`, DriverImpl_1.capabilities);
-            this.max = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.max);
-            this.min = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.min);
-            this.cur = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.temp);
-            homey_1.app.get().subscribeToZone(id, () => __awaiter(this, void 0, void 0, function* () {
-                const z = this.getTM().getZones()[id];
-                if (!z) {
-                    console.log(`No device found for ${id}`);
-                    return;
-                }
-                yield this.max.set(z.getCurrentMax());
-                yield this.min.set(z.getCurrentMin());
-                yield this.cur.set(z.getTemperature());
-            }));
-        });
-    }
-    getMyData() {
-        return this.getData();
-    }
-    getTM() {
-        return homey_1.app.get();
-    }
-}
-__decorate([
-    utils_1.Catch(true)
-], ZoneTemperatue.prototype, "onInit", null);
-module.exports = ZoneTemperatue;
-
-
-/***/ }),
-
-/***/ 18:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-class CapabilityWrapper {
-    constructor(handler, name) {
-        this.handler = handler;
-        this.name = name;
-    }
-    set(value) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (value === undefined) {
-                    return;
-                }
-                if (this.lastValue === undefined || this.lastValue !== value) {
-                    this.lastValue = value;
-                    console.log(`Updating ${this.name} to ${value}`);
-                    yield this.handler.setCapabilityValue(this.name, value);
-                }
-            }
-            catch (error) {
-                console.error(`Failed to update ${this.name}: ${error}`, error);
-            }
-        });
-    }
-    setOptions(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.handler.setCapabilityOptions(this.name, data);
-        });
-    }
-}
-exports.CapabilityWrapper = CapabilityWrapper;
-
-
-/***/ }),
-
-/***/ 2:
+/***/ 3:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

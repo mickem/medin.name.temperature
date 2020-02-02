@@ -1,5 +1,6 @@
 import { IDeviceList, IDeviceType } from './interfaces/IDeviceType';
 import { IZoneType, IZoneTypeList } from './interfaces/IZoneType';
+import { debug, error, log } from './LogManager';
 
 import { HomeyAPI } from 'athom-api';
 import { Zones } from './Zones';
@@ -12,7 +13,7 @@ const isThermometer = (device: IDeviceType) => {
   } else if (device.capabilities) {
     return 'measure_temperature' in device.capabilities;
   }
-  console.log(`Failed to finc capabilities list from: `, device);
+  error(`Failed to find capabilities list from ${device.name}`);
   return false;
 };
 
@@ -27,7 +28,6 @@ export class DeviceManager {
   }
 
   public async start() {
-    console.log('Starting device manager');
     this.setupDeviceSubscription();
     this.setupZoneSubscriptions();
     await Promise.all([this.scanZones(), await this.scanDevices()]);
@@ -94,23 +94,19 @@ export class DeviceManager {
   }
   private async onZoneUpdate(zone: IZoneType) {
     try {
-      if (!zone) {
-        console.log('Why is the zone empty: ', zone);
-        return;
-      }
       const z = this.zones.getZoneById(zone.id);
       if (z && z.getName() !== zone.name) {
         z.setName(zone.name);
       }
     } catch (err) {
-      console.error('Failed to handle zone.update: ', err, zone);
+      error(`Failed to handle zone update of ${zone.name}: ${err}`);
     }
   }
   private async onZoneDelete(zone: IZoneType) {
     try {
       this.zones.removeZone(zone.id);
     } catch (error) {
-      console.error(`Failed to handle zone.delete: ${error}`);
+      error(`Failed to handle delete of zone ${zone.id}: ${error}`);
     }
   }
 
@@ -125,12 +121,12 @@ export class DeviceManager {
     for (const id in allDevices) {
       if (!isThermometer(allDevices[id])) {
         if (!allDevices[id].ready) {
-          console.log('Skipping: ', allDevices[id]);
+          log(`Device not ready, skipping: ${allDevices[id]}`);
         }
         continue;
       }
       if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures') {
-        console.log(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
+        debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
         continue;
       }
       const device = await this.waitForDevice(allDevices[id], 12);
@@ -149,7 +145,7 @@ export class DeviceManager {
     if (timeToWait > 0) {
       return await this.waitForDevice(device, timeToWait--);
     } else {
-      console.log('Found Device, not ready:    ' + resultDevice.name);
+      log(`Found Device, not ready: ${resultDevice.name}`);
       this.devicesNotReadyAtStart.push(resultDevice.name);
       return false;
     }

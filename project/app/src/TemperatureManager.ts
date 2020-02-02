@@ -6,6 +6,7 @@ import { __ } from './HomeyWrappers';
 import { IDeviceList } from './interfaces/IDeviceType';
 import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { JobManager } from './JobManager';
+import { error, get as getLogs, ILogMessage, log } from './LogManager';
 import { IAppState, IDeviceConfig, ISettings, SettingsManager } from './SettingsManager';
 import { TriggerManager } from './TriggerManager';
 import { ITriggers } from './Triggers';
@@ -28,7 +29,7 @@ export class TempManager implements ITemperatureManager {
 
   constructor() {
     this.loaded = false;
-    console.log(`Starting temperature manager`);
+    log(`Starting temperature manager`);
     this.api = undefined;
     this.listeners = {};
     this.triggers = new TriggerManager([
@@ -53,13 +54,13 @@ export class TempManager implements ITemperatureManager {
     this.actions = new ActionManager({
       SetTemperatureBounds: args => {
         if (args.type === 'min') {
-          console.log(`A flow updated the minimum temperature bound to ${args.temperature}`);
+          log(`A flow updated the minimum temperature bound to ${args.temperature}`);
           this.settingsManager.setSettings({ minTemperature: args.temperature });
         } else if (args.type === 'max') {
-          console.log(`A flow updated the maximum temperature bound to ${args.temperature}`);
+          log(`A flow updated the maximum temperature bound to ${args.temperature}`);
           this.settingsManager.setSettings({ maxTemperature: args.temperature });
         } else {
-          console.error(`Unknown bound ${args.type}`);
+          error(`Unknown bound ${args.type}`);
           return false;
         }
         return true;
@@ -71,16 +72,16 @@ export class TempManager implements ITemperatureManager {
           return false;
         }
         if (args.mode === 'enabled') {
-          console.log(`A flow enabled ${zone.getId()} as ${zone.getName()}`);
+          log(`A flow enabled ${zone.getId()} as ${zone.getName()}`);
           this.settingsManager.addZoneEnabled(zone.getId());
         } else if (args.mode === 'disabled') {
-          console.log(`A flow disabled ${zone.getId()} as ${zone.getName()}`);
+          log(`A flow disabled ${zone.getId()} as ${zone.getName()}`);
           this.settingsManager.addZoneDisabled(zone.getId());
         } else if (args.mode === 'monitored') {
-          console.log(`A flow set ${zone.getId()} as ${zone.getName()} to monitored`);
+          log(`A flow set ${zone.getId()} as ${zone.getName()} to monitored`);
           this.settingsManager.addZoneMonitored(zone.getId());
         } else {
-          console.error(`A flow set unkown mode (${args.mode}) for ${args.zone}`);
+          error(`A flow set unkown mode (${args.mode}) for ${args.zone}`);
           return false;
         }
         return true;
@@ -106,15 +107,19 @@ export class TempManager implements ITemperatureManager {
     });
     this.jobManager = new JobManager({
       onResetMaxMin: () => {
-        console.log('Reseting all zones max/min temperatures: ' + new Date());
+        log('Reseting all zones max/min temperatures: ' + new Date());
         this.zones.resetMaxMin();
       },
     });
   }
 
   @Catch()
+  public getLogs(): ILogMessage[] {
+    return getLogs();
+  }
+  @Catch()
   public async onInit() {
-    console.log(`Booting temperature manager`);
+    log(`Booting temperature manager`);
     this.api = await HomeyAPI.forCurrentHomey();
     this.deviceManager = new DeviceManager(this.api, this.zones);
     await this.settingsManager.start();
@@ -133,7 +138,7 @@ export class TempManager implements ITemperatureManager {
       }
     }
 
-    console.log(`${this.zones.countDevices()} devices monitored, enabling triggers`);
+    log(`${this.zones.countDevices()} devices monitored, enabling triggers`);
     this.loaded = true;
   }
   public getTriggers(): ITriggers {

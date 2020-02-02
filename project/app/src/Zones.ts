@@ -3,13 +3,14 @@ import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { ISettings } from './SettingsManager';
 import { Thermometer } from './Thermometer';
 import { ITriggers } from './Triggers';
-import { IZoneListener, Zone } from './Zone';
+import { IZoneListener, IZoneState, Zone } from './Zone';
+import { log } from './LogManager';
 
 export interface IZoneList {
   [key: string]: Zone;
 }
 export interface IZonesState {
-  [key: string]: IZonesState;
+  [key: string]: IZoneState;
 }
 
 export class Zones {
@@ -103,7 +104,7 @@ export class Zones {
   public async moveDevice(thermometer: Thermometer, oldZoneId: string, newZoneId: string, zoneName: string) {
     const newZone = this.addZone(newZoneId, zoneName || 'unknown');
     const oldZone = this.addZone(oldZoneId, 'unknown');
-    console.log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
+    log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
     await newZone.addThermometer(thermometer);
     await oldZone.removeDevice(thermometer.id);
     thermometer.setZone(newZone);

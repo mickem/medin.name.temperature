@@ -1,6 +1,7 @@
 import { IZonesState } from './Zones';
 
 import { ManagerSettings } from 'homey';
+import { log } from './LogManager';
 
 export interface ISettings {
   minTemperature?: number;
@@ -62,7 +63,7 @@ export class SettingsManager {
 
     const state = ManagerSettings.get('state') as IAppState;
     if (state) {
-      console.log(`Restoring state: `);
+      log(`Restoring state: `);
       await this.listener.onAppState(state);
     }
   }
@@ -108,8 +109,8 @@ export class SettingsManager {
       try {
         if (variable === 'settings') {
           const settings = ManagerSettings.get('settings') as ISettings;
-          console.log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
-          console.log(`Reset max/min running at: ${settings.dailyReset}`);
+          log(`Allowed temperature span: ${settings.minTemperature} - ${settings.maxTemperature}`);
+          log(`Reset max/min running at: ${settings.dailyReset}`);
           this.settings = { ...settings };
           await this.listener.onSettingsUpdated(this.settings);
         } else if (variable === 'zonesIgnored') {

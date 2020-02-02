@@ -1,4 +1,5 @@
 import { ManagerCron } from 'homey';
+import { debug, error, log } from './LogManager';
 
 const taskname = 'dailyreset';
 
@@ -24,26 +25,26 @@ export class JobManager {
   }
   public async start() {
     try {
-      console.log('installing scheduled tasks');
+      log('installing scheduled tasks');
       try {
         const tasks = await ManagerCron.getTasks(taskname);
         for (const task of tasks) {
-          console.log(`Uninstalling task: ${task.id}`);
+          debug(`Uninstalling task: ${task.id}`);
           await ManagerCron.unregisterTask(task.id);
         }
-      } catch (error) {
-        console.log('Failed to remove existing job', error);
+      } catch (err) {
+        error(`Failed to remove existing job: ${err}`);
       }
       if (this.dailyReset !== 'never') {
         const cron = this.getDailyRestCron();
-        console.log(`Updated time to: ${cron}`);
+        debug(`Updated time to: ${cron}`);
         this.task = await ManagerCron.registerTask(taskname, cron);
         this.task.on('run', () => this.listener.onResetMaxMin());
       } else {
-        console.log('Reseting of max/min temperatures is disabled');
+        log('Reseting of max/min temperatures is disabled');
       }
-    } catch (error) {
-      console.log('Failed to reset task', error);
+    } catch (err) {
+      error(`Failed to reset task: ${err}`);
     }
   }
   private getDailyRestCron() {

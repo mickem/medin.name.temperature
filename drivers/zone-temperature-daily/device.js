@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -104,6 +104,58 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 /***/ }),
 
 /***/ 1:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const logs = [];
+let logEnabled = true;
+function logRaw(level, message) {
+    if (!logEnabled) {
+        return;
+    }
+    logs.push({
+        date: new Date(),
+        level,
+        message,
+    });
+    if (logs.length > 100) {
+        logs.unshift();
+    }
+}
+function log(message) {
+    logRaw('ok', message);
+    console.log(message);
+}
+exports.log = log;
+function error(message) {
+    logRaw('error', message);
+    console.error(message);
+}
+exports.error = error;
+function debug(message) {
+    logRaw('debug', message);
+    console.log(message);
+}
+exports.debug = debug;
+function get() {
+    return logs;
+}
+exports.get = get;
+function enableLog() {
+    logEnabled = true;
+}
+exports.enableLog = enableLog;
+function disableLog() {
+    logEnabled = false;
+}
+exports.disableLog = disableLog;
+
+
+/***/ }),
+
+/***/ 2:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -140,7 +192,7 @@ exports.Catch = Catch;
 
 /***/ }),
 
-/***/ 20:
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -162,21 +214,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __webpack_require__(0);
-const utils_1 = __webpack_require__(1);
-const CapabilityWrapper_1 = __webpack_require__(21);
-const DriverImpl_1 = __webpack_require__(3);
+const LogManager_1 = __webpack_require__(1);
+const utils_1 = __webpack_require__(2);
+const CapabilityWrapper_1 = __webpack_require__(22);
+const DriverImpl_1 = __webpack_require__(4);
 class ZoneTemperatue extends homey_1.Device {
     onInit() {
         return __awaiter(this, void 0, void 0, function* () {
             const id = this.getMyData().id || 'none';
-            console.log(`Adding device for ${id}`, DriverImpl_1.capabilities);
+            LogManager_1.log(`Adding device for ${id}`);
             this.max = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.max);
             this.min = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.min);
             this.cur = new CapabilityWrapper_1.CapabilityWrapper(this, DriverImpl_1.capabilities.temp);
             homey_1.app.get().subscribeToZone(id, () => __awaiter(this, void 0, void 0, function* () {
                 const z = this.getTM().getZones()[id];
                 if (!z) {
-                    console.log(`No device found for ${id}`);
+                    LogManager_1.log(`No device found for ${id}`);
                     return;
                 }
                 yield this.max.set(z.getDailyMax());
@@ -200,7 +253,7 @@ module.exports = ZoneTemperatue;
 
 /***/ }),
 
-/***/ 21:
+/***/ 22:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -215,6 +268,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const LogManager_1 = __webpack_require__(1);
 class CapabilityWrapper {
     constructor(handler, name) {
         this.handler = handler;
@@ -228,12 +282,12 @@ class CapabilityWrapper {
                 }
                 if (this.lastValue === undefined || this.lastValue !== value) {
                     this.lastValue = value;
-                    console.log(`Updating ${this.name} to ${value}`);
+                    LogManager_1.debug(`Updating ${this.name} to ${value}`);
                     yield this.handler.setCapabilityValue(this.name, value);
                 }
             }
             catch (error) {
-                console.error(`Failed to update ${this.name}: ${error}`, error);
+                error(`Failed to update ${this.name}: ${error}`, error);
             }
         });
     }
@@ -248,7 +302,7 @@ exports.CapabilityWrapper = CapabilityWrapper;
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

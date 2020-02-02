@@ -100,6 +100,7 @@ export default class SettingsManager {
   private devicesIgnored: [];
   private devices: [];
   private zones: [];
+  private logs: [];
   private zonesIgnored: [];
   private zonesNotMonitored: [];
   private settings;
@@ -118,6 +119,7 @@ export default class SettingsManager {
     this.devicesIgnored = [];
     this.zonesIgnored = [];
     this.zonesNotMonitored = [];
+    this.logs = [];
     return Promise.all([
       Homey.set('settings', this.settings),
       Homey.set('zonesNotMonitored', this.zonesNotMonitored),
@@ -135,10 +137,14 @@ export default class SettingsManager {
       }),
       this.reloadZones(),
       this.reloadDevices(),
+      this.reloadLogs(),
     ]);
   }
   public getZones() {
     return this.zones;
+  }
+  public getLogs() {
+    return this.logs;
   }
   public getDevices() {
     return this.devices;
@@ -243,7 +249,19 @@ export default class SettingsManager {
       });
     });
   }
-
+  private async reloadLogs(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      Homey.api('GET', '/logs', null, (err, result) => {
+        if (err) {
+          console.error('Failed to load logs: ', err);
+          Homey.alert('reloadLogs' + err);
+          return reject();
+        }
+        this.logs = result;
+        resolve();
+      });
+    });
+  }
   private fetchSettings(cb: any): Promise<void> {
     return new Promise((resolve, reject) => {
       Homey.get((err, result) => {

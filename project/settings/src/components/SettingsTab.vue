@@ -4,6 +4,7 @@
     <SettingsTabEntry i18nScope="settings.settings" id="minTemperature" :value="minTemperature" @input="(v) => {minTemperature = v}" />
     <SettingsTabEntry i18nScope="settings.settings" id="maxTemperature" :value="maxTemperature" @input="(v) => {maxTemperature = v}" />
     <SettingsTabEntry i18nScope="settings.settings" id="dailyReset" :value="dailyReset" @input="(v) => {dailyReset = v}" />
+    <SettingsTabLogs i18nScope="settings.settings" />
     <SettingsTabButton i18nScope="settings.settings" id="showHints" @click="showHints()" />
     <SettingsTabButton i18nScope="settings.settings" id="refresh" @click="refresh()" />
     <SettingsTabButton i18nScope="settings.settings" id="resetAll" extra-class="btn-danger" @click="reset()" />
@@ -13,12 +14,14 @@
 <script lang="js">
 import SettingsTabEntry from './SettingsTabEntry.vue';
 import SettingsTabButton from './SettingsTabButton.vue';
+import SettingsTabLogs from './SettingsTabLogs.vue';
 
 export default {
   name: 'SettingsTab',
   components: {
     SettingsTabEntry,
     SettingsTabButton,
+    SettingsTabLogs,
   },
   data () {
     return {

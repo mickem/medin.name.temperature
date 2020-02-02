@@ -1,4 +1,5 @@
 import { FlowCardTrigger } from 'homey';
+import { error, log } from './LogManager';
 import { Catch } from './utils';
 
 interface ICardList {
@@ -17,7 +18,7 @@ export class TriggerManager<Triggers> {
 
     for (const id of functions) {
       try {
-        console.log(`Registring function: ${id}`);
+        log(`Registring function: ${id}`);
         this.cards[id] = new FlowCardTrigger(id);
         (this.wrapper as any)[id] = async args => {
           if (!this.enabled) {
@@ -25,8 +26,8 @@ export class TriggerManager<Triggers> {
           }
           await this.cards[id].trigger(args);
         };
-      } catch (error) {
-        console.error(`Failed to register action card ${id}: `, error);
+      } catch (err) {
+        error(`Failed to register action card ${id}: ${err}`);
       }
     }
   }
@@ -37,18 +38,18 @@ export class TriggerManager<Triggers> {
 
   @Catch()
   public register() {
-    console.log('Registering triggers');
+    log('Registering triggers');
     for (const id in this.cards) {
       this.cards[id].register();
     }
   }
 
   public enable() {
-    console.log('Enabling all triggers');
+    log('Enabling all triggers');
     this.enabled = true;
   }
   public disable() {
-    console.log('Disabling all triggers');
+    log('Disabling all triggers');
     this.enabled = false;
   }
 }

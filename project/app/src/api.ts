@@ -69,4 +69,12 @@ module.exports = [
     method: 'GET',
     path: '/zones',
   },
+  {
+    description: 'Retrieve logs',
+    fn: (args, callback) => {
+      callback(null, (Homey.app.get() as ITemperatureManager).getLogs());
+    },
+    method: 'GET',
+    path: '/logs',
+  },
 ];

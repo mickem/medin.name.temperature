@@ -116,6 +116,9 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp): IDeviceType {
 }
 
 export class FakeManager implements ITemperatureManager {
+  getLogs(): import("./LogManager").ILogMessage[] {
+    return [];
+  }
   public getMinTemp() {
     return 7;
   }

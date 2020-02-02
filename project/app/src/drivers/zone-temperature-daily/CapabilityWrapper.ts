@@ -1,4 +1,5 @@
 import { Device } from 'homey';
+import { debug } from '../../LogManager';
 
 interface ILocaleString {
   [key: string]: string;
@@ -24,11 +25,11 @@ export class CapabilityWrapper {
       }
       if (this.lastValue === undefined || this.lastValue !== value) {
         this.lastValue = value;
-        console.log(`Updating ${this.name} to ${value}`);
+        debug(`Updating ${this.name} to ${value}`);
         await this.handler.setCapabilityValue(this.name, value);
       }
     } catch (error) {
-      console.error(`Failed to update ${this.name}: ${error}`, error);
+      error(`Failed to update ${this.name}: ${error}`, error);
     }
   }
 

@@ -1,5 +1,6 @@
 import { FlowCardAction } from 'homey';
 import { Catch } from './utils';
+import { log } from './LogManager';
 
 interface ICardList {
   [key: string]: FlowCardAction;
@@ -22,10 +23,9 @@ export class ActionManager<Handler> {
 
   @Catch()
   public register() {
-    console.log(`Registering ${Object.keys(this.cards).length} actions`);
+    log(`Registering ${Object.keys(this.cards).length} actions`);
     for (const id in this.cards) {
       (this.cards[id] as any).register().registerRunListener((args, state) => {
-        console.log(this.handler[id](args));
         return Promise.resolve(this.handler[id](args));
       });
     }
