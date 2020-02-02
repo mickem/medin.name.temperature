@@ -1,4 +1,7 @@
 {
+  "1.1.1": {
+    "en": "Added log and option to show log records in settings dialog"
+  },
   "1.1.0": {
     "en": "Added virtual devices for zone temperatures"
   },
