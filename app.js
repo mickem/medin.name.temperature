@@ -1086,11 +1086,19 @@ class Zone {
         this.metric = new MetricManager_1.default();
         this.metric.on('currentMax', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
-            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+            yield this.triggers.MaxTemperatureChanged({
+                zone: this.name,
+                sensor: name === undefined ? 'unknown' : sensor,
+                temperature,
+            });
         }));
         this.metric.on('currentMin', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
-            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+            yield this.triggers.MinTemperatureChanged({
+                zone: this.name,
+                sensor: name === undefined ? 'unknown' : sensor,
+                temperature,
+            });
         }));
         this.metric.on('currentAvg', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Temperature of zone ${this.name} was updated by ${sensorName} to ${temperature}`);
@@ -1271,9 +1279,9 @@ class MetricManager {
         this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined };
         this.period = new PeriodAverage_1.default();
         this.current = new MomentanAverage_1.default();
-        this.current.on("max", (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMax', sensorName, value); }));
-        this.current.on("min", (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMin', sensorName, value); }));
-        this.current.on("avg", (sensorName, value) => __awaiter(this, void 0, void 0, function* () {
+        this.current.on('max', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMax', sensorName, value); }));
+        this.current.on('min', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMin', sensorName, value); }));
+        this.current.on('avg', (sensorName, value) => __awaiter(this, void 0, void 0, function* () {
             yield this.period.update(name, value);
             yield this.fire('currentAvg', sensorName, value);
         }));
@@ -1347,12 +1355,12 @@ class MomentanAverage {
                 this.reset();
                 return;
             }
-            const largest = values.reduce((p, c) => p === undefined || c.temp > p.temp ? c : p, undefined);
+            const largest = values.reduce((p, c) => (p === undefined || c.temp > p.temp ? c : p), undefined);
             if (largest.temp !== this.max) {
                 this.max = largest.temp;
                 yield this.fire('max', largest.name, this.max);
             }
-            const smallest = values.reduce((p, c) => p === undefined || c.temp < p.temp ? c : p, undefined);
+            const smallest = values.reduce((p, c) => (p === undefined || c.temp < p.temp ? c : p), undefined);
             if (smallest.temp !== this.min) {
                 this.min = smallest.temp;
                 yield this.fire('min', smallest.name, this.min);

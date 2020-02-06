@@ -4,7 +4,6 @@ import { Thermometer } from '../Thermometer';
 
 import { disableLog } from '../LogManager';
 
-
 disableLog();
 test('create zone', () => {
   const z = makeZone('1', 'create zone');

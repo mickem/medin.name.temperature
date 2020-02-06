@@ -122,7 +122,7 @@ describe('test PeriodAverage', () => {
       seconds: 3601,
       value: 144040,
     });
-  })
+  });
   test('Setting state should update values', async () => {
     avg.reset();
     expect((avg as any).value).toEqual(0);
@@ -149,35 +149,32 @@ describe('test PeriodAverage', () => {
     expect((avg as any).value).toEqual(40 * 3601);
     expect((avg as any).lastUpdate).toEqual(1576825262000);
     expect((avg as any).lastValue).toEqual(20);
-
-  })
+  });
   test('Undefined state should be ignored', async () => {
     avg.setState(undefined);
-  })
-
+  });
 
   const mockMax = jest.fn();
   test('Max event should fire when value changes', async () => {
     avg.on('max', mockMax);
     await avg.update('temp', 50);
     expect(mockMax).toBeCalledWith('temp', 50);
-  })
+  });
   test('Max event should not fire when value is same', async () => {
     mockMax.mockClear();
     await avg.update('temp', -5);
     expect(mockMax).not.toBeCalled();
-  })
+  });
   const mockMin = jest.fn();
   test('Min event should fire when value changes', async () => {
     avg.on('min', mockMin);
     await avg.update('temp', -10);
     expect(mockMin).toBeCalledWith('temp', -10);
-  })
+  });
   test('Min event should not fire when value is same', async () => {
     mockMin.mockClear();
     await avg.update('temp', 60);
 
     expect(mockMin).not.toBeCalled();
-  })
-
+  });
 });

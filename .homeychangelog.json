@@ -1,4 +1,7 @@
 {
+  "1.1.2": {
+    "en": "Fixed some min/max related issues"
+  },
   "1.1.1": {
     "en": "Added log and option to show log records in settings dialog"
   },

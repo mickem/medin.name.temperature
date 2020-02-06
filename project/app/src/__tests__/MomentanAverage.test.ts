@@ -22,7 +22,7 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 7 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
     expect(avg.max).toEqual(25);
   });
@@ -30,7 +30,7 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 7 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
     expect(avg.min).toEqual(5);
   });
@@ -38,7 +38,7 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 7 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
     expect(avg.average).toEqual(12.3);
   });
@@ -51,7 +51,7 @@ describe('test PeriodAverage', () => {
   test('should be able to subscribe to average changes', async () => {
     avg.on('avg', avgMock);
     await avg.update('trigger', [{ name: 'temp', temp: 5 }]);
-    expect(avgMock).toBeCalledWith("trigger", 5);
+    expect(avgMock).toBeCalledWith('trigger', 5);
   });
   test('if avg does not change event should not fire', async () => {
     avgMock.mockReset();
@@ -63,9 +63,9 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 7 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
-    expect(maxMock).toBeCalledWith("max", 25);
+    expect(maxMock).toBeCalledWith('max', 25);
   });
   test('max event should not fire if value is the same', async () => {
     maxMock.mockReset();
@@ -74,7 +74,7 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 2 },
       { name: 'mid', temp: 1 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
     expect(avgMock).toBeCalled();
     expect(maxMock).not.toBeCalled();
@@ -84,9 +84,9 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 7 },
-      { name: 'max', temp: 25 }
+      { name: 'max', temp: 25 },
     ]);
-    expect(minMock).toBeCalledWith("min", 5);
+    expect(minMock).toBeCalledWith('min', 5);
   });
   test('min event should not fire if value is the same', async () => {
     minMock.mockReset();
@@ -95,10 +95,9 @@ describe('test PeriodAverage', () => {
     await avg.update('temp', [
       { name: 'min', temp: 5 },
       { name: 'mid', temp: 11 },
-      { name: 'max', temp: 13 }
+      { name: 'max', temp: 13 },
     ]);
     expect(avgMock).toBeCalled();
     expect(minMock).not.toBeCalled();
   });
-
 });

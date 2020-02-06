@@ -1,4 +1,3 @@
-
 type EventConst = 'max' | 'min' | 'avg';
 type EventFunction = (device: string, temperature: number) => void;
 export interface ITemperatureNode {
@@ -12,10 +11,10 @@ export default class MomentanAverage {
   public average: number;
 
   private events: {
-    avg: EventFunction | undefined,
-    max: EventFunction | undefined,
-    min: EventFunction | undefined,
-  }
+    avg: EventFunction | undefined;
+    max: EventFunction | undefined;
+    min: EventFunction | undefined;
+  };
 
   constructor() {
     this.events = { max: undefined, min: undefined, avg: undefined };
@@ -41,12 +40,12 @@ export default class MomentanAverage {
       this.reset();
       return;
     }
-    const largest = values.reduce((p, c) => p === undefined || c.temp > p.temp ? c : p, undefined);
+    const largest = values.reduce((p, c) => (p === undefined || c.temp > p.temp ? c : p), undefined);
     if (largest.temp !== this.max) {
       this.max = largest.temp;
       await this.fire('max', largest.name, this.max);
     }
-    const smallest = values.reduce((p, c) => p === undefined || c.temp < p.temp ? c : p, undefined);
+    const smallest = values.reduce((p, c) => (p === undefined || c.temp < p.temp ? c : p), undefined);
     if (smallest.temp !== this.min) {
       this.min = smallest.temp;
       await this.fire('min', smallest.name, this.min);
@@ -59,6 +58,4 @@ export default class MomentanAverage {
       await this.fire('avg', sensor, this.average);
     }
   }
-
-
 }

@@ -1,4 +1,4 @@
-import { runInThisContext } from "vm";
+import { runInThisContext } from 'vm';
 
 export interface IAverageState {
   value: number;
@@ -23,9 +23,9 @@ export default class PeriodAverage {
   private lastValue: number | undefined;
   private lastSensor: string | undefined;
   private events: {
-    max: EventFunction | undefined,
-    min: EventFunction | undefined,
-  }
+    max: EventFunction | undefined;
+    min: EventFunction | undefined;
+  };
 
   constructor() {
     this.value = undefined;
@@ -134,5 +134,4 @@ export default class PeriodAverage {
       this.minValue = state.minValue;
     }
   }
-
 }

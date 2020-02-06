@@ -41,8 +41,12 @@ describe('managing zones', () => {
   });
   test('state should not be propagated to old zones', () => {
     zones.setState({
-      id: { average: { lastSensor: 'id', lastUpdate: 0, lastValue: 0, seconds: 0, value: 0, minValue: 2, maxValue: 12 } },
-      'new zone': { average: { lastSensor: 'new', lastUpdate: 0, lastValue: 0, seconds: 0, value: 0, minValue: 2, maxValue: 12 } }
+      id: {
+        average: { lastSensor: 'id', lastUpdate: 0, lastValue: 0, seconds: 0, value: 0, minValue: 2, maxValue: 12 },
+      },
+      'new zone': {
+        average: { lastSensor: 'new', lastUpdate: 0, lastValue: 0, seconds: 0, value: 0, minValue: 2, maxValue: 12 },
+      },
     } as IZonesState);
     const z = zones.addZone('id', 'new name');
     expect((z as any).dailyMinTemp).toBeUndefined();

@@ -47,11 +47,19 @@ export class Zone {
 
     this.metric.on('currentMax', async (sensor, temperature) => {
       debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
-      await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+      await this.triggers.MaxTemperatureChanged({
+        zone: this.name,
+        sensor: name === undefined ? 'unknown' : sensor,
+        temperature,
+      });
     });
     this.metric.on('currentMin', async (sensor, temperature) => {
       debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
-      await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+      await this.triggers.MinTemperatureChanged({
+        zone: this.name,
+        sensor: name === undefined ? 'unknown' : sensor,
+        temperature,
+      });
     });
     this.metric.on('currentAvg', async (sensorName, temperature) => {
       debug(`Temperature of zone ${this.name} was updated by ${sensorName} to ${temperature}`);
@@ -64,7 +72,7 @@ export class Zone {
           await this.triggers.TooCold({ zone: this.name, temperature });
         }
       }
-    })
+    });
   }
 
   public getId(): string {
@@ -192,7 +200,10 @@ export class Zone {
     if (this.ignored) {
       await this.metric.update(undefined, []);
     } else {
-      await this.metric.update(sensor, this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })));
+      await this.metric.update(
+        sensor,
+        this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })),
+      );
     }
   }
 }
