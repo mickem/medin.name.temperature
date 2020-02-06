@@ -1069,9 +1069,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Average_1 = __importDefault(__webpack_require__(15));
+const MetricManager_1 = __importDefault(__webpack_require__(15));
 const LogManager_1 = __webpack_require__(1);
-const Thermometer_1 = __webpack_require__(16);
+const Thermometer_1 = __webpack_require__(18);
 const utils_1 = __webpack_require__(2);
 class Zone {
     constructor(triggers, listener, id, name, ignored, notMonitored, devicesIgnored) {
@@ -1080,15 +1080,31 @@ class Zone {
         this.id = id;
         this.name = name;
         this.devices = [];
-        this.dailyMinTemp = undefined;
-        this.dailyMaxTemp = undefined;
-        this.currentMinTemp = undefined;
-        this.currentMaxTemp = undefined;
-        this.current = undefined;
         this.ignored = ignored;
         this.notMonitored = notMonitored;
         this.devicesIgnored = devicesIgnored;
-        this.avg = new Average_1.default();
+        this.metric = new MetricManager_1.default();
+        this.metric.on('currentMax', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
+            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+        }));
+        this.metric.on('currentMin', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
+            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+        }));
+        this.metric.on('currentAvg', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Temperature of zone ${this.name} was updated by ${sensorName} to ${temperature}`);
+            this.listener.onZoneUpdated(this.id);
+            yield this.triggers.TemperatureChanged({ zone: this.name, temperature });
+            if (!this.notMonitored) {
+                if (temperature > this.maxAllowed) {
+                    yield this.triggers.TooWarm({ zone: this.name, temperature });
+                }
+                else if (temperature < this.minAllowed) {
+                    yield this.triggers.TooCold({ zone: this.name, temperature });
+                }
+            }
+        }));
     }
     getId() {
         return this.id;
@@ -1099,23 +1115,19 @@ class Zone {
     setName(name) {
         this.name = name;
     }
-    getTemperature() {
-        return this.current;
+    get periodTemp() {
+        return this.metric.period;
     }
-    getDailyMin() {
-        return this.dailyMinTemp;
+    get currentTemp() {
+        return this.metric.current;
     }
-    getDailyMax() {
-        return this.dailyMaxTemp;
+    getDailyAvg() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.periodTemp.get();
+        });
     }
-    getCurrentMin() {
-        return this.currentMinTemp;
-    }
-    getCurrentMax() {
-        return this.currentMaxTemp;
-    }
-    getAvg() {
-        return this.avg.get();
+    getCurrentAvg() {
+        return this.currentTemp.average;
     }
     hasDevice() {
         return this.devices.length > 0;
@@ -1150,7 +1162,7 @@ class Zone {
                 if (this.devices[i].id === id) {
                     this.devices.splice(i, 1);
                     LogManager_1.log(`Removing thermometer: ${this.devices.map(t => t.name)} from zone ${this.name}`);
-                    yield this.calculateZoneTemp();
+                    yield this.calculateZoneTemp(undefined);
                     return;
                 }
             }
@@ -1161,7 +1173,7 @@ class Zone {
             if (this.ignored !== ignored) {
                 LogManager_1.log(`Zone ignore status changed for ${this.name} to ${ignored}`);
                 this.ignored = ignored;
-                yield this.calculateZoneTemp();
+                yield this.calculateZoneTemp(undefined);
             }
         });
     }
@@ -1181,15 +1193,13 @@ class Zone {
                 }
             }
             if (hasChanged) {
-                yield this.calculateZoneTemp();
+                yield this.calculateZoneTemp(undefined);
             }
         });
     }
     resetMaxMin() {
         LogManager_1.log(`Resetting daily averages for ${this.name}`);
-        this.dailyMinTemp = undefined;
-        this.dailyMaxTemp = undefined;
-        this.avg.reset();
+        this.metric.resetPeriod();
     }
     onDeviceUpdated(thermometer) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1197,47 +1207,17 @@ class Zone {
                 LogManager_1.debug(`Device of ignored zone ${this.name} updated`);
                 return;
             }
-            if (!(yield this.calculateZoneTemp())) {
-                return;
-            }
-            if (this.dailyMinTemp === undefined) {
-                yield this.onMinUpdated(thermometer.name, thermometer.temp);
-            }
-            else {
-                const minTemp = Math.min(this.dailyMinTemp, thermometer.temp);
-                if (this.dailyMinTemp !== minTemp) {
-                    yield this.onMinUpdated(thermometer.name, thermometer.temp);
-                }
-            }
-            if (this.dailyMaxTemp === undefined) {
-                yield this.onMaxUpdated(thermometer.name, thermometer.temp);
-            }
-            else {
-                const maxTemp = Math.max(this.dailyMaxTemp, thermometer.temp);
-                if (this.dailyMaxTemp !== maxTemp) {
-                    yield this.onMaxUpdated(thermometer.name, thermometer.temp);
-                }
-            }
-            LogManager_1.log(`Zone ${this.name} temperature was updated`);
-            this.listener.onZoneUpdated(this.id);
+            yield this.calculateZoneTemp(thermometer.getName());
         });
     }
     getState() {
         return {
-            average: this.avg.getState(),
-            dailyMax: this.dailyMaxTemp,
-            dailyMin: this.dailyMinTemp,
+            average: this.metric.getState(),
         };
     }
     setState(state) {
-        if (state.dailyMax) {
-            this.dailyMaxTemp = state.dailyMax;
-        }
-        if (state.dailyMin) {
-            this.dailyMinTemp = state.dailyMin;
-        }
         if (state.average) {
-            this.avg.setState(state.average);
+            this.metric.setState(state.average);
         }
     }
     findDevice(id) {
@@ -1248,79 +1228,13 @@ class Zone {
         }
         return undefined;
     }
-    calculateZoneTemp() {
+    calculateZoneTemp(sensor) {
         return __awaiter(this, void 0, void 0, function* () {
-            let curMin;
-            let curMax;
             if (this.ignored) {
-                this.current = undefined;
-                return false;
-            }
-            let avgTemp = 0;
-            let count = 0;
-            for (const device of this.devices) {
-                if (device.hasTemp()) {
-                    if (curMax === undefined) {
-                        curMax = device.temp;
-                    }
-                    else if (device.temp > curMax) {
-                        curMax = device.temp;
-                    }
-                    if (curMin === undefined) {
-                        curMin = device.temp;
-                    }
-                    else if (device.temp < curMin) {
-                        curMin = device.temp;
-                    }
-                    avgTemp += device.temp;
-                    count++;
-                }
-            }
-            if (count > 0) {
-                this.currentMaxTemp = curMax;
-                this.currentMinTemp = curMin;
-                const newCurrent = Math.round((avgTemp / count) * 10) / 10;
-                if (newCurrent !== this.current) {
-                    this.current = newCurrent;
-                    yield this.onTempUpdated();
-                    return true;
-                }
+                yield this.metric.update(undefined, []);
             }
             else {
-                if (this.current) {
-                    this.current = undefined;
-                    return true;
-                }
-            }
-            return false;
-        });
-    }
-    onMaxUpdated(name, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            LogManager_1.debug(`Maximum temperature of zone ${this.name} was updated to ${this.dailyMaxTemp}`);
-            this.dailyMaxTemp = temperature;
-            yield this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMaxTemp });
-        });
-    }
-    onMinUpdated(name, temperature) {
-        return __awaiter(this, void 0, void 0, function* () {
-            LogManager_1.debug(`Minimum temperature of zone ${this.name} was updated to ${this.dailyMinTemp}`);
-            this.dailyMinTemp = temperature;
-            yield this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMinTemp });
-        });
-    }
-    onTempUpdated() {
-        return __awaiter(this, void 0, void 0, function* () {
-            LogManager_1.debug(`Temperature of zone ${this.name} was updated to ${this.current}`);
-            this.avg.update(this.current);
-            yield this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
-            if (!this.notMonitored) {
-                if (this.current > this.maxAllowed) {
-                    yield this.triggers.TooWarm({ zone: this.name, temperature: this.current });
-                }
-                else if (this.current < this.minAllowed) {
-                    yield this.triggers.TooCold({ zone: this.name, temperature: this.current });
-                }
+                yield this.metric.update(sensor, this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })));
             }
         });
     }
@@ -1337,15 +1251,153 @@ exports.Zone = Zone;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-class Average {
+const MomentanAverage_1 = __importDefault(__webpack_require__(16));
+const PeriodAverage_1 = __importDefault(__webpack_require__(17));
+class MetricManager {
+    constructor() {
+        this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined };
+        this.period = new PeriodAverage_1.default();
+        this.current = new MomentanAverage_1.default();
+        this.current.on("max", (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMax', sensorName, value); }));
+        this.current.on("min", (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMin', sensorName, value); }));
+        this.current.on("avg", (sensorName, value) => __awaiter(this, void 0, void 0, function* () {
+            yield this.period.update(name, value);
+            yield this.fire('currentAvg', sensorName, value);
+        }));
+    }
+    resetPeriod() {
+        this.period.reset();
+    }
+    getState() {
+        return this.period.getState();
+    }
+    setState(state) {
+        this.period.setState(state);
+    }
+    update(sensor, values) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.current.update(sensor, values);
+        });
+    }
+    on(event, fun) {
+        this.events[event] = fun;
+    }
+    fire(event, device, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (value !== undefined && this.events[event] !== undefined) {
+                yield this.events[event](device, value);
+            }
+        });
+    }
+}
+exports.default = MetricManager;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+class MomentanAverage {
+    constructor() {
+        this.events = { max: undefined, min: undefined, avg: undefined };
+    }
+    on(event, fun) {
+        this.events[event] = fun;
+    }
+    fire(event, device, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (value !== undefined && this.events[event] !== undefined) {
+                yield this.events[event](device, value);
+            }
+        });
+    }
+    reset() {
+        this.min = undefined;
+        this.max = undefined;
+        this.average = undefined;
+    }
+    update(sensor, values) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (values.length === 0) {
+                this.reset();
+                return;
+            }
+            const largest = values.reduce((p, c) => p === undefined || c.temp > p.temp ? c : p, undefined);
+            if (largest.temp !== this.max) {
+                this.max = largest.temp;
+                yield this.fire('max', largest.name, this.max);
+            }
+            const smallest = values.reduce((p, c) => p === undefined || c.temp < p.temp ? c : p, undefined);
+            if (smallest.temp !== this.min) {
+                this.min = smallest.temp;
+                yield this.fire('min', smallest.name, this.min);
+            }
+            const sum = values.reduce((s, c) => s + c.temp, 0);
+            const avg = Math.round((sum / values.length) * 10) / 10;
+            if (this.average !== avg) {
+                this.average = avg;
+                yield this.fire('avg', sensor, this.average);
+            }
+        });
+    }
+}
+exports.default = MomentanAverage;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+class PeriodAverage {
     constructor() {
         this.value = undefined;
         this.seconds = undefined;
         this.lastUpdate = undefined;
         this.lastValue = undefined;
+        this.minValue = undefined;
+        this.maxValue = undefined;
+        this.events = { max: undefined, min: undefined };
     }
     reset() {
+        this.minValue = undefined;
+        this.maxValue = undefined;
         if (this.lastUpdate === undefined) {
             return;
         }
@@ -1353,48 +1405,75 @@ class Average {
         this.seconds = 0;
         this.lastUpdate = Date.now();
     }
-    update(value) {
-        if (this.lastUpdate === undefined || this.lastValue === undefined) {
-            this.value = value;
+    update(sensor, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.minValue === undefined || value < this.minValue) {
+                this.minValue = value;
+                yield this.fire('min', sensor, this.minValue);
+            }
+            if (this.maxValue === undefined || value > this.maxValue) {
+                this.maxValue = value;
+                yield this.fire('max', sensor, this.maxValue);
+            }
+            if (this.lastUpdate === undefined || this.lastValue === undefined) {
+                this.value = value;
+                this.lastValue = value;
+                this.lastSensor = sensor;
+                this.seconds = 0;
+                this.lastUpdate = Date.now();
+                return;
+            }
+            const now = Date.now();
+            const delta = now - this.lastUpdate;
+            const seconds = Math.round(delta / 1000);
+            if (seconds > 1) {
+                this.value += this.lastValue * (seconds - 1) + value;
+                this.seconds += seconds;
+            }
+            else if (seconds === 1) {
+                this.value += value;
+                this.seconds++;
+            }
+            else {
+                // No time has passed, do nothing...
+            }
+            this.lastSensor = sensor;
             this.lastValue = value;
-            this.seconds = 0;
-            this.lastUpdate = Date.now();
-            return;
-        }
-        const now = Date.now();
-        const delta = now - this.lastUpdate;
-        const seconds = Math.round(delta / 1000);
-        if (seconds > 1) {
-            this.value += this.lastValue * (seconds - 1) + value;
-            this.seconds += seconds;
-        }
-        else if (seconds === 1) {
-            this.value += value;
-            this.seconds++;
-        }
-        else {
-            // No time has passed, do nothing...
-        }
-        this.lastValue = value;
-        this.lastUpdate = now;
+            this.lastUpdate = now;
+        });
+    }
+    on(event, fun) {
+        this.events[event] = fun;
+    }
+    fire(event, sensor, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (value !== undefined && this.events[event] !== undefined) {
+                yield this.events[event](sensor, value);
+            }
+        });
     }
     get() {
-        if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
-            return undefined;
-        }
-        this.update(this.lastValue);
-        if (this.seconds === 0) {
-            return Math.round(this.lastValue * 100) / 100;
-        }
-        return Math.round((this.value / this.seconds) * 100) / 100;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
+                return undefined;
+            }
+            yield this.update(this.lastSensor, this.lastValue);
+            if (this.seconds === 0) {
+                return Math.round(this.lastValue * 100) / 100;
+            }
+            return Math.round((this.value / this.seconds) * 100) / 100;
+        });
     }
     getState() {
         if (!this.lastUpdate || !this.lastValue || !this.seconds || !this.value) {
             return undefined;
         }
         return {
+            lastSensor: this.lastSensor,
             lastUpdate: this.lastUpdate,
             lastValue: this.lastValue,
+            maxValue: this.maxValue,
+            minValue: this.minValue,
             seconds: this.seconds,
             value: this.value,
         };
@@ -1407,13 +1486,22 @@ class Average {
         this.lastValue = state.lastValue;
         this.seconds = state.seconds;
         this.value = state.value;
+        if (state.lastSensor) {
+            this.lastSensor = state.lastSensor;
+        }
+        if (state.maxValue) {
+            this.maxValue = state.maxValue;
+        }
+        if (state.minValue) {
+            this.minValue = state.minValue;
+        }
     }
 }
-exports.default = Average;
+exports.default = PeriodAverage;
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

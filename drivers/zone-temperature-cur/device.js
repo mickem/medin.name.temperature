@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -155,7 +155,44 @@ exports.disableLog = disableLog;
 
 /***/ }),
 
-/***/ 18:
+/***/ 2:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function Catch(swallow = false) {
+    return (target, propertyKey, descriptor) => {
+        const originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            try {
+                const result = originalMethod.apply(this, args);
+                // check if method is asynchronous
+                if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
+                    return result.catch((error) => {
+                        console.error(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, '\n| ')}`, error);
+                        if (!swallow) {
+                            throw error;
+                        }
+                    });
+                }
+                return result;
+            }
+            catch (error) {
+                if (!swallow) {
+                    throw error;
+                }
+            }
+        };
+        return descriptor;
+    };
+}
+exports.Catch = Catch;
+
+
+/***/ }),
+
+/***/ 20:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -179,7 +216,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __webpack_require__(0);
 const LogManager_1 = __webpack_require__(1);
 const utils_1 = __webpack_require__(2);
-const CapabilityWrapper_1 = __webpack_require__(19);
+const CapabilityWrapper_1 = __webpack_require__(21);
 const DriverImpl_1 = __webpack_require__(3);
 class ZoneTemperatue extends homey_1.Device {
     onInit() {
@@ -195,9 +232,9 @@ class ZoneTemperatue extends homey_1.Device {
                     LogManager_1.error(`No device found for ${id}`);
                     return;
                 }
-                yield this.max.set(z.getCurrentMax());
-                yield this.min.set(z.getCurrentMin());
-                yield this.cur.set(z.getTemperature());
+                yield this.max.set(z.currentTemp.max);
+                yield this.min.set(z.currentTemp.min);
+                yield this.cur.set(z.currentTemp.average);
             }));
         });
     }
@@ -216,7 +253,7 @@ module.exports = ZoneTemperatue;
 
 /***/ }),
 
-/***/ 19:
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -261,43 +298,6 @@ class CapabilityWrapper {
     }
 }
 exports.CapabilityWrapper = CapabilityWrapper;
-
-
-/***/ }),
-
-/***/ 2:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function Catch(swallow = false) {
-    return (target, propertyKey, descriptor) => {
-        const originalMethod = descriptor.value;
-        descriptor.value = function (...args) {
-            try {
-                const result = originalMethod.apply(this, args);
-                // check if method is asynchronous
-                if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
-                    return result.catch((error) => {
-                        console.error(`A fault occured in ${propertyKey}: \n|${originalMethod.toString().replace(/\n/g, '\n| ')}`, error);
-                        if (!swallow) {
-                            throw error;
-                        }
-                    });
-                }
-                return result;
-            }
-            catch (error) {
-                if (!swallow) {
-                    throw error;
-                }
-            }
-        };
-        return descriptor;
-    };
-}
-exports.Catch = Catch;
 
 
 /***/ }),

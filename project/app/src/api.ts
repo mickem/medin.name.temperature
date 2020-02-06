@@ -58,10 +58,10 @@ module.exports = [
         .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({
           id: zone.getId(),
-          max: zone.getDailyMax(),
-          min: zone.getDailyMin(),
+          max: zone.periodTemp.maxValue,
+          min: zone.periodTemp.minValue,
           name: zone.getName(),
-          temperature: zone.getTemperature(),
+          temperature: zone.getCurrentAvg(),
         }))
         .sort((a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0));
       callback(null, res);

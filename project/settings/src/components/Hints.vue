@@ -26,7 +26,6 @@ export default {
     I18nText
   },
   data: function () {
-    console.log(this);
     return {
       showHints: this.$root.$data.getSettings()[this.settingsKey],
     }

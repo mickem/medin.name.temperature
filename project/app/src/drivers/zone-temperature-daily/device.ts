@@ -26,9 +26,9 @@ class ZoneTemperatue extends Device {
         log(`No device found for ${id}`);
         return;
       }
-      await this.max.set(z.getDailyMax());
-      await this.min.set(z.getDailyMin());
-      await this.cur.set(z.getAvg());
+      await this.max.set(z.periodTemp.maxValue);
+      await this.min.set(z.periodTemp.minValue);
+      await this.cur.set(await z.getDailyAvg());
     });
   }
 

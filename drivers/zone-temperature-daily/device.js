@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -192,7 +192,7 @@ exports.Catch = Catch;
 
 /***/ }),
 
-/***/ 21:
+/***/ 23:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -216,7 +216,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const homey_1 = __webpack_require__(0);
 const LogManager_1 = __webpack_require__(1);
 const utils_1 = __webpack_require__(2);
-const CapabilityWrapper_1 = __webpack_require__(22);
+const CapabilityWrapper_1 = __webpack_require__(24);
 const DriverImpl_1 = __webpack_require__(4);
 class ZoneTemperatue extends homey_1.Device {
     onInit() {
@@ -232,9 +232,9 @@ class ZoneTemperatue extends homey_1.Device {
                     LogManager_1.log(`No device found for ${id}`);
                     return;
                 }
-                yield this.max.set(z.getDailyMax());
-                yield this.min.set(z.getDailyMin());
-                yield this.cur.set(z.getAvg());
+                yield this.max.set(z.periodTemp.maxValue);
+                yield this.min.set(z.periodTemp.minValue);
+                yield this.cur.set(yield z.getDailyAvg());
             }));
         });
     }
@@ -253,7 +253,7 @@ module.exports = ZoneTemperatue;
 
 /***/ }),
 
-/***/ 22:
+/***/ 24:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

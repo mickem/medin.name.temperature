@@ -1,4 +1,5 @@
-import Average, { IAverageState } from './helpers/Average';
+import MetricManager from './helpers/MetricManager';
+import { IAverageState } from './helpers/PeriodAverage';
 import { IDeviceType } from './interfaces/IDeviceType';
 import { debug, log } from './LogManager';
 import { ISettings } from './SettingsManager';
@@ -7,8 +8,6 @@ import { ITriggers } from './Triggers';
 import { Catch } from './utils';
 
 export interface IZoneState {
-  dailyMax?: number;
-  dailyMin?: number;
   average?: IAverageState;
 }
 export interface IZoneListener {
@@ -20,17 +19,12 @@ export class Zone {
   private name: string;
   private id: string;
   private devices: Thermometer[];
-  private dailyMinTemp: number;
-  private dailyMaxTemp: number;
-  private currentMinTemp: number;
-  private currentMaxTemp: number;
   private minAllowed: number;
   private maxAllowed: number;
-  private current: number;
   private ignored: boolean;
   private notMonitored: boolean;
   private devicesIgnored: string[];
-  private avg: Average;
+  private metric: MetricManager;
 
   constructor(
     triggers: ITriggers,
@@ -46,15 +40,31 @@ export class Zone {
     this.id = id;
     this.name = name;
     this.devices = [];
-    this.dailyMinTemp = undefined;
-    this.dailyMaxTemp = undefined;
-    this.currentMinTemp = undefined;
-    this.currentMaxTemp = undefined;
-    this.current = undefined;
     this.ignored = ignored;
     this.notMonitored = notMonitored;
     this.devicesIgnored = devicesIgnored;
-    this.avg = new Average();
+    this.metric = new MetricManager();
+
+    this.metric.on('currentMax', async (sensor, temperature) => {
+      debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
+      await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+    });
+    this.metric.on('currentMin', async (sensor, temperature) => {
+      debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
+      await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name === undefined ? "unknown" : sensor, temperature });
+    });
+    this.metric.on('currentAvg', async (sensorName, temperature) => {
+      debug(`Temperature of zone ${this.name} was updated by ${sensorName} to ${temperature}`);
+      this.listener.onZoneUpdated(this.id);
+      await this.triggers.TemperatureChanged({ zone: this.name, temperature });
+      if (!this.notMonitored) {
+        if (temperature > this.maxAllowed) {
+          await this.triggers.TooWarm({ zone: this.name, temperature });
+        } else if (temperature < this.minAllowed) {
+          await this.triggers.TooCold({ zone: this.name, temperature });
+        }
+      }
+    })
   }
 
   public getId(): string {
@@ -68,23 +78,17 @@ export class Zone {
     this.name = name;
   }
 
-  public getTemperature() {
-    return this.current;
+  get periodTemp() {
+    return this.metric.period;
   }
-  public getDailyMin(): number {
-    return this.dailyMinTemp;
+  get currentTemp() {
+    return this.metric.current;
   }
-  public getDailyMax(): number {
-    return this.dailyMaxTemp;
+  public async getDailyAvg(): Promise<number> {
+    return this.periodTemp.get();
   }
-  public getCurrentMin(): number {
-    return this.currentMinTemp;
-  }
-  public getCurrentMax(): number {
-    return this.currentMaxTemp;
-  }
-  public getAvg(): number {
-    return this.avg.get();
+  public getCurrentAvg() {
+    return this.currentTemp.average;
   }
   public hasDevice(): boolean {
     return this.devices.length > 0;
@@ -118,7 +122,7 @@ export class Zone {
       if (this.devices[i].id === id) {
         this.devices.splice(i, 1);
         log(`Removing thermometer: ${this.devices.map(t => t.name)} from zone ${this.name}`);
-        await this.calculateZoneTemp();
+        await this.calculateZoneTemp(undefined);
         return;
       }
     }
@@ -128,7 +132,7 @@ export class Zone {
     if (this.ignored !== ignored) {
       log(`Zone ignore status changed for ${this.name} to ${ignored}`);
       this.ignored = ignored;
-      await this.calculateZoneTemp();
+      await this.calculateZoneTemp(undefined);
     }
   }
   public setNotMonitored(notMonitored: boolean) {
@@ -146,15 +150,13 @@ export class Zone {
       }
     }
     if (hasChanged) {
-      await this.calculateZoneTemp();
+      await this.calculateZoneTemp(undefined);
     }
   }
 
   public resetMaxMin() {
     log(`Resetting daily averages for ${this.name}`);
-    this.dailyMinTemp = undefined;
-    this.dailyMaxTemp = undefined;
-    this.avg.reset();
+    this.metric.resetPeriod();
   }
 
   @Catch()
@@ -163,45 +165,17 @@ export class Zone {
       debug(`Device of ignored zone ${this.name} updated`);
       return;
     }
-    if (!(await this.calculateZoneTemp())) {
-      return;
-    }
-    if (this.dailyMinTemp === undefined) {
-      await this.onMinUpdated(thermometer.name, thermometer.temp);
-    } else {
-      const minTemp = Math.min(this.dailyMinTemp, thermometer.temp);
-      if (this.dailyMinTemp !== minTemp) {
-        await this.onMinUpdated(thermometer.name, thermometer.temp);
-      }
-    }
-    if (this.dailyMaxTemp === undefined) {
-      await this.onMaxUpdated(thermometer.name, thermometer.temp);
-    } else {
-      const maxTemp = Math.max(this.dailyMaxTemp, thermometer.temp);
-      if (this.dailyMaxTemp !== maxTemp) {
-        await this.onMaxUpdated(thermometer.name, thermometer.temp);
-      }
-    }
-    log(`Zone ${this.name} temperature was updated`);
-    this.listener.onZoneUpdated(this.id);
+    await this.calculateZoneTemp(thermometer.getName());
   }
 
   public getState(): IZoneState {
     return {
-      average: this.avg.getState(),
-      dailyMax: this.dailyMaxTemp,
-      dailyMin: this.dailyMinTemp,
+      average: this.metric.getState(),
     };
   }
   public setState(state: IZoneState) {
-    if (state.dailyMax) {
-      this.dailyMaxTemp = state.dailyMax;
-    }
-    if (state.dailyMin) {
-      this.dailyMinTemp = state.dailyMin;
-    }
     if (state.average) {
-      this.avg.setState(state.average);
+      this.metric.setState(state.average);
     }
   }
 
@@ -214,69 +188,11 @@ export class Zone {
     return undefined;
   }
 
-  private async calculateZoneTemp(): Promise<boolean> {
-    let curMin;
-    let curMax;
+  private async calculateZoneTemp(sensor: string) {
     if (this.ignored) {
-      this.current = undefined;
-      return false;
-    }
-    let avgTemp = 0;
-    let count = 0;
-    for (const device of this.devices) {
-      if (device.hasTemp()) {
-        if (curMax === undefined) {
-          curMax = device.temp;
-        } else if (device.temp > curMax) {
-          curMax = device.temp;
-        }
-        if (curMin === undefined) {
-          curMin = device.temp;
-        } else if (device.temp < curMin) {
-          curMin = device.temp;
-        }
-        avgTemp += device.temp;
-        count++;
-      }
-    }
-    if (count > 0) {
-      this.currentMaxTemp = curMax;
-      this.currentMinTemp = curMin;
-      const newCurrent = Math.round((avgTemp / count) * 10) / 10;
-      if (newCurrent !== this.current) {
-        this.current = newCurrent;
-        await this.onTempUpdated();
-        return true;
-      }
+      await this.metric.update(undefined, []);
     } else {
-      if (this.current) {
-        this.current = undefined;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private async onMaxUpdated(name: string, temperature: number) {
-    debug(`Maximum temperature of zone ${this.name} was updated to ${this.dailyMaxTemp}`);
-    this.dailyMaxTemp = temperature;
-    await this.triggers.MaxTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMaxTemp });
-  }
-  private async onMinUpdated(name: string, temperature: number) {
-    debug(`Minimum temperature of zone ${this.name} was updated to ${this.dailyMinTemp}`);
-    this.dailyMinTemp = temperature;
-    await this.triggers.MinTemperatureChanged({ zone: this.name, sensor: name, temperature: this.dailyMinTemp });
-  }
-  private async onTempUpdated() {
-    debug(`Temperature of zone ${this.name} was updated to ${this.current}`);
-    this.avg.update(this.current);
-    await this.triggers.TemperatureChanged({ zone: this.name, temperature: this.current });
-    if (!this.notMonitored) {
-      if (this.current > this.maxAllowed) {
-        await this.triggers.TooWarm({ zone: this.name, temperature: this.current });
-      } else if (this.current < this.minAllowed) {
-        await this.triggers.TooCold({ zone: this.name, temperature: this.current });
-      }
+      await this.metric.update(sensor, this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })));
     }
   }
 }

@@ -26,9 +26,9 @@ class ZoneTemperatue extends Device {
         error(`No device found for ${id}`);
         return;
       }
-      await this.max.set(z.getCurrentMax());
-      await this.min.set(z.getCurrentMin());
-      await this.cur.set(z.getTemperature());
+      await this.max.set(z.currentTemp.max);
+      await this.min.set(z.currentTemp.min);
+      await this.cur.set(z.currentTemp.average);
     });
   }
 
