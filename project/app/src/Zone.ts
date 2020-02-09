@@ -48,17 +48,17 @@ export class Zone {
     this.metric.on('currentMax', async (sensor, temperature) => {
       debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
       await this.triggers.MaxTemperatureChanged({
-        zone: this.name,
         sensor: name === undefined ? 'unknown' : sensor,
         temperature,
+        zone: this.name,
       });
     });
     this.metric.on('currentMin', async (sensor, temperature) => {
       debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
       await this.triggers.MinTemperatureChanged({
-        zone: this.name,
         sensor: name === undefined ? 'unknown' : sensor,
         temperature,
+        zone: this.name,
       });
     });
     this.metric.on('currentAvg', async (sensorName, temperature) => {

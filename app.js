@@ -484,7 +484,7 @@ class DeviceManager {
         return __awaiter(this, void 0, void 0, function* () {
             this.setupDeviceSubscription();
             this.setupZoneSubscriptions();
-            yield Promise.all([this.scanZones(), yield this.scanDevices()]);
+            return yield Promise.all([this.scanZones(), yield this.scanDevices()]);
         });
     }
     setupDeviceSubscription() {
@@ -501,6 +501,9 @@ class DeviceManager {
                 const readyDevice = yield this.waitForDevice(device, 12);
                 if (readyDevice) {
                     yield this.addDevice(readyDevice);
+                }
+                else {
+                    LogManager_1.error(`Device not ready: ${device.id}`);
                 }
             }
             catch (error) {
@@ -584,6 +587,7 @@ class DeviceManager {
             for (const id in allZones) {
                 this.zones.addZone(id, allZones[id].name);
             }
+            return true;
         });
     }
     scanDevices() {
@@ -605,6 +609,7 @@ class DeviceManager {
                     yield this.addDevice(device);
                 }
             }
+            return true;
         });
     }
     waitForDevice(device, timeToWait) {
@@ -1087,17 +1092,17 @@ class Zone {
         this.metric.on('currentMax', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
             yield this.triggers.MaxTemperatureChanged({
-                zone: this.name,
                 sensor: name === undefined ? 'unknown' : sensor,
                 temperature,
+                zone: this.name,
             });
         }));
         this.metric.on('currentMin', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
             yield this.triggers.MinTemperatureChanged({
-                zone: this.name,
                 sensor: name === undefined ? 'unknown' : sensor,
                 temperature,
+                zone: this.name,
             });
         }));
         this.metric.on('currentAvg', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {

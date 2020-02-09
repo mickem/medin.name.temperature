@@ -1,4 +1,7 @@
 {
+  "1.1.3": {
+    "en": "Fixed some various bugs and issues"
+  },
   "1.1.2": {
     "en": "Fixed some min/max related issues"
   },

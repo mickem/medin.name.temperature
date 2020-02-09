@@ -93,10 +93,14 @@ export function makeZones() {
   );
 }
 
-export function makeDeviceEx(id, name, zoneId, zoneName, temp): IDeviceType {
+export function makeDeviceEx(id, name, zoneId, zoneName, temp, battery = 80): IDeviceType {
   return {
     capabilities: ['measure_temperature'],
     capabilitiesObj: {
+      measure_battery: {
+        id: 'n/a',
+        value: battery,
+      },
       measure_temperature: {
         id: 'n/a',
         value: temp,

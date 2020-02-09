@@ -37,3 +37,13 @@ export class ManagerCron {
   public unregisterTask(taskId: string) {}
   public registerTask(taskname, cron) {}
 }
+
+let instance;
+export default {
+  app: {
+    get: () => instance,
+    set: (inst: any) => {
+      instance = inst;
+    },
+  },
+};

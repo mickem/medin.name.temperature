@@ -1,6 +1,5 @@
 import { ISettings } from '../SettingsManager';
 import { makeDevice, makeZones } from '../TestHelpers';
-import { IZoneState } from '../Zone';
 import { IZonesState } from '../Zones';
 
 test('create zones', () => {

@@ -30,7 +30,7 @@ export class DeviceManager {
   public async start() {
     this.setupDeviceSubscription();
     this.setupZoneSubscriptions();
-    await Promise.all([this.scanZones(), await this.scanDevices()]);
+    return await Promise.all([this.scanZones(), await this.scanDevices()]);
   }
 
   private setupDeviceSubscription() {
@@ -47,6 +47,8 @@ export class DeviceManager {
       const readyDevice = await this.waitForDevice(device, 12);
       if (readyDevice) {
         await this.addDevice(readyDevice as IDeviceType);
+      } else {
+        error(`Device not ready: ${device.id}`);
       }
     } catch (error) {
       console.error(`Failed to handle device.create: ${error}`);
@@ -115,6 +117,7 @@ export class DeviceManager {
     for (const id in allZones) {
       this.zones.addZone(id, allZones[id].name);
     }
+    return true;
   }
   private async scanDevices() {
     const allDevices = await ((this.api.devices.getDevices() as any) as Promise<IDeviceList>);
@@ -134,6 +137,7 @@ export class DeviceManager {
         await this.addDevice(device as IDeviceType);
       }
     }
+    return true;
   }
 
   private async waitForDevice(device: IDeviceType, timeToWait: number): Promise<IDeviceType | boolean> {
