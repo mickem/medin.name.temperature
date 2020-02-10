@@ -63,6 +63,7 @@ export function makeZone(
     },
     id,
     name,
+    'unknown',
     ignored,
     notMonitored,
     devicesIgnored,

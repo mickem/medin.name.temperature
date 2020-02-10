@@ -8,6 +8,9 @@
     <SettingsTabButton i18nScope="settings.settings" id="showHints" @click="showHints()" />
     <SettingsTabButton i18nScope="settings.settings" id="refresh" @click="refresh()" />
     <SettingsTabButton i18nScope="settings.settings" id="resetAll" extra-class="btn-danger" @click="reset()" />
+    <p>Credits</p>
+    <p>Downstairs and Upstairs by BlackActurus from the Noun Project</p>
+    <p>Various icons from https://fontawesome.com/license</p>
   </div>
 </template>
 

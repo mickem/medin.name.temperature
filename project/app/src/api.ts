@@ -45,6 +45,7 @@ module.exports = [
       const zones = Object.values((Homey.app.get() as ITemperatureManager).getZones())
         .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({
+          icon: zone.icon,
           id: zone.getId(),
           max: zone.periodTemp.maxValue,
           min: zone.periodTemp.minValue,

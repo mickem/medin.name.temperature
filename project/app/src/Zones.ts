@@ -37,8 +37,11 @@ export class Zones {
     }
   }
 
-  public addZone(id: string, name: string): Zone {
+  public addZone(id: string, name: string, icon: string): Zone {
     if (id in this.zones) {
+      if (icon !== 'unknown' && this.zones[id].icon === 'unknown') {
+        this.zones[id].icon = icon;
+      }
       return this.zones[id];
     }
     const zone = new Zone(
@@ -46,6 +49,7 @@ export class Zones {
       this.listener,
       id,
       name,
+      icon,
       this.zonesIgnored.includes(id),
       this.zonesNotMonitored.includes(id),
       this.devicesIgnored,
@@ -82,7 +86,7 @@ export class Zones {
   }
 
   public async addDevice(device: IDeviceType): Promise<Thermometer> {
-    const zone = this.addZone(device.zone, device.zoneName);
+    const zone = this.addZone(device.zone, device.zoneName, 'unknown');
     return await zone.addDevice(device);
   }
 
@@ -101,8 +105,8 @@ export class Zones {
     return undefined;
   }
   public async moveDevice(thermometer: Thermometer, oldZoneId: string, newZoneId: string, zoneName: string) {
-    const newZone = this.addZone(newZoneId, zoneName || 'unknown');
-    const oldZone = this.addZone(oldZoneId, 'unknown');
+    const newZone = this.addZone(newZoneId, zoneName || 'unknown', 'unknown');
+    const oldZone = this.addZone(oldZoneId, 'unknown', 'unknown');
     log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
     await newZone.addThermometer(thermometer);
     await oldZone.removeDevice(thermometer.id);

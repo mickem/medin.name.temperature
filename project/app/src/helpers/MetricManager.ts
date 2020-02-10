@@ -21,7 +21,7 @@ export default class MetricManager {
     this.current.on('max', async (sensorName, value) => await this.fire('currentMax', sensorName, value));
     this.current.on('min', async (sensorName, value) => await this.fire('currentMin', sensorName, value));
     this.current.on('avg', async (sensorName, value) => {
-      await this.period.update(name, value);
+      await this.period.update(sensorName, value);
       await this.fire('currentAvg', sensorName, value);
     });
   }

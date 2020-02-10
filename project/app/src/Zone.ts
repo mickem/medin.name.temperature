@@ -14,6 +14,7 @@ export interface IZoneListener {
   onZoneUpdated(id: string);
 }
 export class Zone {
+  public icon: string;
   private triggers: ITriggers;
   private listener: IZoneListener;
   private name: string;
@@ -31,6 +32,7 @@ export class Zone {
     listener: IZoneListener,
     id: string,
     name: string,
+    icon: string,
     ignored: boolean,
     notMonitored: boolean,
     devicesIgnored: string[],
@@ -38,6 +40,7 @@ export class Zone {
     this.triggers = triggers;
     this.listener = listener;
     this.id = id;
+    this.icon = icon;
     this.name = name;
     this.devices = [];
     this.ignored = ignored;

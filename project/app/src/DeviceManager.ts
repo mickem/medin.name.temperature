@@ -89,7 +89,7 @@ export class DeviceManager {
 
   private async onZoneCreate(zone: IZoneType) {
     try {
-      this.zones.addZone(zone.id, zone.name);
+      this.zones.addZone(zone.id, zone.name, zone.icon);
     } catch (error) {
       console.error(`Failed to handle zone.create: ${error}`);
     }
@@ -115,7 +115,7 @@ export class DeviceManager {
   private async scanZones() {
     const allZones = await ((this.api.zones.getZones() as any) as Promise<IZoneTypeList>);
     for (const id in allZones) {
-      this.zones.addZone(id, allZones[id].name);
+      this.zones.addZone(id, allZones[id].name, allZones[id].icon);
     }
     return true;
   }

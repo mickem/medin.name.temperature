@@ -551,7 +551,7 @@ class DeviceManager {
     onZoneCreate(zone) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.zones.addZone(zone.id, zone.name);
+                this.zones.addZone(zone.id, zone.name, zone.icon);
             }
             catch (error) {
                 console.error(`Failed to handle zone.create: ${error}`);
@@ -585,7 +585,7 @@ class DeviceManager {
         return __awaiter(this, void 0, void 0, function* () {
             const allZones = yield this.api.zones.getZones();
             for (const id in allZones) {
-                this.zones.addZone(id, allZones[id].name);
+                this.zones.addZone(id, allZones[id].name, allZones[id].icon);
             }
             return true;
         });
@@ -933,11 +933,14 @@ class Zones {
             this.zones[key].resetMaxMin();
         }
     }
-    addZone(id, name) {
+    addZone(id, name, icon) {
         if (id in this.zones) {
+            if (icon !== 'unknown' && this.zones[id].icon === 'unknown') {
+                this.zones[id].icon = icon;
+            }
             return this.zones[id];
         }
-        const zone = new Zone_1.Zone(this.triggerManager, this.listener, id, name, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
+        const zone = new Zone_1.Zone(this.triggerManager, this.listener, id, name, icon, this.zonesIgnored.includes(id), this.zonesNotMonitored.includes(id), this.devicesIgnored);
         if (this.settings) {
             zone.onUpdateSettings(this.settings);
         }
@@ -969,7 +972,7 @@ class Zones {
     }
     addDevice(device) {
         return __awaiter(this, void 0, void 0, function* () {
-            const zone = this.addZone(device.zone, device.zoneName);
+            const zone = this.addZone(device.zone, device.zoneName, 'unknown');
             return yield zone.addDevice(device);
         });
     }
@@ -991,8 +994,8 @@ class Zones {
     }
     moveDevice(thermometer, oldZoneId, newZoneId, zoneName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newZone = this.addZone(newZoneId, zoneName || 'unknown');
-            const oldZone = this.addZone(oldZoneId, 'unknown');
+            const newZone = this.addZone(newZoneId, zoneName || 'unknown', 'unknown');
+            const oldZone = this.addZone(oldZoneId, 'unknown', 'unknown');
             LogManager_1.log(`Moving thermometer from ${oldZone.getName()} to ${newZone.getName()}`);
             yield newZone.addThermometer(thermometer);
             yield oldZone.removeDevice(thermometer.id);
@@ -1079,10 +1082,11 @@ const LogManager_1 = __webpack_require__(1);
 const Thermometer_1 = __webpack_require__(18);
 const utils_1 = __webpack_require__(2);
 class Zone {
-    constructor(triggers, listener, id, name, ignored, notMonitored, devicesIgnored) {
+    constructor(triggers, listener, id, name, icon, ignored, notMonitored, devicesIgnored) {
         this.triggers = triggers;
         this.listener = listener;
         this.id = id;
+        this.icon = icon;
         this.name = name;
         this.devices = [];
         this.ignored = ignored;
@@ -1287,7 +1291,7 @@ class MetricManager {
         this.current.on('max', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMax', sensorName, value); }));
         this.current.on('min', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMin', sensorName, value); }));
         this.current.on('avg', (sensorName, value) => __awaiter(this, void 0, void 0, function* () {
-            yield this.period.update(name, value);
+            yield this.period.update(sensorName, value);
             yield this.fire('currentAvg', sensorName, value);
         }));
     }
