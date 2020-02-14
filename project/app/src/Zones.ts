@@ -120,7 +120,10 @@ export class Zones {
   }
 
   public getAllDevices(): Thermometer[] {
-    return [].concat.apply([], Object.values(this.zones).map(z => z.getAllDevices()));
+    return [].concat.apply(
+      [],
+      Object.values(this.zones).map(z => z.getAllDevices()),
+    );
   }
 
   public getAll(): IZoneList {

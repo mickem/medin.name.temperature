@@ -7,7 +7,7 @@ jest.mock('athom-api');
 
 describe('can setup subscriptions', () => {
   const zones = makeZones();
-  zones.findDevice = jest.fn().mockReturnValue({ setName: jest.fn()});
+  zones.findDevice = jest.fn().mockReturnValue({ setName: jest.fn() });
   zones.moveDevice = jest.fn();
   zones.removeDeviceById = jest.fn();
   zones.addZone = jest.fn();

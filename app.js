@@ -270,7 +270,7 @@ class TempManager {
             'TooDry',
             'TooHumid',
             'MinHumidityChanged',
-            'MaxHumidityChanged'
+            'MaxHumidityChanged',
         ]);
         this.zones = new Zones_1.Zones(this.triggers.get(), {
             onZoneUpdated: (id) => {
@@ -624,7 +624,8 @@ class DeviceManager {
                     continue;
                 }
                 console.log(Object.keys(allDevices[id].capabilitiesObj));
-                if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' || allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
+                if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' ||
+                    allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
                     LogManager_1.debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
                     continue;
                 }
@@ -1375,7 +1376,13 @@ const MomentanAverage_1 = __importDefault(__webpack_require__(16));
 const PeriodAverage_1 = __importDefault(__webpack_require__(17));
 class MetricManager {
     constructor() {
-        this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined, underMinBound: undefined, overMaxBOund: undefined };
+        this.events = {
+            currentMax: undefined,
+            currentMin: undefined,
+            currentAvg: undefined,
+            underMinBound: undefined,
+            overMaxBOund: undefined,
+        };
         this.period = new PeriodAverage_1.default();
         this.current = new MomentanAverage_1.default();
         this.maxBound = undefined;

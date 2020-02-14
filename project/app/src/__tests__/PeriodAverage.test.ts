@@ -229,14 +229,10 @@ describe('test PeriodAverage', () => {
     expect((avg2 as any).value).toEqual(1350); // 750 + 60s x 10 = 1350
     expect((avg2 as any).seconds).toEqual(120);
 
-
     const avg3 = new PeriodAverage();
     avg3.setState(state);
     expect(await avg3.get()).toEqual(11.25);
     expect((avg3 as any).value).toEqual(1350); // 750 + 60s x 10 = 1350
     expect((avg3 as any).seconds).toEqual(120);
-
-
-
-  });  
+  });
 });

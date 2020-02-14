@@ -43,7 +43,7 @@ export class TempManager implements ITemperatureManager {
       'TooDry',
       'TooHumid',
       'MinHumidityChanged',
-      'MaxHumidityChanged'
+      'MaxHumidityChanged',
     ]);
     this.zones = new Zones(this.triggers.get(), {
       onZoneUpdated: (id: string) => {

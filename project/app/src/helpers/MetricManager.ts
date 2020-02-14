@@ -19,7 +19,13 @@ export default class MetricManager {
   };
 
   constructor() {
-    this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined, underMinBound: undefined, overMaxBOund: undefined };
+    this.events = {
+      currentMax: undefined,
+      currentMin: undefined,
+      currentAvg: undefined,
+      underMinBound: undefined,
+      overMaxBOund: undefined,
+    };
     this.period = new PeriodAverage();
     this.current = new MomentanAverage();
     this.maxBound = undefined;
@@ -35,10 +41,8 @@ export default class MetricManager {
       } else if (this.minBound && value < this.minBound) {
         await this.fire('underMinBound', sensorName, value);
       }
-
     });
   }
-
 
   public resetPeriod() {
     this.period.reset();

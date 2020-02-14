@@ -6,7 +6,12 @@ import * as api from '../api';
 import { Thermometer } from '../Thermometer';
 import { Zone } from '../Zone';
 
-const makeTherm = (id, name, zoneId, zoneName, temp, battery = 80) => new Thermometer({ getId: () => zoneId, getName: () => zoneName } as Zone, makeDeviceEx(id, name, zoneId, zoneName, temp, battery), false);
+const makeTherm = (id, name, zoneId, zoneName, temp, battery = 80) =>
+  new Thermometer(
+    { getId: () => zoneId, getName: () => zoneName } as Zone,
+    makeDeviceEx(id, name, zoneId, zoneName, temp, battery),
+    false,
+  );
 
 async function mkZoneWithDevice(id: string, name: string, temp: number) {
   const zone = makeZone(id, name);
@@ -39,10 +44,7 @@ describe('Test API', () => {
       curApi.fn({}, callback);
     });
     test('APi should formatted thermometer data', done => {
-      instance.getDevices = jest.fn().mockReturnValue([
-        makeTherm('ID', 'NAME', 'zone', 'zoneName', 22),
-      ]
-      );
+      instance.getDevices = jest.fn().mockReturnValue([makeTherm('ID', 'NAME', 'zone', 'zoneName', 22)]);
 
       function callback(headers, data) {
         try {
@@ -66,11 +68,13 @@ describe('Test API', () => {
       curApi.fn({}, callback);
     });
     test('APi should handle multiple thermometers', done => {
-      instance.getDevices = jest.fn().mockReturnValue([
-        makeTherm('a', 'NAME', 'zone', 'zoneName', 11),
-        makeTherm('b', 'NAME', 'zone', 'zoneName', 22),
-        makeTherm('c', 'NAME', 'zone', 'zoneName', 33),
-      ]);
+      instance.getDevices = jest
+        .fn()
+        .mockReturnValue([
+          makeTherm('a', 'NAME', 'zone', 'zoneName', 11),
+          makeTherm('b', 'NAME', 'zone', 'zoneName', 22),
+          makeTherm('c', 'NAME', 'zone', 'zoneName', 33),
+        ]);
 
       function callback(headers, data) {
         try {
@@ -96,12 +100,14 @@ describe('Test API', () => {
       curApi.fn({}, callback);
     });
     test('APi should sort devices by zoneName and name', done => {
-      instance.getDevices = jest.fn().mockReturnValue([
-        makeTherm('a', 'a', 'zb', 'zb', 33),
-        makeTherm('b', 'b', 'zb', 'zb', 44),
-        makeTherm('d', 'd', 'za', 'za', 22),
-        makeTherm('c', 'c', 'za', 'za', 11),
-      ]);
+      instance.getDevices = jest
+        .fn()
+        .mockReturnValue([
+          makeTherm('a', 'a', 'zb', 'zb', 33),
+          makeTherm('b', 'b', 'zb', 'zb', 44),
+          makeTherm('d', 'd', 'za', 'za', 22),
+          makeTherm('c', 'c', 'za', 'za', 11),
+        ]);
 
       function callback(headers, data) {
         try {
@@ -153,7 +159,7 @@ describe('Test API', () => {
                 periodMax: undefined,
                 periodMin: undefined,
               },
-              icon: "unknown",
+              icon: 'unknown',
               id: '1234',
               name: 'demo zone',
               temperature: {

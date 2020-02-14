@@ -8,21 +8,21 @@ const getTemp = (device: IDeviceType) => {
     device.capabilitiesObj.measure_temperature.value
     ? +device.capabilitiesObj.measure_temperature.value
     : undefined;
-}
+};
 const getHumidity = (device: IDeviceType) => {
   return device.capabilitiesObj &&
     device.capabilitiesObj.measure_humidity &&
     device.capabilitiesObj.measure_humidity.value
     ? +device.capabilitiesObj.measure_humidity.value
     : undefined;
-}
+};
 const getBatery = (device: IDeviceType) => {
   return device.capabilitiesObj &&
     device.capabilitiesObj.measure_battery &&
     device.capabilitiesObj.measure_battery.value
     ? +device.capabilitiesObj.measure_battery.value
     : undefined;
-}
+};
 
 export class Thermometer {
   public id: string;

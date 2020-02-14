@@ -24,7 +24,7 @@ const isHydrometer = (device: IDeviceType) => {
   }
   error(`Failed to find capabilities list from ${device.name}`);
   return false;
-}
+};
 const hasBattery = (device: IDeviceType) => {
   if (device.capabilitiesObj) {
     return 'measure_battery' in device.capabilitiesObj;
@@ -33,7 +33,7 @@ const hasBattery = (device: IDeviceType) => {
   }
   error(`Failed to find capabilities list from ${device.name}`);
   return false;
-}
+};
 
 export class DeviceManager {
   private api: HomeyAPI;
@@ -146,8 +146,11 @@ export class DeviceManager {
         }
         continue;
       }
-      console.log(Object.keys(allDevices[id].capabilitiesObj))
-      if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' || allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
+      console.log(Object.keys(allDevices[id].capabilitiesObj));
+      if (
+        allDevices[id].driverUri === 'homey:app:medin.name.temperatures' ||
+        allDevices[id].driverUri === 'homey:app:name.medin.temperatures'
+      ) {
         debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
         continue;
       }

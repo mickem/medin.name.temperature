@@ -33,7 +33,6 @@ export interface ITriggers {
    */
   MaxTemperatureChanged(args: { zone: string; sensor: string; temperature: number }): Promise<void>;
 
-
   /**
    * The humidity changed
    * @param args.zone zone #sample:Kitchen
@@ -66,5 +65,5 @@ export interface ITriggers {
    * @param args.sensor Thermometer #sample:Wall thermometer
    * @param args.humidity maximum humidity #sample:14.5
    */
-  MaxHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void>;  
+  MaxHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void>;
 }

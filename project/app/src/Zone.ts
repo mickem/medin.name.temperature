@@ -82,7 +82,6 @@ export class Zone {
       }
     });
 
-
     this.humidity.on('currentMax', async (sensor, humidity) => {
       debug(`Maximum humidity of zone ${this.name} was updated to ${humidity}`);
       await this.triggers.MaxHumidityChanged({
@@ -115,7 +114,7 @@ export class Zone {
         debug(`Humidity of zone ${this.name}: ${humidity} is above ${this.humidity.maxBound}`);
         await this.triggers.TooHumid({ zone: this.name, humidity });
       }
-    });    
+    });
   }
 
   public getAllDevices(): Thermometer[] {
