@@ -34,11 +34,11 @@
       "Tools"
     ]
   },
-  "source": "https://github.com/mickem/name.medin.temperature",
+  "source": "https://github.com/mickem/medin.name.temperature",
   "version": "1.2.0",
   "id": "name.medin.temperatures",
   "bugs": {
-    "url": "https://github.com/mickem/name.medin.temperature/issues"
+    "url": "https://github.com/mickem/medin.name.temperature/issues"
   },
   "author": {
     "name": "Michael Medin",
@@ -49,7 +49,7 @@
       {
         "id": "TemperatureChanged",
         "title": {
-          "en": "A temperature changed",
+          "en": "The temperature changed",
           "da": "En temperatur ændrede sig",
           "de": "Eine Temperatur änderte sich",
           "es": "Una temperatura cambiada",
@@ -383,6 +383,156 @@
               "nl": "maximale temperatuur",
               "no": "maks term temperatur",
               "sv": "max termperatur"
+            },
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "HumidityChanged",
+        "title": {
+          "en": "The humidity changed"
+        },
+        "tokens": [
+          {
+            "example": {
+              "en": "Kitchen"
+            },
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "string"
+          },
+          {
+            "example": 14.5,
+            "name": "humidity",
+            "title": {
+              "en": "average temperature"
+            },
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "TooDry",
+        "title": {
+          "en": "The humidity is too dry"
+        },
+        "tokens": [
+          {
+            "example": {
+              "en": "Kitchen"
+            },
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "string"
+          },
+          {
+            "example": 14.5,
+            "name": "humidity",
+            "title": {
+              "en": "humidity"
+            },
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "TooHumid",
+        "title": {
+          "en": "The humidity is too wet"
+        },
+        "tokens": [
+          {
+            "example": {
+              "en": "Kitchen"
+            },
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "string"
+          },
+          {
+            "example": 14.5,
+            "name": "humidity",
+            "title": {
+              "en": "humidity"
+            },
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "MinHumidityChanged",
+        "title": {
+          "en": "The minimum humidity for a zone changed"
+        },
+        "tokens": [
+          {
+            "example": {
+              "en": "Kitchen"
+            },
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "string"
+          },
+          {
+            "example": {
+              "en": "Wall thermometer"
+            },
+            "name": "sensor",
+            "title": {
+              "en": "Thermometer"
+            },
+            "type": "string"
+          },
+          {
+            "example": 14.5,
+            "name": "humidity",
+            "title": {
+              "en": "minimum humidity"
+            },
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "MaxHumidityChanged",
+        "title": {
+          "en": "The maximum humidity for a zone changed"
+        },
+        "tokens": [
+          {
+            "example": {
+              "en": "Kitchen"
+            },
+            "name": "zone",
+            "title": {
+              "en": "zone"
+            },
+            "type": "string"
+          },
+          {
+            "example": {
+              "en": "Wall thermometer"
+            },
+            "name": "sensor",
+            "title": {
+              "en": "Thermometer"
+            },
+            "type": "string"
+          },
+          {
+            "example": 14.5,
+            "name": "humidity",
+            "title": {
+              "en": "maximum humidity"
             },
             "type": "number"
           }

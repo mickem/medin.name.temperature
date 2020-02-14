@@ -7,7 +7,7 @@ jest.mock('athom-api');
 
 describe('can setup subscriptions', () => {
   const zones = makeZones();
-  zones.findDevice = jest.fn();
+  zones.findDevice = jest.fn().mockReturnValue({ setName: jest.fn()});
   zones.moveDevice = jest.fn();
   zones.removeDeviceById = jest.fn();
   zones.addZone = jest.fn();
@@ -15,9 +15,9 @@ describe('can setup subscriptions', () => {
   zones.getZoneById = jest.fn();
   zones.removeZone = jest.fn();
   const zonesObj = {
-    z1: { id: 'z1', name: 'Zone 1' },
-    z2: { id: 'z2', name: 'Zone 2' },
-    z3: { id: 'z3', name: 'Zone 3' },
+    z1: { id: 'z1', name: 'Zone 1', icon: 'icon' },
+    z2: { id: 'z2', name: 'Zone 2', icon: 'icon' },
+    z3: { id: 'z3', name: 'Zone 3', icon: 'icon' },
   };
   let device;
   let mock;
@@ -42,8 +42,8 @@ describe('can setup subscriptions', () => {
 
   test('can add initial zones', async () => {
     expect(zones.addZone).toBeCalledTimes(3);
-    expect(zones.addZone).toHaveBeenNthCalledWith(1, 'z1', 'Zone 1');
-    expect(zones.addZone).toHaveBeenNthCalledWith(3, 'z3', 'Zone 3');
+    expect(zones.addZone).toHaveBeenNthCalledWith(1, 'z1', 'Zone 1', 'icon');
+    expect(zones.addZone).toHaveBeenNthCalledWith(3, 'z3', 'Zone 3', 'icon');
   });
   test('can add initial devices', async () => {
     expect(zones.addDevice).toBeCalledTimes(4);
@@ -94,9 +94,9 @@ describe('can setup subscriptions', () => {
 
   test('should be able to add zones after creation', async () => {
     (zones.addZone as jest.Mock).mockReset();
-    zonesObj['z4'] = { id: 'z4', name: 'Zone 4' };
+    zonesObj['z4'] = { id: 'z4', name: 'Zone 4', icon: 'foo' };
     await (mock.zones as any).fire('zone.create', zonesObj['z4']);
-    expect(zones.addZone).toBeCalledWith('z4', 'Zone 4');
+    expect(zones.addZone).toBeCalledWith('z4', 'Zone 4', 'foo');
   });
   test('zones should be able to change their name', async () => {
     const mockZone = {

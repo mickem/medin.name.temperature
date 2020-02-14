@@ -1,30 +1,44 @@
 import MomentanAverage, { ITemperatureNode } from './MomentanAverage';
 import PeriodAverage, { IAverageState } from './PeriodAverage';
 
-type EventConst = 'currentMax' | 'currentMin' | 'currentAvg';
+type EventConst = 'currentMax' | 'currentMin' | 'currentAvg' | 'underMinBound' | 'overMaxBound';
 type EventFunction = (device: string, temperature: number) => void;
 
 export default class MetricManager {
   public period: PeriodAverage;
   public current: MomentanAverage;
+  public maxBound: number | undefined;
+  public minBound: number | undefined;
 
   private events: {
     currentAvg: EventFunction | undefined;
     currentMax: EventFunction | undefined;
     currentMin: EventFunction | undefined;
+    underMinBound: EventFunction | undefined;
+    overMaxBOund: EventFunction | undefined;
   };
 
   constructor() {
-    this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined };
+    this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined, underMinBound: undefined, overMaxBOund: undefined };
     this.period = new PeriodAverage();
     this.current = new MomentanAverage();
+    this.maxBound = undefined;
+    this.minBound = undefined;
     this.current.on('max', async (sensorName, value) => await this.fire('currentMax', sensorName, value));
     this.current.on('min', async (sensorName, value) => await this.fire('currentMin', sensorName, value));
     this.current.on('avg', async (sensorName, value) => {
       await this.period.update(sensorName, value);
       await this.fire('currentAvg', sensorName, value);
+
+      if (this.maxBound && value > this.maxBound) {
+        await this.fire('overMaxBound', sensorName, value);
+      } else if (this.minBound && value < this.minBound) {
+        await this.fire('underMinBound', sensorName, value);
+      }
+
     });
   }
+
 
   public resetPeriod() {
     this.period.reset();

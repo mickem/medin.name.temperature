@@ -91,6 +91,15 @@ export default class PeriodAverage {
     }
   }
 
+  public get_delayed(): number | undefined {
+    if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
+      return undefined;
+    }
+    if (this.seconds === 0) {
+      return Math.round(this.lastValue * 100) / 100;
+    }
+    return Math.round((this.value / this.seconds) * 100) / 100;
+  }
   public async get(): Promise<number | undefined> {
     if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
       return undefined;

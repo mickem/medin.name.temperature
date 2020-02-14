@@ -1,4 +1,7 @@
 {
+  "1.3.0": {
+    "en": "Added experimental supporet for humidity"
+  },
   "1.2.0": {
     "en": "Fixed icons on zone in settings view"
   },

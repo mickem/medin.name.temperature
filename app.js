@@ -266,6 +266,11 @@ class TempManager {
             'TooWarm',
             'MinTemperatureChanged',
             'MaxTemperatureChanged',
+            'HumidityChanged',
+            'TooDry',
+            'TooHumid',
+            'MinHumidityChanged',
+            'MaxHumidityChanged'
         ]);
         this.zones = new Zones_1.Zones(this.triggers.get(), {
             onZoneUpdated: (id) => {
@@ -383,9 +388,7 @@ class TempManager {
         }
     }
     getDevices() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.api.devices.getDevices();
-        });
+        return this.zones.getAllDevices();
     }
 }
 __decorate([
@@ -475,6 +478,26 @@ const isThermometer = (device) => {
     LogManager_1.error(`Failed to find capabilities list from ${device.name}`);
     return false;
 };
+const isHydrometer = (device) => {
+    if (device.capabilitiesObj) {
+        return 'measure_humidity' in device.capabilitiesObj;
+    }
+    else if (device.capabilities) {
+        return 'measure_humidity' in device.capabilities;
+    }
+    LogManager_1.error(`Failed to find capabilities list from ${device.name}`);
+    return false;
+};
+const hasBattery = (device) => {
+    if (device.capabilitiesObj) {
+        return 'measure_battery' in device.capabilitiesObj;
+    }
+    else if (device.capabilities) {
+        return 'measure_battery' in device.capabilities;
+    }
+    LogManager_1.error(`Failed to find capabilities list from ${device.name}`);
+    return false;
+};
 class DeviceManager {
     constructor(api, zones) {
         this.api = api;
@@ -495,7 +518,7 @@ class DeviceManager {
     onDeviceCreate(device) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!isThermometer(device)) {
+                if (!isThermometer(device) && !isHydrometer(device)) {
                     return;
                 }
                 const readyDevice = yield this.waitForDevice(device, 12);
@@ -514,7 +537,7 @@ class DeviceManager {
     onDeviceUpdate(device) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!isThermometer(device)) {
+                if (!isThermometer(device) && !isHydrometer(device)) {
                     return;
                 }
                 const d = this.zones.findDevice(device.id);
@@ -594,13 +617,14 @@ class DeviceManager {
         return __awaiter(this, void 0, void 0, function* () {
             const allDevices = yield this.api.devices.getDevices();
             for (const id in allDevices) {
-                if (!isThermometer(allDevices[id])) {
+                if (!isThermometer(allDevices[id]) && !isHydrometer(allDevices[id])) {
                     if (!allDevices[id].ready) {
                         LogManager_1.log(`Device not ready, skipping: ${allDevices[id]}`);
                     }
                     continue;
                 }
-                if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures') {
+                console.log(Object.keys(allDevices[id].capabilitiesObj));
+                if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' || allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
                     LogManager_1.debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
                     continue;
                 }
@@ -632,9 +656,21 @@ class DeviceManager {
     addDevice(device) {
         return __awaiter(this, void 0, void 0, function* () {
             const t = yield this.zones.addDevice(device);
-            device.makeCapabilityInstance('measure_temperature', (temperature) => __awaiter(this, void 0, void 0, function* () {
-                yield t.update(temperature);
-            }));
+            if (isThermometer(device)) {
+                device.makeCapabilityInstance('measure_temperature', (temperature) => __awaiter(this, void 0, void 0, function* () {
+                    yield t.update_temperature(temperature);
+                }));
+            }
+            if (isHydrometer(device)) {
+                device.makeCapabilityInstance('measure_humidity', (humidity) => __awaiter(this, void 0, void 0, function* () {
+                    yield t.update_humidity(humidity);
+                }));
+            }
+            if (hasBattery(device)) {
+                device.makeCapabilityInstance('measure_battery', (level) => __awaiter(this, void 0, void 0, function* () {
+                    yield t.update_battery(level);
+                }));
+            }
         });
     }
 }
@@ -1007,6 +1043,9 @@ class Zones {
             .map(z => z.countDevices())
             .reduce((t, v) => t + v, 0);
     }
+    getAllDevices() {
+        return [].concat.apply([], Object.values(this.zones).map(z => z.getAllDevices()));
+    }
     getAll() {
         return this.zones;
     }
@@ -1092,8 +1131,9 @@ class Zone {
         this.ignored = ignored;
         this.notMonitored = notMonitored;
         this.devicesIgnored = devicesIgnored;
-        this.metric = new MetricManager_1.default();
-        this.metric.on('currentMax', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
+        this.temperature = new MetricManager_1.default();
+        this.humidity = new MetricManager_1.default();
+        this.temperature.on('currentMax', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Maximum temperature of zone ${this.name} was updated to ${temperature}`);
             yield this.triggers.MaxTemperatureChanged({
                 sensor: name === undefined ? 'unknown' : sensor,
@@ -1101,7 +1141,7 @@ class Zone {
                 zone: this.name,
             });
         }));
-        this.metric.on('currentMin', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
+        this.temperature.on('currentMin', (sensor, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Minimum temperature of zone ${this.name} was updated to ${temperature}`);
             yield this.triggers.MinTemperatureChanged({
                 sensor: name === undefined ? 'unknown' : sensor,
@@ -1109,19 +1149,59 @@ class Zone {
                 zone: this.name,
             });
         }));
-        this.metric.on('currentAvg', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
+        this.temperature.on('currentAvg', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
             LogManager_1.debug(`Temperature of zone ${this.name} was updated by ${sensorName} to ${temperature}`);
             this.listener.onZoneUpdated(this.id);
             yield this.triggers.TemperatureChanged({ zone: this.name, temperature });
+        }));
+        this.temperature.on('underMinBound', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
             if (!this.notMonitored) {
-                if (temperature > this.maxAllowed) {
-                    yield this.triggers.TooWarm({ zone: this.name, temperature });
-                }
-                else if (temperature < this.minAllowed) {
-                    yield this.triggers.TooCold({ zone: this.name, temperature });
-                }
+                LogManager_1.debug(`Temperature of zone ${this.name}: ${temperature} is below ${this.temperature.minBound}`);
+                yield this.triggers.TooCold({ zone: this.name, temperature });
             }
         }));
+        this.temperature.on('overMaxBound', (sensorName, temperature) => __awaiter(this, void 0, void 0, function* () {
+            if (!this.notMonitored) {
+                LogManager_1.debug(`Temperature of zone ${this.name}: ${temperature} is above ${this.temperature.maxBound}`);
+                yield this.triggers.TooWarm({ zone: this.name, temperature });
+            }
+        }));
+        this.humidity.on('currentMax', (sensor, humidity) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Maximum humidity of zone ${this.name} was updated to ${humidity}`);
+            yield this.triggers.MaxHumidityChanged({
+                humidity,
+                sensor: name === undefined ? 'unknown' : sensor,
+                zone: this.name,
+            });
+        }));
+        this.humidity.on('currentMin', (sensor, humidity) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Minimum humidity of zone ${this.name} was updated to ${humidity}`);
+            yield this.triggers.MinHumidityChanged({
+                humidity,
+                sensor: name === undefined ? 'unknown' : sensor,
+                zone: this.name,
+            });
+        }));
+        this.humidity.on('currentAvg', (sensorName, humidity) => __awaiter(this, void 0, void 0, function* () {
+            LogManager_1.debug(`Humidity of zone ${this.name} was updated by ${sensorName} to ${humidity}`);
+            this.listener.onZoneUpdated(this.id);
+            yield this.triggers.HumidityChanged({ zone: this.name, humidity });
+        }));
+        this.humidity.on('underMinBound', (sensorName, humidity) => __awaiter(this, void 0, void 0, function* () {
+            if (!this.notMonitored) {
+                LogManager_1.debug(`Humidity of zone ${this.name}: ${humidity} is below ${this.humidity.minBound}`);
+                yield this.triggers.TooDry({ zone: this.name, humidity });
+            }
+        }));
+        this.humidity.on('overMaxBound', (sensorName, humidity) => __awaiter(this, void 0, void 0, function* () {
+            if (!this.notMonitored) {
+                LogManager_1.debug(`Humidity of zone ${this.name}: ${humidity} is above ${this.humidity.maxBound}`);
+                yield this.triggers.TooHumid({ zone: this.name, humidity });
+            }
+        }));
+    }
+    getAllDevices() {
+        return this.devices;
     }
     getId() {
         return this.id;
@@ -1133,10 +1213,16 @@ class Zone {
         this.name = name;
     }
     get periodTemp() {
-        return this.metric.period;
+        return this.temperature.period;
     }
     get currentTemp() {
-        return this.metric.current;
+        return this.temperature.current;
+    }
+    get periodHumidity() {
+        return this.humidity.period;
+    }
+    get currentHumidity() {
+        return this.humidity.current;
     }
     getDailyAvg() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1154,8 +1240,10 @@ class Zone {
     }
     onUpdateSettings(settings) {
         LogManager_1.debug(`Setting changed for zone ${this.name}`);
-        this.minAllowed = settings.minTemperature;
-        this.maxAllowed = settings.maxTemperature;
+        this.temperature.minBound = settings.minTemperature;
+        this.temperature.maxBound = settings.maxTemperature;
+        this.humidity.minBound = settings.minHumidity;
+        this.humidity.maxBound = settings.maxHumidity;
     }
     addDevice(device) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1164,7 +1252,7 @@ class Zone {
     }
     addThermometer(thermometer) {
         return __awaiter(this, void 0, void 0, function* () {
-            LogManager_1.log(`Adding thermometer: ${thermometer.name} to zone ${this.name}`);
+            LogManager_1.log(`Adding device: ${thermometer.name} to zone ${this.name}`);
             thermometer.setZone(this);
             this.devices.push(thermometer);
             if (thermometer.hasTemp()) {
@@ -1216,7 +1304,7 @@ class Zone {
     }
     resetMaxMin() {
         LogManager_1.log(`Resetting daily averages for ${this.name}`);
-        this.metric.resetPeriod();
+        this.temperature.resetPeriod();
     }
     onDeviceUpdated(thermometer) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1229,12 +1317,12 @@ class Zone {
     }
     getState() {
         return {
-            average: this.metric.getState(),
+            average: this.temperature.getState(),
         };
     }
     setState(state) {
         if (state.average) {
-            this.metric.setState(state.average);
+            this.temperature.setState(state.average);
         }
     }
     findDevice(id) {
@@ -1248,10 +1336,12 @@ class Zone {
     calculateZoneTemp(sensor) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.ignored) {
-                yield this.metric.update(undefined, []);
+                yield this.temperature.update(undefined, []);
+                yield this.humidity.update(undefined, []);
             }
             else {
-                yield this.metric.update(sensor, this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })));
+                yield this.temperature.update(sensor, this.devices.filter(d => d.hasTemp()).map(d => ({ name: d.name, temp: d.temp })));
+                yield this.humidity.update(sensor, this.devices.filter(d => d.hasHumidity()).map(d => ({ name: d.name, temp: d.humidity })));
             }
         });
     }
@@ -1285,14 +1375,22 @@ const MomentanAverage_1 = __importDefault(__webpack_require__(16));
 const PeriodAverage_1 = __importDefault(__webpack_require__(17));
 class MetricManager {
     constructor() {
-        this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined };
+        this.events = { currentMax: undefined, currentMin: undefined, currentAvg: undefined, underMinBound: undefined, overMaxBOund: undefined };
         this.period = new PeriodAverage_1.default();
         this.current = new MomentanAverage_1.default();
+        this.maxBound = undefined;
+        this.minBound = undefined;
         this.current.on('max', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMax', sensorName, value); }));
         this.current.on('min', (sensorName, value) => __awaiter(this, void 0, void 0, function* () { return yield this.fire('currentMin', sensorName, value); }));
         this.current.on('avg', (sensorName, value) => __awaiter(this, void 0, void 0, function* () {
             yield this.period.update(sensorName, value);
             yield this.fire('currentAvg', sensorName, value);
+            if (this.maxBound && value > this.maxBound) {
+                yield this.fire('overMaxBound', sensorName, value);
+            }
+            else if (this.minBound && value < this.minBound) {
+                yield this.fire('underMinBound', sensorName, value);
+            }
         }));
     }
     resetPeriod() {
@@ -1469,6 +1567,15 @@ class PeriodAverage {
             }
         });
     }
+    get_delayed() {
+        if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
+            return undefined;
+        }
+        if (this.seconds === 0) {
+            return Math.round(this.lastValue * 100) / 100;
+        }
+        return Math.round((this.value / this.seconds) * 100) / 100;
+    }
     get() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.lastValue === undefined || this.value === undefined || this.seconds === undefined) {
@@ -1534,17 +1641,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const LogManager_1 = __webpack_require__(1);
+const getTemp = (device) => {
+    return device.capabilitiesObj &&
+        device.capabilitiesObj.measure_temperature &&
+        device.capabilitiesObj.measure_temperature.value
+        ? +device.capabilitiesObj.measure_temperature.value
+        : undefined;
+};
+const getHumidity = (device) => {
+    return device.capabilitiesObj &&
+        device.capabilitiesObj.measure_humidity &&
+        device.capabilitiesObj.measure_humidity.value
+        ? +device.capabilitiesObj.measure_humidity.value
+        : undefined;
+};
+const getBatery = (device) => {
+    return device.capabilitiesObj &&
+        device.capabilitiesObj.measure_battery &&
+        device.capabilitiesObj.measure_battery.value
+        ? +device.capabilitiesObj.measure_battery.value
+        : undefined;
+};
 class Thermometer {
     constructor(zone, device, ignored) {
         this.zone = zone;
         this.id = device.id;
         this.name = device.name;
-        this.temp =
-            device.capabilitiesObj &&
-                device.capabilitiesObj.measure_temperature &&
-                device.capabilitiesObj.measure_temperature.value
-                ? +device.capabilitiesObj.measure_temperature.value
-                : undefined;
+        this.icon = device.iconObj.url;
+        this.temp = getTemp(device);
+        this.humidity = getHumidity(device);
+        this.battery = getBatery(device);
         this.ignored = ignored;
     }
     getName() {
@@ -1562,7 +1688,7 @@ class Thermometer {
     setZone(zone) {
         this.zone = zone;
     }
-    update(temp) {
+    update_temperature(temp) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.temp === temp) {
                 return false;
@@ -1571,6 +1697,19 @@ class Thermometer {
             yield this.zone.onDeviceUpdated(this);
             return true;
         });
+    }
+    update_humidity(humidity) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.humidity === humidity) {
+                return false;
+            }
+            this.humidity = humidity;
+            yield this.zone.onDeviceUpdated(this);
+            return true;
+        });
+    }
+    update_battery(level) {
+        this.battery = level;
     }
     setIgnored(ignored) {
         if (this.ignored !== ignored) {
@@ -1585,6 +1724,12 @@ class Thermometer {
             return false;
         }
         return this.temp !== undefined;
+    }
+    hasHumidity() {
+        if (this.ignored) {
+            return false;
+        }
+        return this.humidity !== undefined;
     }
 }
 exports.Thermometer = Thermometer;

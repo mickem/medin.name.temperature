@@ -30,7 +30,7 @@ export function makeDevice(
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) {},
+    makeCapabilityInstance(capabilityId: string, listener: any) { },
   };
 }
 export function makeZone(
@@ -57,9 +57,14 @@ export function makeZone(
       TooWarm(): Promise<void> {
         return;
       },
+      HumidityChanged(args: { zone: string; humidity: number }): Promise<void> { return; },
+      TooDry(args: { zone: string; humidity: number }): Promise<void> { return; },
+      TooHumid(args: { zone: string; humidity: number }): Promise<void> { return; },
+      MinHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
+      MaxHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
     },
     {
-      onZoneUpdated() {},
+      onZoneUpdated() { },
     },
     id,
     name,
@@ -87,16 +92,21 @@ export function makeZones() {
       TooWarm(): Promise<void> {
         return;
       },
+      HumidityChanged(args: { zone: string; humidity: number }): Promise<void> { return; },
+      TooDry(args: { zone: string; humidity: number }): Promise<void> { return; },
+      TooHumid(args: { zone: string; humidity: number }): Promise<void> { return; },
+      MinHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
+      MaxHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
     },
     {
-      onZoneUpdated() {},
+      onZoneUpdated() { },
     },
   );
 }
 
 export function makeDeviceEx(id, name, zoneId, zoneName, temp, battery = 80): IDeviceType {
   return {
-    capabilities: ['measure_temperature'],
+    capabilities: ['measure_temperature', 'measure_battery'],
     capabilitiesObj: {
       measure_battery: {
         id: 'n/a',
@@ -117,7 +127,7 @@ export function makeDeviceEx(id, name, zoneId, zoneName, temp, battery = 80): ID
     ready: true,
     zone: zoneId,
     zoneName,
-    makeCapabilityInstance(capabilityId: string, listener: any) {},
+    makeCapabilityInstance(capabilityId: string, listener: any) { },
   };
 }
 
@@ -133,18 +143,23 @@ export class FakeManager implements ITemperatureManager {
   }
   public getTriggers(): ITriggers {
     return {
-      async MaxTemperatureChanged(args) {},
-      async MinTemperatureChanged(args) {},
+      async MaxTemperatureChanged(args) { },
+      async MinTemperatureChanged(args) { },
 
-      async TooWarm(args) {},
-      async TooCold(args) {},
-      async TemperatureChanged(args) {},
+      async TooWarm(args) { },
+      async TooCold(args) { },
+      async TemperatureChanged(args) { },
+      async HumidityChanged(args: { zone: string; humidity: number }): Promise<void> { return; },
+      async TooDry(args: { zone: string; humidity: number }): Promise<void> { return; },
+      async TooHumid(args: { zone: string; humidity: number }): Promise<void> { return; },
+      async MinHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
+      async MaxHumidityChanged(args: { zone: string; sensor: string; humidity: number }): Promise<void> { return; },
     };
   }
   public getZones() {
     return {};
   }
-  public async getDevices() {
-    return {};
+  public getDevices() {
+    return [];
   }
 }

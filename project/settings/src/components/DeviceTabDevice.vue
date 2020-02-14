@@ -3,7 +3,7 @@
     <div class="row no-gutters">
       <div class="col-3">
         <div>
-          <img :src="device.icon" v-if="hasIcon" class="icon"/>
+          <img :src="device.icon" v-if="hasIcon" class="icon" />
         </div>
         <span class="battery" :class="batteryClass">{{ batteryLevel }}</span>
       </div>
@@ -11,23 +11,30 @@
         <div class="d-flex w-100 justify-content-between">
           <h6 class="mb-1">{{ device.name }}</h6>
           <small v-if="!isDisabled">
-            <b>{{ temperature }}&deg;C</b>
+            <b v-html="firstValue"></b>
           </small>
         </div>
-        <div>
-          {{ device.zoneName }}
+        <div class="d-flex w-100 justify-content-between">
+          <span>{{ device.zoneName }}</span>
+          <small v-if="!isDisabled">
+            <b v-html="secondValue"></b>
+          </small>
         </div>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
           <label
             class="btn btn-secondary"
             v-bind:class="{active: !isDisabled}"
             @click="setEnabled(device)"
-          ><I18nText id="toggles.enabled" /></label>
+          >
+            <I18nText id="toggles.enabled" />
+          </label>
           <label
             class="btn btn-secondary"
             v-bind:class="{active: isDisabled}"
             @click="setDisabled(device)"
-          ><I18nText id="toggles.disabled" /></label>
+          >
+            <I18nText id="toggles.disabled" />
+          </label>
         </div>
       </div>
     </div>
@@ -67,8 +74,17 @@ export default {
       hasIcon: function() {
         return this.device.icon;
       },
-      temperature: function() {
-        return Math.round(this.device.temperature*10)/10;
+      firstValue: function() {
+        if (this.device.temperature !== '?') {
+          return `${Math.round(this.device.temperature*10)/10}&deg;C`;
+        } else if (this.device.humidity !== undefined) {
+          return `${Math.round(this.device.humidity*10)/10}%`;
+        }
+      },
+      secondValue: function() {
+        if (this.device.temperature !== '?' && this.device.humidity !== '?') {
+          return `${Math.round(this.device.humidity*10)/10}%`;
+        }
       }
   },
   methods: {
@@ -155,10 +171,9 @@ export default {
   background: #ca0000;
 }
 .icon {
-    width:auto;
-    height:auto;
-    max-width:30px;
-    max-height:30px;
+  width: auto;
+  height: auto;
+  max-width: 30px;
+  max-height: 30px;
 }
-
 </style>

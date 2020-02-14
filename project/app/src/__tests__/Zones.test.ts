@@ -16,27 +16,27 @@ describe('managing zones', () => {
   const zones = makeZones();
   test('add zones', () => {
     expect((zones as any).zones).toEqual({});
-    zones.addZone('id', 'zone 1');
+    zones.addZone('id', 'zone 1', 'none');
     expect(Object.keys((zones as any).zones)).toEqual(['id']);
-    zones.addZone('another id', 'zone 2');
+    zones.addZone('another id', 'zone 2', 'none');
     expect(Object.keys((zones as any).zones)).toEqual(['id', 'another id']);
   });
   test('adding same zone should not yeild duplicates', () => {
-    zones.addZone('id', 'not used');
+    zones.addZone('id', 'not used', 'none');
     expect(Object.keys((zones as any).zones)).toEqual(['id', 'another id']);
-    zones.addZone('another id', 'not used');
+    zones.addZone('another id', 'not used', 'none');
     expect(Object.keys((zones as any).zones)).toEqual(['id', 'another id']);
   });
   test('no settings should not be propagates', () => {
-    const z = zones.addZone('id', 'not used');
+    const z = zones.addZone('id', 'not used', 'none');
     expect((z as any).minAllowed).toBeUndefined();
     expect((z as any).maxAllowed).toBeUndefined();
   });
   test('settings should be propagated to old zones', () => {
     zones.onUpdateSettings({ minTemperature: 4, maxTemperature: 8 } as ISettings);
-    const z = zones.addZone('id', 'new name');
-    expect((z as any).minAllowed).toEqual(4);
-    expect((z as any).maxAllowed).toEqual(8);
+    const z = zones.addZone('id', 'new name', 'none');
+    expect((z as any).temperature.minBound).toEqual(4);
+    expect((z as any).temperature.maxBound).toEqual(8);
   });
   test('state should not be propagated to old zones', () => {
     zones.setState({
@@ -47,18 +47,18 @@ describe('managing zones', () => {
         average: { lastSensor: 'new', lastUpdate: 0, lastValue: 0, seconds: 0, value: 0, minValue: 2, maxValue: 12 },
       },
     } as IZonesState);
-    const z = zones.addZone('id', 'new name');
+    const z = zones.addZone('id', 'new name', 'none');
     expect((z as any).dailyMinTemp).toBeUndefined();
     expect((z as any).dailyMaxTemp).toBeUndefined();
   });
   test('settings should be propagated to new zones', () => {
     zones.onUpdateSettings({ minTemperature: 4, maxTemperature: 8 } as ISettings);
-    const z = zones.addZone('new zone', 'new name');
-    expect((z as any).minAllowed).toEqual(4);
-    expect((z as any).maxAllowed).toEqual(8);
+    const z = zones.addZone('new zone', 'new name', 'none');
+    expect((z as any).temperature.minBound).toEqual(4);
+    expect((z as any).temperature.maxBound).toEqual(8);
   });
   test('state should be propagated to new zones', () => {
-    const z = zones.addZone('new zone', 'new name');
+    const z = zones.addZone('new zone', 'new name', 'none');
     expect(z.periodTemp.minValue).toEqual(2);
     expect(z.periodTemp.maxValue).toEqual(12);
   });

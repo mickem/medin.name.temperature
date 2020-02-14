@@ -3,6 +3,10 @@ import { makeDeviceEx, makeZone } from '../TestHelpers';
 jest.mock('Homey');
 
 import * as api from '../api';
+import { Thermometer } from '../Thermometer';
+import { Zone } from '../Zone';
+
+const makeTherm = (id, name, zoneId, zoneName, temp, battery = 80) => new Thermometer({ getId: () => zoneId, getName: () => zoneName } as Zone, makeDeviceEx(id, name, zoneId, zoneName, temp, battery), false);
 
 async function mkZoneWithDevice(id: string, name: string, temp: number) {
   const zone = makeZone(id, name);
@@ -11,7 +15,7 @@ async function mkZoneWithDevice(id: string, name: string, temp: number) {
 }
 describe('Test API', () => {
   const instance = {
-    getDevices: jest.fn().mockImplementation(() => Promise.resolve({})),
+    getDevices: jest.fn().mockReturnValue([]),
     getLogs: jest.fn().mockImplementation(() => []),
     getZones: jest.fn().mockImplementation(() => ({})),
   };
@@ -35,10 +39,9 @@ describe('Test API', () => {
       curApi.fn({}, callback);
     });
     test('APi should formatted thermometer data', done => {
-      instance.getDevices = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          a: makeDeviceEx('ID', 'NAME', 'zone', 'zoneName', 22),
-        }),
+      instance.getDevices = jest.fn().mockReturnValue([
+        makeTherm('ID', 'NAME', 'zone', 'zoneName', 22),
+      ]
       );
 
       function callback(headers, data) {
@@ -46,6 +49,7 @@ describe('Test API', () => {
           expect(data).toEqual([
             {
               battery: 80,
+              humidity: '?',
               icon: 'n/a',
               id: 'ID',
               name: 'NAME',
@@ -62,13 +66,11 @@ describe('Test API', () => {
       curApi.fn({}, callback);
     });
     test('APi should handle multiple thermometers', done => {
-      instance.getDevices = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          a: makeDeviceEx('a', 'NAME', 'zone', 'zoneName', 11),
-          b: makeDeviceEx('b', 'NAME', 'zone', 'zoneName', 22),
-          c: makeDeviceEx('c', 'NAME', 'zone', 'zoneName', 33),
-        }),
-      );
+      instance.getDevices = jest.fn().mockReturnValue([
+        makeTherm('a', 'NAME', 'zone', 'zoneName', 11),
+        makeTherm('b', 'NAME', 'zone', 'zoneName', 22),
+        makeTherm('c', 'NAME', 'zone', 'zoneName', 33),
+      ]);
 
       function callback(headers, data) {
         try {
@@ -93,50 +95,13 @@ describe('Test API', () => {
       }
       curApi.fn({}, callback);
     });
-    test('APi should only return thermometers', done => {
-      instance.getDevices = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          a: makeDeviceEx('a', 'NAME', 'zone', 'zoneName', 11),
-          b: makeDeviceEx('b', 'NAME', 'zone', 'zoneName', 22),
-          c: makeDeviceEx('c', 'NAME', 'zone', 'zoneName', 33),
-          missing: {
-            capabilitiesObj: {
-              measure_battery: {
-                id: 'n/a',
-                value: 80,
-              },
-            },
-            iconObj: {
-              url: 'n/a',
-            },
-            id: 'missing',
-            name: 'missing',
-            zone: 'missing',
-            zoneName: 'missing',
-          },
-        }),
-      );
-
-      function callback(headers, data) {
-        try {
-          expect(data.map(d => d.id)).toEqual(['a', 'b', 'c']);
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }
-      api[0].fn({}, callback);
-    });
-
     test('APi should sort devices by zoneName and name', done => {
-      instance.getDevices = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          a: makeDeviceEx('a', 'a', 'zb', 'zb', 33),
-          b: makeDeviceEx('b', 'b', 'zb', 'zb', 44),
-          c: makeDeviceEx('d', 'd', 'za', 'za', 22),
-          d: makeDeviceEx('c', 'c', 'za', 'za', 11),
-        }),
-      );
+      instance.getDevices = jest.fn().mockReturnValue([
+        makeTherm('a', 'a', 'zb', 'zb', 33),
+        makeTherm('b', 'b', 'zb', 'zb', 44),
+        makeTherm('d', 'd', 'za', 'za', 22),
+        makeTherm('c', 'c', 'za', 'za', 11),
+      ]);
 
       function callback(headers, data) {
         try {
@@ -179,11 +144,27 @@ describe('Test API', () => {
         try {
           expect(data).toEqual([
             {
+              humidity: {
+                active: false,
+                currentAvg: undefined,
+                currentMax: undefined,
+                currentMin: undefined,
+                periodAvg: undefined,
+                periodMax: undefined,
+                periodMin: undefined,
+              },
+              icon: "unknown",
               id: '1234',
-              max: 33,
-              min: 33,
               name: 'demo zone',
-              temperature: 33,
+              temperature: {
+                active: true,
+                currentAvg: 33,
+                currentMax: 33,
+                currentMin: 33,
+                periodAvg: 33,
+                periodMax: 33,
+                periodMin: 33,
+              },
             },
           ]);
           done();
@@ -203,18 +184,18 @@ describe('Test API', () => {
 
       function callback(headers, data) {
         try {
-          expect(data.map(d => ({ id: d.id, temperature: d.temperature }))).toEqual([
+          expect(data.map(d => ({ id: d.id, currentAvg: d.temperature.currentAvg }))).toEqual([
             {
+              currentAvg: 11,
               id: 'za',
-              temperature: 11,
             },
             {
+              currentAvg: 22,
               id: 'zb',
-              temperature: 22,
             },
             {
+              currentAvg: 33,
               id: 'zc',
-              temperature: 33,
             },
           ]);
           done();

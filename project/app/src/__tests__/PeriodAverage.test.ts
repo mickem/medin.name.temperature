@@ -177,4 +177,66 @@ describe('test PeriodAverage', () => {
 
     expect(mockMin).not.toBeCalled();
   });
+
+  test('system test', async () => {
+    await avg.update('dummy', 10);
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:00Z').getTime());
+    avg.reset();
+    expect((avg as any).value).toEqual(0);
+    expect((avg as any).seconds).toEqual(0);
+    expect((avg as any).lastUpdate).toEqual(1546304400000);
+    expect((avg as any).lastValue).toEqual(10);
+    expect((avg as any).lastSensor).toEqual('dummy');
+    expect(await avg.get()).toEqual(10);
+
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:10Z').getTime());
+    expect((avg as any).value).toEqual(0);
+    await avg.update('dummy', 15);
+    expect((avg as any).value).toEqual(105); // 9s x 10 + 1s x 15 = 105
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:20Z').getTime());
+    await avg.update('dummy', 10);
+    expect((avg as any).value).toEqual(250); // 105 + 9s x 15  + 1s x 10 = 250
+
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:30Z').getTime());
+    expect(await avg.get()).toEqual(11.67);
+    expect((avg as any).value).toEqual(350); // 250 + 10s x 10 = 350
+    expect((avg as any).seconds).toEqual(30);
+
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:40Z').getTime());
+    await avg.update('dummy', 20);
+    expect((avg as any).value).toEqual(460); // 350 + 9s x 10 + 1s x 20 = 460
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:00:50Z').getTime());
+    await avg.update('dummy', 10);
+    expect((avg as any).value).toEqual(650); // 460 + 9s x 20 + 1s x 10 = 650
+
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:01:00Z').getTime());
+
+    expect(await avg.get()).toEqual(12.5);
+    expect((avg as any).value).toEqual(750); // 650 + 10s x 10 = 750
+    expect((avg as any).seconds).toEqual(60);
+
+    const state = avg.getState();
+
+    const avg2 = new PeriodAverage();
+    avg2.setState(state);
+    expect(await avg2.get()).toEqual(12.5);
+    expect((avg2 as any).value).toEqual(750);
+    expect((avg2 as any).seconds).toEqual(60);
+
+    (global.Date.now as jest.Mock).mockReturnValue(new Date('2019-01-01T01:02:00Z').getTime());
+
+    expect(await avg2.get()).toEqual(11.25);
+    expect((avg2 as any).value).toEqual(1350); // 750 + 60s x 10 = 1350
+    expect((avg2 as any).seconds).toEqual(120);
+
+
+    const avg3 = new PeriodAverage();
+    avg3.setState(state);
+    expect(await avg3.get()).toEqual(11.25);
+    expect((avg3 as any).value).toEqual(1350); // 750 + 60s x 10 = 1350
+    expect((avg3 as any).seconds).toEqual(120);
+
+
+
+  });  
 });

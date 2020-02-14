@@ -15,16 +15,16 @@ test('update temperature should change', async () => {
   const z = new Thermometer(makeZone('2345', 'the zone'), makeDevice(), false);
   expect(z.hasTemp()).toBeTruthy();
   expect((z as any).temp).toEqual(23.4);
-  expect(z.update(12)).toBeTruthy();
+  expect(z.update_temperature(12)).toBeTruthy();
   expect((z as any).temp).toEqual(12);
-  expect(await z.update(12)).toBeFalsy();
+  expect(await z.update_temperature(12)).toBeFalsy();
 });
 
 test('update with same temperature should not change', async () => {
   const z = new Thermometer(undefined, makeDevice(), false);
   expect(z.hasTemp()).toBeTruthy();
   expect((z as any).temp).toEqual(23.4);
-  expect(await z.update(23.4)).toBeFalsy();
+  expect(await z.update_temperature(23.4)).toBeFalsy();
   expect((z as any).temp).toEqual(23.4);
 });
 

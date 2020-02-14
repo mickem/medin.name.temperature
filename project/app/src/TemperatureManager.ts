@@ -8,6 +8,7 @@ import { ITemperatureManager } from './interfaces/ITemperatureManager';
 import { JobManager } from './JobManager';
 import { error, get as getLogs, ILogMessage, log } from './LogManager';
 import { IAppState, IDeviceConfig, ISettings, SettingsManager } from './SettingsManager';
+import { Thermometer } from './Thermometer';
 import { TriggerManager } from './TriggerManager';
 import { ITriggers } from './Triggers';
 import { Catch } from './utils';
@@ -38,6 +39,11 @@ export class TempManager implements ITemperatureManager {
       'TooWarm',
       'MinTemperatureChanged',
       'MaxTemperatureChanged',
+      'HumidityChanged',
+      'TooDry',
+      'TooHumid',
+      'MinHumidityChanged',
+      'MaxHumidityChanged'
     ]);
     this.zones = new Zones(this.triggers.get(), {
       onZoneUpdated: (id: string) => {
@@ -159,7 +165,7 @@ export class TempManager implements ITemperatureManager {
     }
   }
 
-  public async getDevices(): Promise<IDeviceList> {
-    return (this.api.devices.getDevices() as any) as Promise<IDeviceList>;
+  public getDevices(): Thermometer[] {
+    return this.zones.getAllDevices();
   }
 }

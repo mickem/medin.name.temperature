@@ -67,7 +67,7 @@
   "flows": {
     "triggers": {
       "TemperatureChanged": {
-        "title": "A temperature changed",
+        "title": "The temperature changed",
         "zone": {
           "title": "zone",
           "example": "Kitchen"
@@ -122,6 +122,64 @@
         },
         "temperature": {
           "title": "maximum temperature"
+        }
+      },
+      "HumidityChanged": {
+        "title": "The humidity changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "humidity": {
+          "title": "average temperature"
+        }
+      },
+      "TooDry": {
+        "title": "The humidity is too dry",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "humidity": {
+          "title": "humidity"
+        }
+      },
+      "TooHumid": {
+        "title": "The humidity is too wet",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "humidity": {
+          "title": "humidity"
+        }
+      },
+      "MinHumidityChanged": {
+        "title": "The minimum humidity for a zone changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "sensor": {
+          "title": "Thermometer",
+          "example": "Wall thermometer"
+        },
+        "humidity": {
+          "title": "minimum humidity"
+        }
+      },
+      "MaxHumidityChanged": {
+        "title": "The maximum humidity for a zone changed",
+        "zone": {
+          "title": "zone",
+          "example": "Kitchen"
+        },
+        "sensor": {
+          "title": "Thermometer",
+          "example": "Wall thermometer"
+        },
+        "humidity": {
+          "title": "maximum humidity"
         }
       }
     },

@@ -6,6 +6,8 @@ import { log } from './LogManager';
 export interface ISettings {
   minTemperature?: number;
   maxTemperature?: number;
+  minHumidity?: number;
+  maxHumidity?: number;
   dailyReset?: string;
 }
 export interface IDeviceConfig {

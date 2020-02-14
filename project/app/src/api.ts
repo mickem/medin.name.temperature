@@ -13,28 +13,22 @@ module.exports = [
   {
     description: 'Retrieve all devices with their information',
     fn: (args, callback) => {
-      (Homey.app.get() as ITemperatureManager)
+      const devices = (Homey.app.get() as ITemperatureManager)
         .getDevices()
-        .then((res: IDeviceList) => {
-          const devices = Object.values(res)
-            .filter(
-              device => device.capabilitiesObj && Object.keys(device.capabilitiesObj).includes('measure_temperature'),
-            )
-            .map((device: IDeviceType) => ({
-              battery: getValue(device, 'measure_battery', '?'),
-              icon: device.iconObj.url,
-              id: device.id,
-              name: device.name,
-              temperature: getValue(device, 'measure_temperature', '?'),
-              zone: device.zone,
-              zoneName: device.zoneName,
-            }))
-            .sort((a, b) =>
-              a.zoneName === b.zoneName ? a.name.localeCompare(b.name) : a.zoneName.localeCompare(b.zoneName),
-            );
-          callback(null, devices);
-        })
-        .catch(error => callback(error, null));
+        .map(device => ({
+          battery: device.battery || '?',
+          humidity: device.humidity || '?',
+          icon: device.icon,
+          id: device.id,
+          name: device.name,
+          temperature: device.temp || '?',
+          zone: device.getZoneId(),
+          zoneName: device.getZone(),
+        }))
+        .sort((a, b) =>
+          a.zoneName === b.zoneName ? a.name.localeCompare(b.name) : a.zoneName.localeCompare(b.zoneName),
+        );
+      callback(null, devices);
     },
     method: 'GET',
     path: '/devices',
@@ -45,12 +39,27 @@ module.exports = [
       const zones = Object.values((Homey.app.get() as ITemperatureManager).getZones())
         .filter(zone => zone.hasDevice())
         .map((zone: Zone) => ({
+          humidity: {
+            active: zone.currentHumidity.average !== undefined,
+            currentAvg: zone.currentHumidity.average,
+            currentMax: zone.currentHumidity.max,
+            currentMin: zone.currentHumidity.max,
+            periodAvg: zone.periodHumidity.get_delayed(),
+            periodMax: zone.periodHumidity.maxValue,
+            periodMin: zone.periodHumidity.minValue,
+          },
           icon: zone.icon,
           id: zone.getId(),
-          max: zone.periodTemp.maxValue,
-          min: zone.periodTemp.minValue,
           name: zone.getName(),
-          temperature: zone.getCurrentAvg(),
+          temperature: {
+            active: zone.currentTemp.average !== undefined,
+            currentAvg: zone.currentTemp.average,
+            currentMax: zone.currentTemp.max,
+            currentMin: zone.currentTemp.max,
+            periodAvg: zone.periodTemp.get_delayed(),
+            periodMax: zone.periodTemp.maxValue,
+            periodMin: zone.periodTemp.minValue,
+          },
         }))
         .sort((a, b) => a.name.localeCompare(b.name));
       callback(null, zones);

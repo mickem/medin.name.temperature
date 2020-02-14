@@ -16,6 +16,24 @@ const isThermometer = (device: IDeviceType) => {
   error(`Failed to find capabilities list from ${device.name}`);
   return false;
 };
+const isHydrometer = (device: IDeviceType) => {
+  if (device.capabilitiesObj) {
+    return 'measure_humidity' in device.capabilitiesObj;
+  } else if (device.capabilities) {
+    return 'measure_humidity' in device.capabilities;
+  }
+  error(`Failed to find capabilities list from ${device.name}`);
+  return false;
+}
+const hasBattery = (device: IDeviceType) => {
+  if (device.capabilitiesObj) {
+    return 'measure_battery' in device.capabilitiesObj;
+  } else if (device.capabilities) {
+    return 'measure_battery' in device.capabilities;
+  }
+  error(`Failed to find capabilities list from ${device.name}`);
+  return false;
+}
 
 export class DeviceManager {
   private api: HomeyAPI;
@@ -41,7 +59,7 @@ export class DeviceManager {
 
   private async onDeviceCreate(device: IDeviceType) {
     try {
-      if (!isThermometer(device)) {
+      if (!isThermometer(device) && !isHydrometer(device)) {
         return;
       }
       const readyDevice = await this.waitForDevice(device, 12);
@@ -56,7 +74,7 @@ export class DeviceManager {
   }
   private async onDeviceUpdate(device: IDeviceType) {
     try {
-      if (!isThermometer(device)) {
+      if (!isThermometer(device) && !isHydrometer(device)) {
         return;
       }
       const d = this.zones.findDevice(device.id);
@@ -122,13 +140,14 @@ export class DeviceManager {
   private async scanDevices() {
     const allDevices = await ((this.api.devices.getDevices() as any) as Promise<IDeviceList>);
     for (const id in allDevices) {
-      if (!isThermometer(allDevices[id])) {
+      if (!isThermometer(allDevices[id]) && !isHydrometer(allDevices[id])) {
         if (!allDevices[id].ready) {
           log(`Device not ready, skipping: ${allDevices[id]}`);
         }
         continue;
       }
-      if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures') {
+      console.log(Object.keys(allDevices[id].capabilitiesObj))
+      if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' || allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
         debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
         continue;
       }
@@ -157,8 +176,20 @@ export class DeviceManager {
 
   private async addDevice(device: IDeviceType) {
     const t = await this.zones.addDevice(device);
-    device.makeCapabilityInstance('measure_temperature', async (temperature: any) => {
-      await t.update(temperature);
-    });
+    if (isThermometer(device)) {
+      device.makeCapabilityInstance('measure_temperature', async (temperature: any) => {
+        await t.update_temperature(temperature);
+      });
+    }
+    if (isHydrometer(device)) {
+      device.makeCapabilityInstance('measure_humidity', async (humidity: any) => {
+        await t.update_humidity(humidity);
+      });
+    }
+    if (hasBattery(device)) {
+      device.makeCapabilityInstance('measure_battery', async (level: any) => {
+        await t.update_battery(level);
+      });
+    }
   }
 }
