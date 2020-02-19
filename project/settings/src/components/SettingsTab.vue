@@ -52,9 +52,8 @@ export default {
       get: function() {
         return this.$root.$data.getDailyReset();
       },
-      set: async function() {
-        const value = this.$root.$data.setDailyReset(this.dailyReset);
-        await this.$root.$data.saveSettings({ dailyReset: value });
+      set: async function(value) {
+        await this.$root.$data.saveSettings({ dailyReset: this.$root.$data.setDailyReset(value) });
       }
     }
   },
