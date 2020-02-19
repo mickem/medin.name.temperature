@@ -109,7 +109,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const logs = [];
+let logs = [];
 let logEnabled = true;
 function logRaw(level, message) {
     if (!logEnabled) {
@@ -120,8 +120,8 @@ function logRaw(level, message) {
         level,
         message,
     });
-    if (logs.length > 100) {
-        logs.unshift();
+    if (logs.length > 500) {
+        logs = logs.slice(logs.length - 500);
     }
 }
 function log(message) {

@@ -107,7 +107,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const logs = [];
+let logs = [];
 let logEnabled = true;
 function logRaw(level, message) {
     if (!logEnabled) {
@@ -118,8 +118,8 @@ function logRaw(level, message) {
         level,
         message,
     });
-    if (logs.length > 100) {
-        logs.unshift();
+    if (logs.length > 500) {
+        logs = logs.slice(logs.length - 500);
     }
 }
 function log(message) {
@@ -623,7 +623,6 @@ class DeviceManager {
                     }
                     continue;
                 }
-                console.log(Object.keys(allDevices[id].capabilitiesObj));
                 if (allDevices[id].driverUri === 'homey:app:medin.name.temperatures' ||
                     allDevices[id].driverUri === 'homey:app:name.medin.temperatures') {
                     LogManager_1.debug(`Ignoring my own thermometer: ${allDevices[id].driverUri}`);
@@ -1518,8 +1517,8 @@ class PeriodAverage {
         this.events = { max: undefined, min: undefined };
     }
     reset() {
-        this.minValue = undefined;
-        this.maxValue = undefined;
+        this.minValue = this.lastValue;
+        this.maxValue = this.lastValue;
         if (this.lastUpdate === undefined) {
             return;
         }
