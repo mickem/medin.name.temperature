@@ -49,7 +49,19 @@
             },
             "minTemperature": "Temperatura minima",
             "maxTemperature": "Temperatura massima",
-            "dailyReset": "Tempo per ripristinare le medie giornaliere (impostato su mai per disabilitare)"
+            "dailyReset": "Tempo per ripristinare le medie giornaliere (impostato su mai per disabilitare)",
+            "refresh": {
+                "button": "ricaricare",
+                "label": "Aggiorna la vista delle impostazioni"
+            },
+            "resetAll": {
+                "button": "Ripristina i valori di default",
+                "label": "Ripristina tutte le impostazioni di configurazione e restoe"
+            },
+            "showHints": {
+                "button": "Mostra tutti i suggerimenti",
+                "label": "Mostra tutte le finestre di dialogo dei suggerimenti nell'app delle impostazioni"
+            }
         }
     },
     "flows": {
@@ -110,6 +122,27 @@
                 },
                 "temperature": {
                     "title": "temperatura massima"
+                }
+            },
+            "HumidityChanged": {
+                "title": "L'umidità è cambiata"
+            },
+            "TooDry": {
+                "title": "L'umidità è troppo secca"
+            },
+            "TooHumid": {
+                "title": "L'umidità è troppo bagnata"
+            },
+            "MinHumidityChanged": {
+                "title": "L'umidità minima per una zona è cambiata",
+                "humidity": {
+                    "title": "umidità minima"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "L'umidità massima per una zona è cambiata",
+                "humidity": {
+                    "title": "massima umidità"
                 }
             }
         },
@@ -176,5 +209,15 @@
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "Temperatura",
+        "thermometer": "Termometro",
+        "kitchen": "Cucina",
+        "zone": "Zona",
+        "averageTemperature": "temperatura media",
+        "sampleTempDevice": "Termometro da parete",
+        "humidity": "Umidità",
+        "hygrometer": "Igrometro"
     }
 }
