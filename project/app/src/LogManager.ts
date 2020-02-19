@@ -4,7 +4,7 @@ export interface ILogMessage {
   message: string;
 }
 
-const logs: ILogMessage[] = [];
+let logs: ILogMessage[] = [];
 let logEnabled: boolean = true;
 
 function logRaw(level: 'debug' | 'ok' | 'error', message: string) {
@@ -16,8 +16,8 @@ function logRaw(level: 'debug' | 'ok' | 'error', message: string) {
     level,
     message,
   });
-  if (logs.length > 100) {
-    logs.unshift();
+  if (logs.length > 500) {
+    logs = logs.slice(logs.length - 500);
   }
 }
 export function log(message: string) {
