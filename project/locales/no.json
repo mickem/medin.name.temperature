@@ -49,7 +49,19 @@
             },
             "minTemperature": "Minimum temperatur på temperaturen",
             "maxTemperature": "Høyeste temperatur",
-            "dailyReset": "Tid på døgnet som dagsminimum / master skal tilbakestilles til <b> aldri </b> for å slå av automatisk tilbakestilling"
+            "dailyReset": "Tid på døgnet som dagsminimum / master skal tilbakestilles til <b> aldri </b> for å slå av automatisk tilbakestilling",
+            "refresh": {
+                "button": "Forfriske",
+                "label": "Oppdater innstillingsvisningen"
+            },
+            "resetAll": {
+                "button": "Tilbakestill standardinnstillinger",
+                "label": "Tilbakestill alle konfigurasjoner og standardinnstillinger på nytt"
+            },
+            "showHints": {
+                "button": "Vis alle hint",
+                "label": "Vis alle antydningsdialogene i innstillingsappen"
+            }
         }
     },
     "flows": {
@@ -61,7 +73,7 @@
                     "example": "kjøkkenet"
                 },
                 "temperature": {
-                    "title": "gjennomsnitts temperaturen"
+                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
                 }
             },
             "TooCold": {
@@ -110,6 +122,27 @@
                 },
                 "temperature": {
                     "title": "maks term temperatur"
+                }
+            },
+            "HumidityChanged": {
+                "title": "Fuktigheten endret seg"
+            },
+            "TooDry": {
+                "title": "Fuktigheten er for tørr"
+            },
+            "TooHumid": {
+                "title": "Fuktigheten er for våt"
+            },
+            "MinHumidityChanged": {
+                "title": "Minste fuktighet for en sone endret",
+                "humidity": {
+                    "title": "minimum luftfuktighet"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "Maksimal fuktighet for en sone endret",
+                "humidity": {
+                    "title": "maksimal fuktighet"
                 }
             }
         },
@@ -172,9 +205,19 @@
                     "title": "Minimumstemperatur"
                 },
                 "measure_temperature": {
-                    "title": "gjennomsnitts temperaturen"
+                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "temperatur",
+        "thermometer": "Termometer",
+        "kitchen": "Kjøkken",
+        "zone": "sone",
+        "averageTemperature": "gjennomsnittstemperatur",
+        "sampleTempDevice": "Veggtermometer",
+        "humidity": "Luftfuktighet",
+        "hygrometer": "hygrometer"
     }
 }
