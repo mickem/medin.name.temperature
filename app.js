@@ -1376,11 +1376,11 @@ const PeriodAverage_1 = __importDefault(__webpack_require__(17));
 class MetricManager {
     constructor() {
         this.events = {
+            currentAvg: undefined,
             currentMax: undefined,
             currentMin: undefined,
-            currentAvg: undefined,
+            overMaxBound: undefined,
             underMinBound: undefined,
-            overMaxBOund: undefined,
         };
         this.period = new PeriodAverage_1.default();
         this.current = new MomentanAverage_1.default();
