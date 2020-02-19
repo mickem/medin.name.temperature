@@ -38,8 +38,8 @@ export default class PeriodAverage {
   }
 
   public reset() {
-    this.minValue = undefined;
-    this.maxValue = undefined;
+    this.minValue = this.lastValue;
+    this.maxValue = this.lastValue;
     if (this.lastUpdate === undefined) {
       return;
     }
