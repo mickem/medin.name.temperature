@@ -15,16 +15,16 @@ export default class MetricManager {
     currentMax: EventFunction | undefined;
     currentMin: EventFunction | undefined;
     underMinBound: EventFunction | undefined;
-    overMaxBOund: EventFunction | undefined;
+    overMaxBound: EventFunction | undefined;
   };
 
   constructor() {
     this.events = {
+      currentAvg: undefined,
       currentMax: undefined,
       currentMin: undefined,
-      currentAvg: undefined,
+      overMaxBound: undefined,
       underMinBound: undefined,
-      overMaxBOund: undefined,
     };
     this.period = new PeriodAverage();
     this.current = new MomentanAverage();
