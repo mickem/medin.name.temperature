@@ -61,7 +61,7 @@
                     "example": "kjøkkenet"
                 },
                 "temperature": {
-                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
+                    "title": "gjennomsnitts temperaturen"
                 }
             },
             "TooCold": {
@@ -172,7 +172,7 @@
                     "title": "Minimumstemperatur"
                 },
                 "measure_temperature": {
-                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
+                    "title": "gjennomsnitts temperaturen"
                 }
             }
         }

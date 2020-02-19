@@ -1,4 +1,14 @@
 {
+  "common": {
+    "temperature": "Temperatur",
+    "thermometer": "Thermometer",
+    "kitchen": "Kitchen",
+    "zone": "Zone",
+    "averageTemperature": "average temperature",
+    "sampleTempDevice": "Wall thermometer",
+    "humidity": "Humidity",
+    "hygrometer": "Hygrometer"
+  },
   "settings": {
     "loading": "Loading...",
     "tabs": {
@@ -67,117 +77,43 @@
   "flows": {
     "triggers": {
       "TemperatureChanged": {
-        "title": "The temperature changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "temperature": {
-          "title": "average temperature"
-        }
+        "title": "The temperature changed"
       },
       "TooCold": {
-        "title": "The temperature is too cold",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "temperature": {
-          "title": "temperature"
-        }
+        "title": "The temperature is too cold"
       },
       "TooWarm": {
-        "title": "The temperature is too warm",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "temperature": {
-          "title": "temperature"
-        }
+        "title": "The temperature is too warm"
       },
       "MinTemperatureChanged": {
         "title": "The minimum temperature for a zone changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "sensor": {
-          "title": "Thermometer",
-          "example": "Wall thermometer"
-        },
         "temperature": {
           "title": "minimum temperature"
         }
       },
       "MaxTemperatureChanged": {
         "title": "The maximum temperature for a zone changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "sensor": {
-          "title": "Thermometer",
-          "example": "Wall thermometer"
-        },
         "temperature": {
           "title": "maximum temperature"
         }
       },
       "HumidityChanged": {
-        "title": "The humidity changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "humidity": {
-          "title": "average temperature"
-        }
+        "title": "The humidity changed"
       },
       "TooDry": {
-        "title": "The humidity is too dry",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "humidity": {
-          "title": "humidity"
-        }
+        "title": "The humidity is too dry"
       },
       "TooHumid": {
-        "title": "The humidity is too wet",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "humidity": {
-          "title": "humidity"
-        }
+        "title": "The humidity is too wet"
       },
       "MinHumidityChanged": {
         "title": "The minimum humidity for a zone changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "sensor": {
-          "title": "Thermometer",
-          "example": "Wall thermometer"
-        },
         "humidity": {
           "title": "minimum humidity"
         }
       },
       "MaxHumidityChanged": {
         "title": "The maximum humidity for a zone changed",
-        "zone": {
-          "title": "zone",
-          "example": "Kitchen"
-        },
-        "sensor": {
-          "title": "Thermometer",
-          "example": "Wall thermometer"
-        },
         "humidity": {
           "title": "maximum humidity"
         }
@@ -196,8 +132,7 @@
       "SetZoneMode": {
         "title": "Set the mode for a given zone",
         "zone": {
-          "title": "zone",
-          "example": "TODO: Add example"
+          "title": "zone"
         },
         "mode": {
           "title": "mode"

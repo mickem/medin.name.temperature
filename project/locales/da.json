@@ -1,4 +1,12 @@
 {
+  "common": {
+    "temperature": "Temperatur",
+    "thermometer": "Temperatur",
+    "kitchen": "Køkken",
+    "zone": "Zone",
+    "averageTemperature": "gennemsnitstemperatur",
+    "sampleTempDevice": "Vægtermometer"
+  },
     "settings": {
         "loading": "Indlæser...",
         "tabs": {
@@ -55,77 +63,28 @@
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur ændrede sig",
-                "zone": {
-                    "title": "zone",
-                    "example": "Køkken"
-                },
-                "temperature": {
-                    "title": "gennemsnitstemperatur"
-                }
+                "title": "En temperatur ændrede sig"
             },
             "TooCold": {
-                "title": "Temperaturen er for kold",
-                "zone": {
-                    "title": "zone",
-                    "example": "Køkken"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Temperaturen er for kold"
             },
             "TooWarm": {
-                "title": "Temperaturen er for varm",
-                "zone": {
-                    "title": "zone",
-                    "example": "Køkken"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Temperaturen er for varm"
             },
             "MinTemperatureChanged": {
                 "title": "Minimumstemperaturen for en zone ændret",
-                "zone": {
-                    "title": "zone",
-                    "example": "Køkken"
-                },
-                "sensor": {
-                    "title": "Temperatur",
-                    "example": "Vægtermometer"
-                },
                 "temperature": {
                     "title": "minimumstemperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Den maksimale temperatur for en zone ændret",
-                "zone": {
-                    "title": "zone",
-                    "example": "Køkken"
-                },
-                "sensor": {
-                    "title": "Termometer",
-                    "example": "Vægtermometer"
-                },
                 "temperature": {
                     "title": "maksimal temperatur"
                 }
             }
         },
         "actions": {
-            "SetMaxTemperature": {
-                "title": "Indstil den maksimale temperatur",
-                "temperature": {
-                    "title": "temperatur"
-                }
-            },
-            "SetMinTemperature": {
-                "title": "Indstil minimumstemperatur",
-                "temperature": {
-                    "title": "temperatur"
-                }
-            },
             "SetTemperatureBounds": {
                 "title": "Indstil maksimums- eller minimumstemperaturgrænser",
                 "type": {
@@ -137,10 +96,6 @@
             },
             "SetZoneMode": {
                 "title": "Indstil tilstanden for en given zone",
-                "zone": {
-                    "title": "zone",
-                    "example": "TODO: Tilføj eksempel"
-                },
                 "mode": {
                     "title": "mode"
                 }

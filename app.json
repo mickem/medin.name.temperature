@@ -74,15 +74,15 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone",
-              "da": "zone",
+              "en": "Zone",
+              "da": "Zone",
               "de": "Zone",
               "es": "zona",
               "fr": "zone",
               "it": "zona",
               "nl": "zone",
               "no": "sonen",
-              "sv": "zon"
+              "sv": "Zon"
             },
             "type": "string"
           },
@@ -97,8 +97,8 @@
               "fr": "température moyenne",
               "it": "temperatura media",
               "nl": "Gemiddelde temperatuur",
-              "no": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP",
-              "sv": "medeltemperatur"
+              "no": "gjennomsnitts temperaturen",
+              "sv": "snitt temperatur"
             },
             "type": "number"
           }
@@ -128,19 +128,19 @@
               "it": "Cucina",
               "nl": "Keuken",
               "no": "kjøkken",
-              "sv": "Kök"
+              "sv": "Köket"
             },
             "name": "zone",
             "title": {
-              "en": "zone",
-              "da": "zone",
+              "en": "Zone",
+              "da": "Zone",
               "de": "Zone",
               "es": "zona",
               "fr": "zone",
               "it": "zona",
               "nl": "zone",
               "no": "sonen",
-              "sv": "zon"
+              "sv": "Zon"
             },
             "type": "string"
           },
@@ -148,15 +148,15 @@
             "example": 14.5,
             "name": "temperature",
             "title": {
-              "en": "temperature",
-              "da": "temperatur",
+              "en": "Temperatur",
+              "da": "Temperatur",
               "de": "Temperatur",
               "es": "temperatura",
               "fr": "Température",
               "it": "temperatura",
               "nl": "temperatuur",
               "no": "temperaturen",
-              "sv": "temperatur"
+              "sv": "Temperatur"
             },
             "type": "number"
           }
@@ -186,19 +186,19 @@
               "it": "Cucina",
               "nl": "Keuken",
               "no": "kjøkken",
-              "sv": "Kök"
+              "sv": "Köket"
             },
             "name": "zone",
             "title": {
-              "en": "zone",
-              "da": "zone",
+              "en": "Zone",
+              "da": "Zone",
               "de": "Zone",
               "es": "zona",
               "fr": "zone",
               "it": "zona",
               "nl": "zone",
               "no": "sonen",
-              "sv": "zon"
+              "sv": "Zon"
             },
             "type": "string"
           },
@@ -206,15 +206,15 @@
             "example": 14.5,
             "name": "temperature",
             "title": {
-              "en": "temperature",
-              "da": "temperatur",
+              "en": "Temperatur",
+              "da": "Temperatur",
               "de": "Temperatur",
               "es": "temperatura",
               "fr": "Température",
               "it": "temperatura",
               "nl": "temperatuur",
               "no": "temperaturen",
-              "sv": "temperatur"
+              "sv": "Temperatur"
             },
             "type": "number"
           }
@@ -244,19 +244,19 @@
               "it": "Cucina",
               "nl": "Keuken",
               "no": "kjøkken",
-              "sv": "Kök"
+              "sv": "Köket"
             },
             "name": "zone",
             "title": {
-              "en": "zone",
-              "da": "zone",
+              "en": "Zone",
+              "da": "Zone",
               "de": "Zone",
               "es": "zona",
               "fr": "zone",
               "it": "zona",
               "nl": "zone",
               "no": "zopn",
-              "sv": "zopn"
+              "sv": "Zon"
             },
             "type": "string"
           },
@@ -270,7 +270,7 @@
               "it": "Termometro da parete",
               "nl": "Wandthermometer",
               "no": "Wall termometer",
-              "sv": "Väggtermometer"
+              "sv": "Vägg termometer"
             },
             "name": "sensor",
             "title": {
@@ -282,7 +282,7 @@
               "it": "Termometro",
               "nl": "Thermometer",
               "no": "temperaturen",
-              "sv": "temperatur"
+              "sv": "Termometer"
             },
             "type": "string"
           },
@@ -328,19 +328,19 @@
               "it": "Cucina",
               "nl": "Keuken",
               "no": "kjøkken",
-              "sv": "Kök"
+              "sv": "Köket"
             },
             "name": "zone",
             "title": {
-              "en": "zone",
-              "da": "zone",
+              "en": "Zone",
+              "da": "Zone",
               "de": "Zone",
               "es": "zona",
               "fr": "zone",
               "it": "zona",
               "nl": "zone",
               "no": "sonen",
-              "sv": "zon"
+              "sv": "Zon"
             },
             "type": "string"
           },
@@ -354,19 +354,19 @@
               "it": "Termometro da parete",
               "nl": "Wandthermometer",
               "no": "Wall termometer",
-              "sv": "Väggtermometer"
+              "sv": "Vägg termometer"
             },
             "name": "sensor",
             "title": {
               "en": "Thermometer",
-              "da": "Termometer",
+              "da": "Temperatur",
               "de": "Thermometer",
               "es": "Termómetro",
               "fr": "Thermomètre",
               "it": "Termometro",
               "nl": "Thermometer",
               "no": "termometer",
-              "sv": "termometer"
+              "sv": "Termometer"
             },
             "type": "string"
           },
@@ -382,7 +382,7 @@
               "it": "temperatura massima",
               "nl": "maximale temperatuur",
               "no": "maks term temperatur",
-              "sv": "max termperatur"
+              "sv": "max temperatur"
             },
             "type": "number"
           }
@@ -400,7 +400,7 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "Zone"
             },
             "type": "string"
           },
@@ -426,7 +426,7 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "Zone"
             },
             "type": "string"
           },
@@ -434,7 +434,7 @@
             "example": 14.5,
             "name": "humidity",
             "title": {
-              "en": "humidity"
+              "en": "Humidity"
             },
             "type": "number"
           }
@@ -452,7 +452,7 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "Zone"
             },
             "type": "string"
           },
@@ -460,7 +460,7 @@
             "example": 14.5,
             "name": "humidity",
             "title": {
-              "en": "humidity"
+              "en": "Humidity"
             },
             "type": "number"
           }
@@ -478,7 +478,7 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "Zone"
             },
             "type": "string"
           },
@@ -488,7 +488,7 @@
             },
             "name": "sensor",
             "title": {
-              "en": "Thermometer"
+              "en": "Hygrometer"
             },
             "type": "string"
           },
@@ -514,7 +514,7 @@
             },
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "Zone"
             },
             "type": "string"
           },
@@ -524,7 +524,7 @@
             },
             "name": "sensor",
             "title": {
-              "en": "Thermometer"
+              "en": "Hygrometer"
             },
             "type": "string"
           },
@@ -545,7 +545,15 @@
           {
             "name": "type",
             "title": {
-              "en": "the type of bound to set"
+              "en": "the type of bound to set",
+              "da": "typen bundet, der skal indstilles",
+              "de": "die Art der zu setzenden Bindung",
+              "es": "el tipo de límite para establecer",
+              "fr": "le type de lié à définir",
+              "it": "il tipo di limite da impostare",
+              "nl": "het type limiet om in te stellen",
+              "no": "slags grense å sette",
+              "sv": "typ av gräns att sätta"
             },
             "type": "dropdown",
             "values": [
@@ -566,14 +574,30 @@
           {
             "name": "temperature",
             "title": {
-              "en": "temperature"
+              "en": "temperature",
+              "da": "temperatur",
+              "de": "Temperatur",
+              "es": "temperatura",
+              "fr": "Température",
+              "it": "temperatura",
+              "nl": "temperatuur",
+              "no": "temperaturen",
+              "sv": "temperatur"
             },
             "type": "number"
           }
         ],
         "id": "SetTemperatureBounds",
         "title": {
-          "en": "Set the maximum or minimum temperature bounds"
+          "en": "Set the maximum or minimum temperature bounds",
+          "da": "Indstil maksimums- eller minimumstemperaturgrænser",
+          "de": "Stellen Sie die maximalen oder minimalen Temperaturgrenzen ein",
+          "es": "Establecer los límites de temperatura máxima o mínima",
+          "fr": "Définissez les limites de température maximale ou minimale",
+          "it": "Impostare i limiti di temperatura massima o minima",
+          "nl": "Stel de maximale of minimale temperatuurgrenzen in",
+          "no": "Sett grenser for temperatur",
+          "sv": "Set gränser för temperatur"
         }
       },
       {
@@ -581,14 +605,40 @@
           {
             "name": "zone",
             "title": {
-              "en": "zone"
+              "en": "zone",
+              "de": "Zone",
+              "es": "zona",
+              "fr": "zone",
+              "it": "zona",
+              "nl": "zone",
+              "no": "sonen",
+              "sv": "zon"
             },
-            "type": "text"
+            "type": "text",
+            "example": {
+              "en": "Kitchen",
+              "da": "Køkken",
+              "de": "TODO: Beispiel hinzufügen",
+              "es": "TODO: Agregar ejemplo",
+              "fr": "TODO: Ajouter un exemple",
+              "it": "TODO: aggiungi esempio",
+              "nl": "TODO: Voorbeeld toevoegen",
+              "no": "testing",
+              "sv": "testing"
+            }
           },
           {
             "name": "mode",
             "title": {
-              "en": "mode"
+              "en": "mode",
+              "da": "mode",
+              "de": "Modus",
+              "es": "modo",
+              "fr": "mode",
+              "it": "modalità",
+              "nl": "mode",
+              "no": "stilling",
+              "sv": "läge"
             },
             "type": "dropdown",
             "values": [
@@ -615,7 +665,15 @@
         ],
         "id": "SetZoneMode",
         "title": {
-          "en": "Set the mode for a given zone"
+          "en": "Set the mode for a given zone",
+          "da": "Indstil tilstanden for en given zone",
+          "de": "Stellen Sie den Modus für eine bestimmte Zone ein",
+          "es": "Establecer el modo para una zona determinada",
+          "fr": "Définir le mode pour une zone donnée",
+          "it": "Imposta la modalità per una determinata zona",
+          "nl": "Stel de modus in voor een bepaalde zone",
+          "no": "angi plassering for spesifisert sone",
+          "sv": "set läge för angiven zon"
         }
       }
     ]

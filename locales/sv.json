@@ -1,4 +1,14 @@
 {
+    "common": {
+        "temperature": "Temperatur",
+        "thermometer": "Termometer",
+        "kitchen": "Köket",
+        "zone": "Zon",
+        "averageTemperature": "snitt temperatur",
+        "sampleTempDevice": "Vägg termometer",
+        "humidity": "Luftfuktighet",
+        "hygrometer": "Fuktmätare"
+    },
     "settings": {
         "loading": "Laddar...",
         "tabs": {
@@ -55,61 +65,24 @@
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur har ändrats",
-                "zone": {
-                    "title": "zon",
-                    "example": "Köket"
-                },
-                "temperature": {
-                    "title": "medeltemperatur"
-                }
+                "title": "En temperatur har ändrats"
             },
             "TooCold": {
-                "title": "Det är för kallt",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Det är för kallt"
             },
             "TooWarm": {
-                "title": "Det är för varmt",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Det är för varmt"
             },
             "MinTemperatureChanged": {
                 "title": "Minsta temperatur har ändrats",
-                "zone": {
-                    "title": "zopn",
-                    "example": "Kök"
-                },
-                "sensor": {
-                    "title": "temperatur",
-                    "example": "Väggtermometer"
-                },
                 "temperature": {
                     "title": "minimum temperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Max termperaturen i en zon har ändrat",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "sensor": {
-                    "title": "termometer",
-                    "example": "Väggtermometer"
-                },
                 "temperature": {
-                    "title": "max termperatur"
+                    "title": "max temperatur"
                 }
             }
         },
