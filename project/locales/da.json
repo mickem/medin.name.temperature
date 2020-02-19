@@ -1,12 +1,4 @@
 {
-  "common": {
-    "temperature": "Temperatur",
-    "thermometer": "Temperatur",
-    "kitchen": "Køkken",
-    "zone": "Zone",
-    "averageTemperature": "gennemsnitstemperatur",
-    "sampleTempDevice": "Vægtermometer"
-  },
     "settings": {
         "loading": "Indlæser...",
         "tabs": {
@@ -57,34 +49,116 @@
             },
             "minTemperature": "Minimumstemperatur",
             "maxTemperature": "Maksimal temperatur",
-            "dailyReset": "Tid til nulstilling af daglige gennemsnit (indstillet til aldrig at deaktivere)"
+            "dailyReset": "Tid til nulstilling af daglige gennemsnit (indstillet til aldrig at deaktivere)",
+            "refresh": {
+                "button": "Opdater",
+                "label": "Opdater indstillingsvisningen"
+            },
+            "resetAll": {
+                "button": "Nulstil standardindstillinger",
+                "label": "Nulstil al konfiguration og standardindstillinger"
+            },
+            "showHints": {
+                "button": "Vis alle tip",
+                "label": "Vis alle tip i dialogboksen Indstillinger"
+            }
         }
     },
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur ændrede sig"
+                "title": "En temperatur ændrede sig",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "gennemsnitstemperatur"
+                }
             },
             "TooCold": {
-                "title": "Temperaturen er for kold"
+                "title": "Temperaturen er for kold",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
             },
             "TooWarm": {
-                "title": "Temperaturen er for varm"
+                "title": "Temperaturen er for varm",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
             },
             "MinTemperatureChanged": {
                 "title": "Minimumstemperaturen for en zone ændret",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "sensor": {
+                    "title": "Temperatur",
+                    "example": "Vægtermometer"
+                },
                 "temperature": {
                     "title": "minimumstemperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Den maksimale temperatur for en zone ændret",
+                "zone": {
+                    "title": "zone",
+                    "example": "Køkken"
+                },
+                "sensor": {
+                    "title": "Termometer",
+                    "example": "Vægtermometer"
+                },
                 "temperature": {
                     "title": "maksimal temperatur"
+                }
+            },
+            "HumidityChanged": {
+                "title": "Fugtigheden ændrede sig"
+            },
+            "TooDry": {
+                "title": "Fugtigheden er for tør"
+            },
+            "TooHumid": {
+                "title": "Fugtigheden er for våd"
+            },
+            "MinHumidityChanged": {
+                "title": "Den minimale fugtighed for en zone ændret",
+                "humidity": {
+                    "title": "minimum fugtighed"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "Den maksimale fugtighed for en zone ændret",
+                "humidity": {
+                    "title": "maksimal fugtighed"
                 }
             }
         },
         "actions": {
+            "SetMaxTemperature": {
+                "title": "Indstil den maksimale temperatur",
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Indstil minimumstemperatur",
+                "temperature": {
+                    "title": "temperatur"
+                }
+            },
             "SetTemperatureBounds": {
                 "title": "Indstil maksimums- eller minimumstemperaturgrænser",
                 "type": {
@@ -96,6 +170,10 @@
             },
             "SetZoneMode": {
                 "title": "Indstil tilstanden for en given zone",
+                "zone": {
+                    "title": "zone",
+                    "example": "TODO: Tilføj eksempel"
+                },
                 "mode": {
                     "title": "mode"
                 }
@@ -131,5 +209,15 @@
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "temperatur",
+        "thermometer": "Termometer",
+        "kitchen": "Køkken",
+        "zone": "Zone",
+        "averageTemperature": "gennemsnitstemperatur",
+        "sampleTempDevice": "Vægtermometer",
+        "humidity": "Fugtighed",
+        "hygrometer": "hygrometer"
     }
 }
