@@ -146,7 +146,6 @@ export class DeviceManager {
         }
         continue;
       }
-      console.log(Object.keys(allDevices[id].capabilitiesObj));
       if (
         allDevices[id].driverUri === 'homey:app:medin.name.temperatures' ||
         allDevices[id].driverUri === 'homey:app:name.medin.temperatures'

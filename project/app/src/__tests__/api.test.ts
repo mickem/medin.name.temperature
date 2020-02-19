@@ -111,7 +111,6 @@ describe('Test API', () => {
 
       function callback(headers, data) {
         try {
-          console.log(data.map(d => `${d.zone}: ${d.id}`));
           expect(data.map(d => `${d.zoneName}: ${d.name}`)).toEqual(['za: c', 'za: d', 'zb: a', 'zb: b']);
           done();
         } catch (error) {
