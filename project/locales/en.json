@@ -1,173 +1,223 @@
 {
-  "common": {
-    "temperature": "Temperatur",
-    "thermometer": "Thermometer",
-    "kitchen": "Kitchen",
-    "zone": "Zone",
-    "averageTemperature": "average temperature",
-    "sampleTempDevice": "Wall thermometer",
-    "humidity": "Humidity",
-    "hygrometer": "Hygrometer"
-  },
-  "settings": {
-    "loading": "Loading...",
-    "tabs": {
-      "zones": "Zones",
-      "devices": "Devices",
-      "settings": "Settings"
-    },
-    "zones": {
-      "hints": {
-        "title": "Hints: Zones",
-        "hint1": "Zones are the same as zones in homey and the temperature will be the averge of all <b>enabled</b> thermometers in the zone.",
-        "hint2": "A <b>monitored</b> zone will emit alerts whenever the temperature goes out of bounds.",
-        "hint3": "An <b>enabled</b> zone will not emit any alerts but all other action cards for temperature change, maxmimum and minimum will still work.",
-        "hint4": "A <b>disabled</b> zone will be ignored by the application.",
-        "hint5": "The values shown for each zone is the average temperature, the minimum temperature today and the maximum temperature today.",
-        "hint6": "You can enable these hints in the settings section.",
-        "button": "Got it"
-      },
-      "unit": "&deg;C",
-      "toggles": {
-        "monitored": "Monitored",
-        "enabled": "Enabled",
-        "disabled": "Disabled"
-      }
-    },
-    "devices": {
-      "hints": {
-        "title": "Hints: Devices",
-        "hint1": "Devices are various thermometers found in Homey.",
-        "hint2": "A <b>enabled</b> device will contribute to the average temperature of the zone it is in.",
-        "hint3": "An <b>disabled</b> zone will be ignored by temperature manager.",
-        "hint4": "You can enable these hints in the settings section.",
-        "button": "Got it"
-      },
-      "unit": "&deg;C",
-      "toggles": {
-        "enabled": "Enabled",
-        "disabled": "Disabled"
-      }
-    },
     "settings": {
-      "hints": {
-        "title": "Hints: Settings",
-        "hint1": "Minimum and maximum temperature will be used by the tooWarm and TooCold cards to trigger your flows.",
-        "hint2": "If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for instance you want weekly min/max.",
-        "hint3": "You can enable these hints in the settings section.",
-        "button": "Got it"
-      },
-      "minTemperature": "Minimum Temperature",
-      "maxTemperature": "Maxmimum Temperature",
-      "dailyReset": "Time to reset daily averages (set to never to disable)",
-      "refresh": {
-        "button": "Refresh",
-        "label": "Refresh the settings view"
-      },
-      "resetAll": {
-        "button": "Reset defaults",
-        "label": "Reset all configuration and restoe defaults"
-      },
-      "showHints": {
-        "button": "Show all hints",
-        "label": "Show all hint dialogs in the settings app"
-      }
-    }
-  },
-  "flows": {
-    "triggers": {
-      "TemperatureChanged": {
-        "title": "The temperature changed"
-      },
-      "TooCold": {
-        "title": "The temperature is too cold"
-      },
-      "TooWarm": {
-        "title": "The temperature is too warm"
-      },
-      "MinTemperatureChanged": {
-        "title": "The minimum temperature for a zone changed",
-        "temperature": {
-          "title": "minimum temperature"
+        "loading": "Loading...",
+        "tabs": {
+            "zones": "Zones",
+            "devices": "Devices",
+            "settings": "Settings"
+        },
+        "zones": {
+            "hints": {
+                "title": "Hints: Zones",
+                "hint1": "Zones are the same as zones in homey and the temperature will be the averge of all <b>enabled</b> thermometers in the zone.",
+                "hint2": "A <b>monitored</b> zone will emit alerts whenever the temperature goes out of bounds.",
+                "hint3": "An <b>enabled</b> zone will not emit any alerts but all other action cards for temperature change, maxmimum and minimum will still work.",
+                "hint4": "A <b>disabled</b> zone will be ignored by the application.",
+                "hint5": "The values shown for each zone is the average temperature, the minimum temperature today and the maximum temperature today.",
+                "hint6": "You can enable these hints in the settings section.",
+                "button": "Got it"
+            },
+            "unit": "&deg;C",
+            "toggles": {
+                "monitored": "Monitored",
+                "enabled": "Enabled",
+                "disabled": "Disabled"
+            }
+        },
+        "devices": {
+            "hints": {
+                "title": "Hints: Devices",
+                "hint1": "Devices are various thermometers found in Homey.",
+                "hint2": "A <b>enabled</b> device will contribute to the average temperature of the zone it is in.",
+                "hint3": "An <b>disabled</b> zone will be ignored by temperature manager.",
+                "hint4": "You can enable these hints in the settings section.",
+                "button": "Got it"
+            },
+            "unit": "&deg;C",
+            "toggles": {
+                "enabled": "Enabled",
+                "disabled": "Disabled"
+            }
+        },
+        "settings": {
+            "hints": {
+                "title": "Hints: Settings",
+                "hint1": "Minimum and maximum temperature will be used by the tooWarm and TooCold cards to trigger your flows.",
+                "hint2": "If you disable (set to never) Time to reset max/min you can instead use a flow card to reset them at your own schedule if for instance you want weekly min/max.",
+                "hint3": "You can enable these hints in the settings section.",
+                "button": "Got it"
+            },
+            "minTemperature": "Minimum Temperature",
+            "maxTemperature": "Maxmimum Temperature",
+            "dailyReset": "Time to reset daily averages (set to never to disable)",
+            "refresh": {
+                "button": "Refresh",
+                "label": "Refresh the settings view"
+            },
+            "resetAll": {
+                "button": "Reset defaults",
+                "label": "Reset all configuration and restoe defaults"
+            },
+            "showHints": {
+                "button": "Show all hints",
+                "label": "Show all hint dialogs in the settings app"
+            }
         }
-      },
-      "MaxTemperatureChanged": {
-        "title": "The maximum temperature for a zone changed",
-        "temperature": {
-          "title": "maximum temperature"
-        }
-      },
-      "HumidityChanged": {
-        "title": "The humidity changed"
-      },
-      "TooDry": {
-        "title": "The humidity is too dry"
-      },
-      "TooHumid": {
-        "title": "The humidity is too wet"
-      },
-      "MinHumidityChanged": {
-        "title": "The minimum humidity for a zone changed",
-        "humidity": {
-          "title": "minimum humidity"
-        }
-      },
-      "MaxHumidityChanged": {
-        "title": "The maximum humidity for a zone changed",
-        "humidity": {
-          "title": "maximum humidity"
-        }
-      }
     },
-    "actions": {
-      "SetTemperatureBounds": {
-        "title": "Set the maximum or minimum temperature bounds",
-        "type": {
-          "title": "the type of bound to set"
+    "flows": {
+        "triggers": {
+            "TemperatureChanged": {
+                "title": "The temperature changed",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "temperature": {
+                    "title": "average temperature"
+                }
+            },
+            "TooCold": {
+                "title": "The temperature is too cold",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "temperature": {
+                    "title": "temperature"
+                }
+            },
+            "TooWarm": {
+                "title": "The temperature is too warm",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "temperature": {
+                    "title": "temperature"
+                }
+            },
+            "MinTemperatureChanged": {
+                "title": "The minimum temperature for a zone changed",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wall thermometer"
+                },
+                "temperature": {
+                    "title": "minimum temperature"
+                }
+            },
+            "MaxTemperatureChanged": {
+                "title": "The maximum temperature for a zone changed",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "sensor": {
+                    "title": "Thermometer",
+                    "example": "Wall thermometer"
+                },
+                "temperature": {
+                    "title": "maximum temperature"
+                }
+            },
+            "HumidityChanged": {
+                "title": "The humidity changed"
+            },
+            "TooDry": {
+                "title": "The humidity is too dry"
+            },
+            "TooHumid": {
+                "title": "The humidity is too wet"
+            },
+            "MinHumidityChanged": {
+                "title": "The minimum humidity for a zone changed",
+                "humidity": {
+                    "title": "minimum humidity"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "The maximum humidity for a zone changed",
+                "humidity": {
+                    "title": "maximum humidity"
+                }
+            }
         },
-        "temperature": {
-          "title": "temperature"
+        "actions": {
+            "SetMaxTemperature": {
+                "title": "Set the maximum temperature",
+                "temperature": {
+                    "title": "temperature"
+                }
+            },
+            "SetMinTemperature": {
+                "title": "Set the minimum temperature",
+                "temperature": {
+                    "title": "temperature"
+                }
+            },
+            "SetTemperatureBounds": {
+                "title": "Set the maximum or minimum temperature bounds",
+                "type": {
+                    "title": "the type of bound to set"
+                },
+                "temperature": {
+                    "title": "temperature"
+                }
+            },
+            "SetZoneMode": {
+                "title": "Set the mode for a given zone",
+                "zone": {
+                    "title": "zone",
+                    "example": "Kitchen"
+                },
+                "mode": {
+                    "title": "mode"
+                }
+            }
         }
-      },
-      "SetZoneMode": {
-        "title": "Set the mode for a given zone",
-        "zone": {
-          "title": "zone"
-        },
-        "mode": {
-          "title": "mode"
-        }
-      }
-    }
-  },
-  "drivers": {
-    "zone-temperature-cur": {
-      "name": "Virtual thermometer for current values.",
-      "capabilities": {
-        "measure_temperature.max": {
-          "title": "Maximum temperature"
-        },
-        "measure_temperature.min": {
-          "title": "Minimum temperature"
-        },
-        "measure_temperature": {
-          "title": "Current temperature"
-        }
-      }
     },
-    "zone-temperature-daily": {
-      "name": "Virtual thermometer for daily averages.",
-      "capabilities": {
-        "measure_temperature.max": {
-          "title": "Maximum temperature"
+    "drivers": {
+        "zone-temperature-cur": {
+            "name": "Virtual thermometer for current values.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Maximum temperature"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimum temperature"
+                },
+                "measure_temperature": {
+                    "title": "Current temperature"
+                }
+            }
         },
-        "measure_temperature.min": {
-          "title": "Minimum temperature"
-        },
-        "measure_temperature": {
-          "title": "Average temperature"
+        "zone-temperature-daily": {
+            "name": "Virtual thermometer for daily averages.",
+            "capabilities": {
+                "measure_temperature.max": {
+                    "title": "Maximum temperature"
+                },
+                "measure_temperature.min": {
+                    "title": "Minimum temperature"
+                },
+                "measure_temperature": {
+                    "title": "Average temperature"
+                }
+            }
         }
-      }
+    },
+    "common": {
+        "temperature": "Temperatur",
+        "thermometer": "Thermometer",
+        "kitchen": "Kitchen",
+        "zone": "Zone",
+        "averageTemperature": "average temperature",
+        "sampleTempDevice": "Wall thermometer",
+        "humidity": "Humidity",
+        "hygrometer": "Hygrometer"
     }
-  }
 }
