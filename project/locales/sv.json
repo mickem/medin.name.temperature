@@ -1,14 +1,4 @@
 {
-    "common": {
-        "temperature": "Temperatur",
-        "thermometer": "Termometer",
-        "kitchen": "Köket",
-        "zone": "Zon",
-        "averageTemperature": "snitt temperatur",
-        "sampleTempDevice": "Vägg termometer",
-        "humidity": "Luftfuktighet",
-        "hygrometer": "Fuktmätare"
-    },
     "settings": {
         "loading": "Laddar...",
         "tabs": {
@@ -59,30 +49,100 @@
             },
             "minTemperature": "Minsta termperatur",
             "maxTemperature": "Högsta temperatur",
-            "dailyReset": "Tid på dygnet som dagsminsta/mästa skall nollställas sätt till <b>never</b> för att stänga av automatisk nollställning"
+            "dailyReset": "Tid på dygnet som dagsminsta/mästa skall nollställas sätt till <b>never</b> för att stänga av automatisk nollställning",
+            "refresh": {
+                "button": "Uppdatera",
+                "label": "Uppdatera inställningsvyn"
+            },
+            "resetAll": {
+                "button": "Återställ standardvärden",
+                "label": "Återställ all konfiguration och standardinställningar"
+            },
+            "showHints": {
+                "button": "Visa alla tips",
+                "label": "Visa alla antydningsdialogrutor i inställningsappen"
+            }
         }
     },
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur har ändrats"
+                "title": "En temperatur har ändrats",
+                "zone": {
+                    "title": "zon",
+                    "example": "Köket"
+                },
+                "temperature": {
+                    "title": "medeltemperatur"
+                }
             },
             "TooCold": {
-                "title": "Det är för kallt"
+                "title": "Det är för kallt",
+                "zone": {
+                    "title": "zon",
+                    "example": "Kök"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
             },
             "TooWarm": {
-                "title": "Det är för varmt"
+                "title": "Det är för varmt",
+                "zone": {
+                    "title": "zon",
+                    "example": "Kök"
+                },
+                "temperature": {
+                    "title": "temperatur"
+                }
             },
             "MinTemperatureChanged": {
                 "title": "Minsta temperatur har ändrats",
+                "zone": {
+                    "title": "zopn",
+                    "example": "Kök"
+                },
+                "sensor": {
+                    "title": "temperatur",
+                    "example": "Väggtermometer"
+                },
                 "temperature": {
                     "title": "minimum temperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Max termperaturen i en zon har ändrat",
+                "zone": {
+                    "title": "zon",
+                    "example": "Kök"
+                },
+                "sensor": {
+                    "title": "termometer",
+                    "example": "Väggtermometer"
+                },
                 "temperature": {
                     "title": "max temperatur"
+                }
+            },
+            "HumidityChanged": {
+                "title": "Fuktigheten förändrades"
+            },
+            "TooDry": {
+                "title": "Fuktigheten är för torr"
+            },
+            "TooHumid": {
+                "title": "Fuktigheten är för våt"
+            },
+            "MinHumidityChanged": {
+                "title": "Minsta luftfuktighet för en zon har ändrats",
+                "humidity": {
+                    "title": "minsta luftfuktighet"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "Den maximala luftfuktigheten för en zon har ändrats",
+                "humidity": {
+                    "title": "maximal luftfuktighet"
                 }
             }
         },
@@ -149,5 +209,15 @@
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "Temperatur",
+        "thermometer": "Termometer",
+        "kitchen": "Köket",
+        "zone": "Zon",
+        "averageTemperature": "snitt temperatur",
+        "sampleTempDevice": "Vägg termometer",
+        "humidity": "Luftfuktighet",
+        "hygrometer": "Fuktmätare"
     }
 }
