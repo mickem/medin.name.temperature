@@ -49,7 +49,19 @@
             },
             "minTemperature": "Minimale temperatuur",
             "maxTemperature": "Maximale temperatuur",
-            "dailyReset": "Tijd om dagelijkse gemiddelden te resetten (gebruik 'uitgeschakeld' i.p.v. de tijd om dit uit te schakelen)"
+            "dailyReset": "Tijd om dagelijkse gemiddelden te resetten (gebruik 'uitgeschakeld' i.p.v. de tijd om dit uit te schakelen)",
+            "refresh": {
+                "button": "verversen",
+                "label": "Vernieuw de instellingenweergave"
+            },
+            "resetAll": {
+                "button": "Reset standaardwaarden",
+                "label": "Reset alle configuratie- en herstellingsstandaarden"
+            },
+            "showHints": {
+                "button": "Toon alle hints",
+                "label": "Toon alle hintdialogen in de instellingen-app"
+            }
         }
     },
     "flows": {
@@ -110,6 +122,27 @@
                 },
                 "temperature": {
                     "title": "maximale temperatuur"
+                }
+            },
+            "HumidityChanged": {
+                "title": "De luchtvochtigheid veranderde"
+            },
+            "TooDry": {
+                "title": "De luchtvochtigheid is te droog"
+            },
+            "TooHumid": {
+                "title": "De luchtvochtigheid is te nat"
+            },
+            "MinHumidityChanged": {
+                "title": "De minimale luchtvochtigheid voor een zone is gewijzigd",
+                "humidity": {
+                    "title": "minimale luchtvochtigheid"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "De maximale luchtvochtigheid voor een zone is gewijzigd",
+                "humidity": {
+                    "title": "maximale luchtvochtigheid"
                 }
             }
         },
@@ -176,5 +209,15 @@
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "Temperatuur",
+        "thermometer": "Thermometer",
+        "kitchen": "Keuken",
+        "zone": "Zone",
+        "averageTemperature": "Gemiddelde temperatuur",
+        "sampleTempDevice": "Wandthermometer",
+        "humidity": "Vochtigheid",
+        "hygrometer": "hygrometer"
     }
 }
