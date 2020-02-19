@@ -49,7 +49,19 @@
             },
             "minTemperature": "Minimale Temperatur",
             "maxTemperature": "Maximale Temperatur",
-            "dailyReset": "Zeit zum Zurücksetzen der täglichen Durchschnittswerte (auf \"Nie deaktivieren\" eingestellt)"
+            "dailyReset": "Zeit zum Zurücksetzen der täglichen Durchschnittswerte (auf \"Nie deaktivieren\" eingestellt)",
+            "refresh": {
+                "button": "Aktualisierung",
+                "label": "Aktualisieren Sie die Einstellungsansicht"
+            },
+            "resetAll": {
+                "button": "Standardeinstellungen zurückzusetzen",
+                "label": "Setzen Sie alle Konfigurations- und Restoe-Standardeinstellungen zurück"
+            },
+            "showHints": {
+                "button": "Zeige alle Hinweise",
+                "label": "Alle Hinweisdialoge in der Einstellungs-App anzeigen"
+            }
         }
     },
     "flows": {
@@ -110,6 +122,27 @@
                 },
                 "temperature": {
                     "title": "maximale Temperatur"
+                }
+            },
+            "HumidityChanged": {
+                "title": "Die Luftfeuchtigkeit änderte sich"
+            },
+            "TooDry": {
+                "title": "Die Luftfeuchtigkeit ist zu trocken"
+            },
+            "TooHumid": {
+                "title": "Die Luftfeuchtigkeit ist zu nass"
+            },
+            "MinHumidityChanged": {
+                "title": "Die Mindestfeuchtigkeit für eine Zone hat sich geändert",
+                "humidity": {
+                    "title": "minimale Luftfeuchtigkeit"
+                }
+            },
+            "MaxHumidityChanged": {
+                "title": "Die maximale Luftfeuchtigkeit für eine Zone hat sich geändert",
+                "humidity": {
+                    "title": "maximale Luftfeuchtigkeit"
                 }
             }
         },
@@ -176,5 +209,15 @@
                 }
             }
         }
+    },
+    "common": {
+        "temperature": "Temperatur",
+        "thermometer": "Thermometer",
+        "kitchen": "Küche",
+        "zone": "Zone",
+        "averageTemperature": "Durchschnittstemperatur",
+        "sampleTempDevice": "Wandthermometer",
+        "humidity": "Feuchtigkeit",
+        "hygrometer": "Hygrometer"
     }
 }
