@@ -67,59 +67,22 @@
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur har endret seg",
-                "zone": {
-                    "title": "sonen",
-                    "example": "kjøkkenet"
-                },
-                "temperature": {
-                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
-                }
+                "title": "En temperatur har endret seg"
             },
             "TooCold": {
-                "title": "Det er for kaldt",
-                "zone": {
-                    "title": "sonen",
-                    "example": "kjøkken"
-                },
-                "temperature": {
-                    "title": "temperaturen"
-                }
+                "title": "Det er for kaldt"
             },
             "TooWarm": {
-                "title": "Det er for varmt",
-                "zone": {
-                    "title": "sonen",
-                    "example": "kjøkken"
-                },
-                "temperature": {
-                    "title": "temperaturen"
-                }
+                "title": "Det er for varmt"
             },
             "MinTemperatureChanged": {
                 "title": "Minimumstemperatur har endret seg",
-                "zone": {
-                    "title": "zopn",
-                    "example": "kjøkken"
-                },
-                "sensor": {
-                    "title": "temperaturen",
-                    "example": "Wall termometer"
-                },
                 "temperature": {
                     "title": "minimumstemperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Den maksimale termiske temperaturen i en sone har endret seg",
-                "zone": {
-                    "title": "sonen",
-                    "example": "kjøkken"
-                },
-                "sensor": {
-                    "title": "termometer",
-                    "example": "Wall termometer"
-                },
                 "temperature": {
                     "title": "maks term temperatur"
                 }
@@ -147,33 +110,14 @@
             }
         },
         "actions": {
-            "SetMaxTemperature": {
-                "title": "Still inn maksimal temperatur",
-                "temperature": {
-                    "title": "temperaturen"
-                }
-            },
-            "SetMinTemperature": {
-                "title": "Still minimumstemperatur",
-                "temperature": {
-                    "title": "temperaturen"
-                }
-            },
             "SetTemperatureBounds": {
                 "title": "Sett grenser for temperatur",
                 "type": {
                     "title": "slags grense å sette"
-                },
-                "temperature": {
-                    "title": "temperaturen"
                 }
             },
             "SetZoneMode": {
                 "title": "angi plassering for spesifisert sone",
-                "zone": {
-                    "title": "sonen",
-                    "example": "testing"
-                },
                 "mode": {
                     "title": "stilling"
                 }
@@ -205,7 +149,7 @@
                     "title": "Minimumstemperatur"
                 },
                 "measure_temperature": {
-                    "title": "gjennomsnitts~~POS=TRUNC temperaturen~~POS=HEADCOMP"
+                    "title": "gjennomsnitts temperaturen"
                 }
             }
         }

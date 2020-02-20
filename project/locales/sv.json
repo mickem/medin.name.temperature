@@ -67,59 +67,22 @@
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "En temperatur har ändrats",
-                "zone": {
-                    "title": "zon",
-                    "example": "Köket"
-                },
-                "temperature": {
-                    "title": "medeltemperatur"
-                }
+                "title": "En temperatur har ändrats"
             },
             "TooCold": {
-                "title": "Det är för kallt",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Det är för kallt"
             },
             "TooWarm": {
-                "title": "Det är för varmt",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "temperature": {
-                    "title": "temperatur"
-                }
+                "title": "Det är för varmt"
             },
             "MinTemperatureChanged": {
                 "title": "Minsta temperatur har ändrats",
-                "zone": {
-                    "title": "zopn",
-                    "example": "Kök"
-                },
-                "sensor": {
-                    "title": "temperatur",
-                    "example": "Väggtermometer"
-                },
                 "temperature": {
                     "title": "minimum temperatur"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "Max termperaturen i en zon har ändrat",
-                "zone": {
-                    "title": "zon",
-                    "example": "Kök"
-                },
-                "sensor": {
-                    "title": "termometer",
-                    "example": "Väggtermometer"
-                },
                 "temperature": {
                     "title": "max temperatur"
                 }
@@ -147,33 +110,14 @@
             }
         },
         "actions": {
-            "SetMaxTemperature": {
-                "title": "Sätt max termperaturen",
-                "temperature": {
-                    "title": "temperatur"
-                }
-            },
-            "SetMinTemperature": {
-                "title": "Sätt minimum temperatur",
-                "temperature": {
-                    "title": "temperatur"
-                }
-            },
             "SetTemperatureBounds": {
                 "title": "Set gränser för temperatur",
                 "type": {
                     "title": "typ av gräns att sätta"
-                },
-                "temperature": {
-                    "title": "temperatur"
                 }
             },
             "SetZoneMode": {
                 "title": "set läge för angiven zon",
-                "zone": {
-                    "title": "zon",
-                    "example": "testing"
-                },
                 "mode": {
                     "title": "läge"
                 }

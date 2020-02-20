@@ -67,59 +67,22 @@
     "flows": {
         "triggers": {
             "TemperatureChanged": {
-                "title": "Une température a changé",
-                "zone": {
-                    "title": "zone",
-                    "example": "Cuisine"
-                },
-                "temperature": {
-                    "title": "température moyenne"
-                }
+                "title": "Une température a changé"
             },
             "TooCold": {
-                "title": "La température est trop froide",
-                "zone": {
-                    "title": "zone",
-                    "example": "Cuisine"
-                },
-                "temperature": {
-                    "title": "Température"
-                }
+                "title": "La température est trop froide"
             },
             "TooWarm": {
-                "title": "La température est trop chaude",
-                "zone": {
-                    "title": "zone",
-                    "example": "Cuisine"
-                },
-                "temperature": {
-                    "title": "Température"
-                }
+                "title": "La température est trop chaude"
             },
             "MinTemperatureChanged": {
                 "title": "La température minimale d'une zone a changé",
-                "zone": {
-                    "title": "zone",
-                    "example": "Cuisine"
-                },
-                "sensor": {
-                    "title": "Thermomètre",
-                    "example": "Thermomètre mural"
-                },
                 "temperature": {
                     "title": "température minimale"
                 }
             },
             "MaxTemperatureChanged": {
                 "title": "La température maximale d'une zone a changé",
-                "zone": {
-                    "title": "zone",
-                    "example": "Cuisine"
-                },
-                "sensor": {
-                    "title": "Thermomètre",
-                    "example": "Thermomètre mural"
-                },
                 "temperature": {
                     "title": "Température maximale"
                 }
@@ -147,33 +110,14 @@
             }
         },
         "actions": {
-            "SetMaxTemperature": {
-                "title": "Réglez la température maximale",
-                "temperature": {
-                    "title": "Température"
-                }
-            },
-            "SetMinTemperature": {
-                "title": "Réglez la température minimale",
-                "temperature": {
-                    "title": "Température"
-                }
-            },
             "SetTemperatureBounds": {
                 "title": "Définissez les limites de température maximale ou minimale",
                 "type": {
                     "title": "le type de lié à définir"
-                },
-                "temperature": {
-                    "title": "Température"
                 }
             },
             "SetZoneMode": {
                 "title": "Définir le mode pour une zone donnée",
-                "zone": {
-                    "title": "zone",
-                    "example": "TODO: Ajouter un exemple"
-                },
                 "mode": {
                     "title": "mode"
                 }
