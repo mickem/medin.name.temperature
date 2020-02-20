@@ -228,13 +228,13 @@ test('can reset max/min', async () => {
   z.resetMaxMin();
 
   expect(z.getCurrentAvg()).toEqual(2);
-  expect(z.periodTemp.minValue).toBeUndefined();
-  expect(z.periodTemp.maxValue).toBeUndefined();
+  expect(z.periodTemp.minValue).toEqual(2);
+  expect(z.periodTemp.maxValue).toEqual(2);
 
   await t.update_temperature(4);
 
   expect(z.getCurrentAvg()).toEqual(4);
-  expect(z.periodTemp.minValue).toEqual(4);
+  expect(z.periodTemp.minValue).toEqual(2);
   expect(z.periodTemp.maxValue).toEqual(4);
 });
 
